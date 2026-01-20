@@ -1,0 +1,13 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${custom.prod.db.url}
+    username: ${custom.prod.db.username}
+    password: ${custom.prod.db.password}
+    hikari:
+      auto-commit: false
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+
