@@ -24,13 +24,4 @@ public class SwaggerConfig {
                 .addServersItem(new Server().url("/"))
                 .info(info);
     }
-
-// TODO: 추후 API가 많아지면 아래 예시처럼 도메인별로 그룹핑하기
-//    @Bean
-//    public GroupedOpenApi trashGroup() {
-//        return GroupedOpenApi.builder()
-//                .group("1. 쓰레기 분석")
-//                .pathsToMatch("/api/v1/trash/**")
-//                .build();
-//    }
 }
