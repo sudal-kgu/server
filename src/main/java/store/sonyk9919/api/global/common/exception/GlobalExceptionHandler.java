@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataAccessException.class)
     public ResponseEntity<BaseResponse<Void>> handleDataAccessException(DataAccessException e, HttpServletRequest request) {
         log.warn("DataAccessException occurred at {}: {}", request.getRequestURI(), e.getMessage());
-        return BaseResponse.error(ErrorStatus.DATABASE_ERROR);
+        return BaseResponse.error(ErrorStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

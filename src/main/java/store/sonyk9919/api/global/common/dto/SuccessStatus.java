@@ -8,8 +8,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum SuccessStatus implements BaseResponseStatus {
 
-    SUCCESS(HttpStatus.OK,"SUCCESS","성공입니다."),
-    CREATED(HttpStatus.CREATED, "CREATED", "생성되었습니다.");
+    SUCCESS(HttpStatus.OK,"COMMON_200","성공입니다."),
+    CREATED(HttpStatus.CREATED, "COMMON_201", "생성되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
