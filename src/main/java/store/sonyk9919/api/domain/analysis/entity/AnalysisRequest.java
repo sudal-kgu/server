@@ -1,12 +1,15 @@
 package store.sonyk9919.api.domain.analysis.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import store.sonyk9919.api.global.common.entity.BaseEntity;
 import java.util.UUID;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AttributeOverride(
         name = "createdAt",
         column = @Column(name = "request_at", updatable = false)
@@ -21,7 +24,11 @@ public class AnalysisRequest extends BaseEntity {
     @Column(name = "request_id", nullable = false, unique = true)
     private String requestId;
 
-    public AnalysisRequest() {
-        this.requestId = UUID.randomUUID().toString();
+    private AnalysisRequest(String requestId) {
+        this.requestId = requestId;
+    }
+
+    public static AnalysisRequest createWithUUID() {
+        return new AnalysisRequest(UUID.randomUUID().toString());
     }
 }

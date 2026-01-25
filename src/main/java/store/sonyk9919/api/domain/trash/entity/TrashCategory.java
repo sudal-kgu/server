@@ -1,16 +1,13 @@
 package store.sonyk9919.api.domain.trash.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TrashCategory {
 
     @Id
@@ -24,8 +21,12 @@ public class TrashCategory {
     @Column(name = "disposal_guide", columnDefinition = "TEXT")
     private String disposalGuide;
 
-    public TrashCategory(String name, String disposalGuide) {
+    private TrashCategory(String name, String disposalGuide) {
         this.name = name;
         this.disposalGuide = disposalGuide;
+    }
+
+    public static TrashCategory create(String name, String disposalGuide){
+        return new TrashCategory(name,disposalGuide);
     }
 }

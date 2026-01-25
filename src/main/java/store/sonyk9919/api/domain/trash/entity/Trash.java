@@ -1,14 +1,7 @@
 package store.sonyk9919.api.domain.trash.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import lombok.Builder;
+import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
@@ -16,7 +9,7 @@ import store.sonyk9919.api.domain.analysis.entity.AnalysisResult;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Trash {
 
     @Id
@@ -40,14 +33,18 @@ public class Trash {
     private String material;
     private String filename;
 
-    @Builder
-    public Trash(AnalysisRequest analysisRequest, TrashCategory trashCategory,
+    private Trash(AnalysisRequest analysisRequest, TrashCategory trashCategory,
                  String label, String material, String filename) {
         this.analysisRequest = analysisRequest;
         this.trashCategory = trashCategory;
         this.label = label;
         this.material = material;
         this.filename = filename;
+    }
+
+    public static Trash create(AnalysisRequest analysisRequest, TrashCategory trashCategory,
+                               String label, String material, String filename) {
+        return new Trash(analysisRequest,trashCategory,label,material,filename);
     }
 
     public void confirmResult(AnalysisResult analysisResult) {
