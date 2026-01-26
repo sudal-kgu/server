@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisResult;
+import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
 
 @Entity
 @Getter
@@ -25,15 +26,20 @@ public class Trash {
     @JoinColumn(name = "result_id", nullable = true)
     private AnalysisResult analysisResult;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "taxonomy_id")
+    private TrashTaxonomy taxonomy;
+
     private String filename;
 
-    private Trash(AnalysisRequest analysisRequest, String filename) {
+    private Trash(AnalysisRequest analysisRequest, TrashTaxonomy taxonomy, String filename) {
         this.analysisRequest = analysisRequest;
+        this.taxonomy = taxonomy;
         this.filename = filename;
     }
 
-    public static Trash create(AnalysisRequest analysisRequest, String filename) {
-        return new Trash(analysisRequest, filename);
+    public static Trash create(AnalysisRequest analysisRequest, TrashTaxonomy taxonomy, String filename) {
+        return new Trash(analysisRequest, taxonomy, filename);
     }
 
     public void confirmResult(AnalysisResult analysisResult) {
