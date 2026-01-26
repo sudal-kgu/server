@@ -12,14 +12,23 @@ spring:
       settings:
         web-allow-others: true
 
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:/db/category.sql
+        - classpath:/db/subcategory.sql
+        - classpath:/db/taxonomy.sql
+
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         highlight_sql: true
         use_sql_comments: true
+    defer-datasource-initialization: true
 
 logging:
   level:
