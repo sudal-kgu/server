@@ -1,0 +1,18 @@
+INSERT INTO TRASH_CATEGORY (name) values ('종이류');
+INSERT INTO TRASH_CATEGORY (name) values ('종이팩');
+INSERT INTO TRASH_CATEGORY (name) values ('금속캔');
+INSERT INTO TRASH_CATEGORY (name) values ('고철');
+INSERT INTO TRASH_CATEGORY (name) values ('유리병류');
+INSERT INTO TRASH_CATEGORY (name) values ('플라스틱 용기류');
+INSERT INTO TRASH_CATEGORY (name) values ('비닐류');
+INSERT INTO TRASH_CATEGORY (name) values ('스티로폼');
+INSERT INTO TRASH_CATEGORY (name) values ('의류 및 원단류');
+INSERT INTO TRASH_CATEGORY (name) values ('폐가전제품');
+INSERT INTO TRASH_CATEGORY (name) values ('대형 폐기물');
+INSERT INTO TRASH_CATEGORY (name) values ('음식물 쓰레기');
+INSERT INTO TRASH_CATEGORY (name) values ('불연성 종량제');
+INSERT INTO TRASH_CATEGORY (name) values ('종량제봉투');
+INSERT INTO TRASH_CATEGORY (name) values ('전용함');
+INSERT INTO TRASH_CATEGORY (name) values ('전문시설');
+INSERT INTO TRASH_CATEGORY (name) values ('주의');
+INSERT INTO TRASH_CATEGORY (name) values ('재질별분리');
