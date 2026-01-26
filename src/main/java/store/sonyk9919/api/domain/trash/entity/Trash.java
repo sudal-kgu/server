@@ -25,26 +25,15 @@ public class Trash {
     @JoinColumn(name = "result_id", nullable = true)
     private AnalysisResult analysisResult;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
-    private TrashCategory trashCategory;
-
-    private String label;
-    private String material;
     private String filename;
 
-    private Trash(AnalysisRequest analysisRequest, TrashCategory trashCategory,
-                 String label, String material, String filename) {
+    private Trash(AnalysisRequest analysisRequest, String filename) {
         this.analysisRequest = analysisRequest;
-        this.trashCategory = trashCategory;
-        this.label = label;
-        this.material = material;
         this.filename = filename;
     }
 
-    public static Trash create(AnalysisRequest analysisRequest, TrashCategory trashCategory,
-                               String label, String material, String filename) {
-        return new Trash(analysisRequest,trashCategory,label,material,filename);
+    public static Trash create(AnalysisRequest analysisRequest, String filename) {
+        return new Trash(analysisRequest, filename);
     }
 
     public void confirmResult(AnalysisResult analysisResult) {
