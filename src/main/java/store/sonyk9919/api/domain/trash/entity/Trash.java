@@ -27,7 +27,7 @@ public class Trash {
     private AnalysisResult analysisResult;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "taxonomy_id")
+    @JoinColumn(name = "taxonomy_id", nullable = false)
     private TrashTaxonomy taxonomy;
 
     private String filename;
