@@ -23,11 +23,11 @@ public class TrashDisposalCategory {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "disposal_id")
+    @JoinColumn(name = "disposal_id", nullable = false)
     private TrashDisposal disposal;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private TrashCategory category;
 
 }
