@@ -25,6 +25,6 @@ public class AnalysisController {
     )
     @PostMapping(value = "/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<String>> requestAnalysis(@RequestParam("image") MultipartFile image) {
-        return BaseResponse.success(analysisService.registerAnalysisRequest(image));
+        return BaseResponse.success(analysisService.submitAnalysis(image));
     }
 }
