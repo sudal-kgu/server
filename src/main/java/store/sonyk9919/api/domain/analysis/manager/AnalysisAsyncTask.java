@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.analysis.service;
+package store.sonyk9919.api.domain.analysis.manager;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import store.sonyk9919.api.domain.analysis.client.AnalysisClient;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
