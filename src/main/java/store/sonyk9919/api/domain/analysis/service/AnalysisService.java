@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.manager.AnalysisAsyncTask;
 import store.sonyk9919.api.domain.analysis.manager.AnalysisCompletionHandler;
-import store.sonyk9919.api.domain.analysis.manager.FileStorageManager;
+import store.sonyk9919.api.global.file.FileStorage;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
 
 @Slf4j
@@ -18,7 +18,7 @@ import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
 public class AnalysisService {
     private final AnalysisRequestRepository requestRepository;
     private final AnalysisAsyncTask analysisAsyncTask;
-    private final FileStorageManager fileStorageManager;
+    private final FileStorage fileStorage;
     private final AnalysisCompletionHandler completionHandler;
 
     @Transactional
@@ -27,7 +27,7 @@ public class AnalysisService {
         requestRepository.save(analysisRequest);
 
         String requestId = analysisRequest.getRequestId();
-        fileStorageManager.saveFile(image, requestId);
+        fileStorage.saveFile(image, requestId);
 
         CompletableFuture<Void> future = analysisAsyncTask.runAnalysis(requestId);
         completionHandler.registerCallbacks(future, requestId);
