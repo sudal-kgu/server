@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.analysis.service;
+package store.sonyk9919.api.domain.analysis.client;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -6,26 +6,25 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class AnalysisClient {
-    private final WebClient fastApiWebClient;
+
+    private final RestClient fastApiClient;
 
     public AnalysisResponseDto analyzeImage(String requestId) {
-
         Map<String, String> body = new HashMap<>();
         body.put("request_id", requestId);
 
-        return fastApiWebClient.post()
+        return fastApiClient.post()
                 .uri("/extracts")
                 .contentType(MediaType.APPLICATION_JSON)
-                .bodyValue(body)
+                .body(body)
                 .retrieve()
-                .bodyToMono(AnalysisResponseDto.class)
-                .block();
+                .body(AnalysisResponseDto.class);
     }
 }
