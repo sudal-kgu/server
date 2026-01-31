@@ -11,3 +11,9 @@ spring:
       ddl-auto: validate
 
 
+file:
+  upload-dir: ${custom.prod.uploadDir}
+
+analysis:
+  fastApi:
+    url: ${custom.prod.fastApiUrl}
