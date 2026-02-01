@@ -14,6 +14,8 @@ public enum ErrorStatus implements BaseResponseStatus {
     NO_PERMISSION(HttpStatus.FORBIDDEN, "COMMON_403", "접근 권한이 없습니다."),
     METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED,"COMMON_405","지원하지 않는 HTTP 메소드 입니다."),
 
+    UNSUPPORTED_IMG_TYPE(HttpStatus.BAD_REQUEST, "IMG_400_1", "지원하지 않는 이미지 파일 형식입니다."),
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "COMMON_500", "서버 내부 오류가 발생했습니다.");
 
     private final HttpStatus httpStatus;
