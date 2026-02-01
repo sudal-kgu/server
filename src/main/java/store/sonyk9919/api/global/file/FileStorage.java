@@ -15,7 +15,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 @RequiredArgsConstructor
 public class FileStorage {
 
-    private final FileExtensionResolver extensionResolver;
+    private final ImageExtensionResolver extensionResolver;
 
     @Value("${file.upload-dir}")
     private String UPLOAD_DIR;
