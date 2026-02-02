@@ -24,14 +24,14 @@ public class ImageExtensionResolver {
     }
 
     private String resolveFromMimeType(String mimeType) {
-        if (mimeType == null) throw new CustomException(ErrorStatus.UNSUPPORTED_IMG_TYPE, "MIME 타입을 확인할 수 없습니다.");
+        if (mimeType == null) throw new CustomException(ErrorStatus.UNSUPPORTED_IMAGE_TYPE, "MIME 타입을 확인할 수 없습니다.");
 
         return switch (mimeType) {
             case "image/jpeg" -> ".jpg";
             case "image/png" -> ".png";
             case "image/gif" -> ".gif";
             case "image/webp" -> ".webp";
-            default -> throw new CustomException(ErrorStatus.UNSUPPORTED_IMG_TYPE);
+            default -> throw new CustomException(ErrorStatus.UNSUPPORTED_IMAGE_TYPE);
         };
     }
 }
