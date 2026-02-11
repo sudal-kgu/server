@@ -38,8 +38,8 @@ logging:
     org.springframework.transaction.interceptor: TRACE
 
 file:
-  upload-dir: ${custom.dev.uploadDir}
+  upload-dir: ${custom.dev.uploadDir:./upload/}
 
 analysis:
   fastApi:
-    url: ${custom.dev.fastApiUrl}
+    url: ${custom.dev.fastApiUrl:http://localhost:8989}
