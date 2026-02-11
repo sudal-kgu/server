@@ -9,7 +9,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-
+  data:
+    redis:
+      host: ${custom.prod.redis.host}
+      port: ${custom.prod.redis.port}
 
 file:
   upload-dir: ${custom.prod.uploadDir}
