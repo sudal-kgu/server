@@ -20,3 +20,6 @@ file:
 analysis:
   fastApi:
     url: ${custom.prod.fastApiUrl}
+
+jwt:
+  secret: ${custom.jwt.secret}
