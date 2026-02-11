@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
-import store.sonyk9919.api.domain.analysis.manager.AnalysisAsyncTask;
-import store.sonyk9919.api.domain.analysis.manager.AnalysisCompletionHandler;
-import store.sonyk9919.api.global.file.FileStorage;
+import store.sonyk9919.api.domain.analysis.async.AnalysisAsyncTask;
+import store.sonyk9919.api.domain.analysis.async.AnalysisCompletionHandler;
+import store.sonyk9919.api.domain.analysis.manager.AnalysisSubscriptionManager;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
+import store.sonyk9919.api.global.file.FileStorage;
 
 @Slf4j
 @Service
@@ -20,6 +23,7 @@ public class AnalysisService {
     private final AnalysisAsyncTask analysisAsyncTask;
     private final FileStorage fileStorage;
     private final AnalysisCompletionHandler completionHandler;
+    private final AnalysisSubscriptionManager subscriptionManager;
 
     @Transactional
     public String submitAnalysis(MultipartFile image) {
@@ -29,9 +33,13 @@ public class AnalysisService {
         String requestId = analysisRequest.getRequestId();
         fileStorage.saveFile(image, requestId);
 
-        CompletableFuture<Void> future = analysisAsyncTask.runAnalysis(requestId);
+        CompletableFuture<AnalysisResponseDto> future = analysisAsyncTask.runAnalysis(requestId);
         completionHandler.registerCallbacks(future, requestId);
 
         return requestId;
+    }
+
+    public SseEmitter subscribe(String requestId) {
+        return subscriptionManager.subscribe(requestId);
     }
 }

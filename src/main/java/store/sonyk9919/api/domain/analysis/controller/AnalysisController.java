@@ -4,11 +4,14 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import store.sonyk9919.api.domain.analysis.service.AnalysisService;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
 
@@ -26,5 +29,19 @@ public class AnalysisController {
     @PostMapping(value = "/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<String>> requestAnalysis(@RequestParam("image") MultipartFile image) {
         return BaseResponse.success(analysisService.submitAnalysis(image));
+    }
+
+    @Operation(
+            summary = "분석 응답 구독 (SSE)",
+            description = "request_id로 분석 결과를 수신합니다. " +
+                    "분석이 이미 완료된 경우 결과를 바로 반환합니다."
+    )
+    @GetMapping(value = "/subscribe/{requestId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public ResponseEntity<SseEmitter> subscribeAnalysis(@PathVariable("requestId") String requestId) {
+        SseEmitter emitter = analysisService.subscribe(requestId);
+
+        return ResponseEntity.ok()
+                .header("X-Accel-Buffering", "no")
+                .body(emitter);
     }
 }
