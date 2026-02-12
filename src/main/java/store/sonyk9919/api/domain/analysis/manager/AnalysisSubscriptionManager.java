@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisCacheDto;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisTempCache;
+import store.sonyk9919.api.domain.sse.type.SseEventType;
 import store.sonyk9919.api.domain.sse.service.SseEmitterService;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
@@ -32,9 +33,9 @@ public class AnalysisSubscriptionManager {
         log.info("[Analysis] Immediate delivery (Cache Hit) : {}", requestId);
 
         if (cacheDto.isSuccess()) {
-            sseEmitterService.sendResult(requestId, cacheDto.getSuccessData());
+            sseEmitterService.sendAndComplete(requestId, SseEventType.ANALYSIS_RESULT, cacheDto.getSuccessData());
         } else {
-            sseEmitterService.sendError(requestId, cacheDto.getErrorStatus());
+            sseEmitterService.sendAndComplete(requestId, SseEventType.ERROR, cacheDto.getErrorStatus());
         }
         tempCache.remove(requestId);
     }

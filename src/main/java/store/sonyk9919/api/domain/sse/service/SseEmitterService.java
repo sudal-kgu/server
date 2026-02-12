@@ -1,16 +1,14 @@
 package store.sonyk9919.api.domain.sse.service;
 
 import java.io.IOException;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
+import store.sonyk9919.api.domain.sse.type.SseEventType;
 import store.sonyk9919.api.domain.sse.repository.SseEmitterRepository;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
-import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Slf4j
 @Service
@@ -18,7 +16,7 @@ import store.sonyk9919.api.global.common.dto.ErrorStatus;
 public class SseEmitterService {
     private final SseEmitterRepository sseEmitterRepository;
 
-    @Value("${custom.sse.timeout}")
+    @Value("${custom.sse.timeout:300000}")
     private Long timeout;
 
     public SseEmitter createEmitter(String requestId) {
@@ -26,7 +24,7 @@ public class SseEmitterService {
         sseEmitterRepository.save(requestId, emitter);
 
         setupEmitterCallbacks(emitter, requestId);
-        sendEvent(requestId, "connect", BaseResponse.success("connected"));
+        sendEvent(requestId, SseEventType.CONNECT, BaseResponse.success("connected"));
 
         return emitter;
     }
@@ -35,24 +33,19 @@ public class SseEmitterService {
         return sseEmitterRepository.findByRequestId(requestId).isPresent();
     }
 
-    public void sendResult(String requestId, AnalysisResponseDto data) {
-        sendEvent(requestId, "analysis-result", BaseResponse.success(data));
+    public void sendAndComplete(String requestId, SseEventType eventType, Object data) {
+        sendEvent(requestId, eventType, data);
         completeEmitter(requestId);
     }
 
-    public void sendError(String requestId, ErrorStatus errorStatus) {
-        sendEvent(requestId, "error", BaseResponse.error(errorStatus));
-        completeEmitter(requestId);
-    }
-
-    private void sendEvent(String requestId, String eventName, Object data) {
+    private void sendEvent(String requestId, SseEventType eventType, Object data) {
         sseEmitterRepository.findByRequestId(requestId).ifPresent(emitter -> {
             try {
                 emitter.send(SseEmitter.event()
                         .id(requestId)
-                        .name(eventName)
+                        .name(eventType.getValue())
                         .data(data));
-                log.debug("[SSE] Sent event '{}' : {}", eventName, requestId);
+                log.debug("[SSE] Sent event '{}' : {}", eventType, requestId);
             } catch (IOException e) {
                 log.warn("[SSE] Sent event failed: {}", requestId);
                 sseEmitterRepository.deleteByRequestId(requestId);
@@ -61,8 +54,8 @@ public class SseEmitterService {
     }
 
     private void completeEmitter(String requestId) {
-        Optional<SseEmitter> sseEmitter = sseEmitterRepository.findByRequestId(requestId);
-        sseEmitter.ifPresent(SseEmitter::complete);
+        sseEmitterRepository.findByRequestId(requestId)
+                .ifPresent(SseEmitter::complete);
     }
 
     private void setupEmitterCallbacks(SseEmitter emitter, String requestId) {
