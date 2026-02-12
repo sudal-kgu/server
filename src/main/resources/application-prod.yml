@@ -23,3 +23,16 @@ analysis:
 
 jwt:
   secret: ${custom.jwt.secret}
+
+security:
+  cors:
+    origins:
+      - https://sonyk9919.store
+    methods:
+      - GET
+      - POST
+      - OPTIONS
+    headers:
+      - Content-Type
+    path: /**
+    maxAge: 3600
