@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisCacheDto;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisTempCache;
+import store.sonyk9919.api.domain.sse.type.SseEventType;
 import store.sonyk9919.api.domain.sse.service.SseEmitterService;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
@@ -27,7 +28,7 @@ public class AnalysisCompletionHandler {
     }
 
     private void handleSuccess(String requestId, AnalysisResponseDto result) {
-        sseEmitterService.sendResult(requestId, result);
+        sseEmitterService.sendAndComplete(requestId, SseEventType.ANALYSIS_RESULT, result);
         saveToCache(requestId, AnalysisCacheDto.success(result));
     }
 
@@ -35,7 +36,7 @@ public class AnalysisCompletionHandler {
         log.error("[Analysis] Handler sending error response : {}", requestId, ex);
         ErrorStatus errorStatus = ErrorStatus.INTERNAL_SERVER_ERROR;
 
-        sseEmitterService.sendError(requestId, errorStatus);
+        sseEmitterService.sendAndComplete(requestId, SseEventType.ERROR, errorStatus);
         saveToCache(requestId, AnalysisCacheDto.error(errorStatus));
     }
 
