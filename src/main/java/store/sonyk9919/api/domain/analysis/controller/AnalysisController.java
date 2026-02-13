@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import store.sonyk9919.api.domain.analysis.manager.AnalysisSubscriptionManager;
 import store.sonyk9919.api.domain.analysis.service.AnalysisService;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
 
@@ -20,6 +21,7 @@ import store.sonyk9919.api.global.common.dto.BaseResponse;
 @RequiredArgsConstructor
 public class AnalysisController {
     private final AnalysisService analysisService;
+    private final AnalysisSubscriptionManager subscriptionManager;
 
     @Operation(
             summary = "이미지 분석 요청 등록",
@@ -38,7 +40,7 @@ public class AnalysisController {
     )
     @GetMapping(value = "/subscribe/{requestId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribeAnalysis(@PathVariable("requestId") String requestId) {
-        SseEmitter emitter = analysisService.subscribe(requestId);
+        SseEmitter emitter = subscriptionManager.subscribe(requestId);
 
         return ResponseEntity.ok()
                 .header("X-Accel-Buffering", "no")
