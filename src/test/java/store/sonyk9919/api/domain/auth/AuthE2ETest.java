@@ -1,5 +1,7 @@
 package store.sonyk9919.api.domain.auth;
 
+import jakarta.servlet.http.Cookie;
+import lombok.RequiredArgsConstructor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,12 +17,17 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.auth.dto.AuthDto;
+import store.sonyk9919.api.domain.auth.filter.JwtAuthenticationFilter;
+import store.sonyk9919.api.domain.member.entitiy.AccountRole;
 import tools.jackson.databind.ObjectMapper;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -36,7 +43,7 @@ public class AuthE2ETest {
     private ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("회원가입부터 로그인까지의 전체 흐름을 검증한다")
+    @DisplayName("회원가입부터 로그인, 권한이 부여된 API 요청까지의 전체 흐름을 검증한다")
     void authFlowTest() throws Exception {
         String id = "testUser";
         String password = "password123!";
@@ -47,7 +54,7 @@ public class AuthE2ETest {
                         .content(objectMapper.writeValueAsString(authDto)))
                 .andExpect(status().isCreated());
 
-        mockMvc.perform(post("/auth/login")
+        MvcResult mvcResult = mockMvc.perform(post("/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(authDto)))
                 .andExpect(status().isOk())
@@ -57,11 +64,22 @@ public class AuthE2ETest {
                     assertThat(setCookie).contains("accessToken");
                     assertThat(setCookie).contains("HttpOnly");
                     assertThat(setCookie).contains("Secure");
-                });
+                })
+                .andReturn();
+
+        Cookie[] cookies = mvcResult.getResponse().getCookies();
+        mockMvc.perform(get("/auth/test/user").cookie(cookies))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/auth/test/admin").cookie(cookies))
+                .andExpect(status().isForbidden());
     }
 
     @TestConfiguration
+    @RequiredArgsConstructor
     public static class TestConfig {
+
+        private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
         @Bean
         @Primary
@@ -71,10 +89,13 @@ public class AuthE2ETest {
                     .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                     .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin))
                     .authorizeHttpRequests(auth -> auth
+                            .requestMatchers("/auth/test/user").hasAuthority(AccountRole.USER.getKey())
+                            .requestMatchers("/auth/test/admin").hasAuthority(AccountRole.ADMIN.getKey())
                             .anyRequest().permitAll()
                     )
                     .formLogin(AbstractHttpConfigurer::disable)
-                    .httpBasic(AbstractHttpConfigurer::disable);
+                    .httpBasic(AbstractHttpConfigurer::disable)
+                    .addFilterAfter(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
             return httpSecurity.build();
         }
     }

@@ -42,4 +42,12 @@ public class AuthMemberMembershipTestController {
                 token.getExpiry()
         ));
     }
+
+    @GetMapping("/test/user")
+    @ResponseStatus(HttpStatus.OK)
+    public void user() {}
+
+    @GetMapping("/test/admin")
+    @ResponseStatus(HttpStatus.OK)
+    public void admin() {}
 }
