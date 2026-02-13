@@ -22,12 +22,23 @@ public class AnalysisSubscriptionManager {
 
     public SseEmitter subscribe(String requestId) {
         validateSubscription(requestId);
-        SseEmitter emitter = sseEmitterService.createEmitter(requestId);
+        return sseEmitterService.createEmitter(requestId);
+    }
 
+    public void checkAndSendCacheResult(String requestId){
+        if (!sseEmitterService.exists(requestId)){
+            return;
+        }
         analysisCacheRepository.findById(requestId)
                 .ifPresent(cache -> handleCachedResult(requestId, cache));
+    }
 
-        return emitter;
+    private void validateSubscription(String requestId) {
+        if (!sseEmitterService.exists(requestId)) return;
+
+        log.warn("[Analysis] Duplicate subscription attempt : {}", requestId);
+        throw new CustomException(ErrorStatus.INTERNAL_SERVER_ERROR,
+                "Already subscribed to requestId: " + requestId);
     }
 
     private void handleCachedResult(String requestId, AnalysisCache cache) {
@@ -47,13 +58,5 @@ public class AnalysisSubscriptionManager {
             );
         }
         analysisCacheRepository.delete(cache);
-    }
-
-    private void validateSubscription(String requestId) {
-        if (!sseEmitterService.exists(requestId)) return;
-
-        log.warn("[Analysis] Duplicate subscription attempt : {}", requestId);
-        throw new CustomException(ErrorStatus.INTERNAL_SERVER_ERROR,
-                "Already subscribed to requestId: " + requestId);
     }
 }
