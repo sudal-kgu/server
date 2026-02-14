@@ -22,15 +22,12 @@ public class AnalysisSubscriptionManager {
 
     public SseEmitter subscribe(String requestId) {
         validateSubscription(requestId);
-        return sseEmitterService.createEmitter(requestId);
-    }
+        SseEmitter emitter = sseEmitterService.createEmitter(requestId);
 
-    public void checkAndSendCacheResult(String requestId){
-        if (!sseEmitterService.exists(requestId)){
-            return;
-        }
         analysisCacheRepository.findById(requestId)
                 .ifPresent(cache -> handleCachedResult(requestId, cache));
+
+        return emitter;
     }
 
     private void validateSubscription(String requestId) {
