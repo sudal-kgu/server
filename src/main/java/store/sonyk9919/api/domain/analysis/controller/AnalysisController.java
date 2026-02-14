@@ -35,7 +35,8 @@ public class AnalysisController {
 
     @Operation(
             summary = "분석 응답 구독 (SSE)",
-            description = "request_id로 분석 결과를 수신합니다."
+            description = "request_id로 분석 결과를 수신합니다. " +
+                    "분석이 이미 완료된 경우 결과를 바로 반환합니다."
     )
     @GetMapping(value = "/subscribe/{requestId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribeAnalysis(@PathVariable("requestId") String requestId) {
@@ -44,15 +45,5 @@ public class AnalysisController {
         return ResponseEntity.ok()
                 .header("X-Accel-Buffering", "no")
                 .body(emitter);
-    }
-
-    @Operation(
-            summary = "분석 결과 캐시 확인",
-            description = "SSE 연결 후 이미 완료된 분석 결과가 있는지 확인하고 있으면 전송합니다."
-    )
-    @GetMapping("/check/{requestId}")
-    public ResponseEntity<BaseResponse<Void>> checkCacheResult(@PathVariable String requestId) {
-        subscriptionManager.checkAndSendCacheResult(requestId);
-        return BaseResponse.success();
     }
 }
