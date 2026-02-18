@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
-import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
+import store.sonyk9919.api.domain.analysis.dto.response.AnalysisResponseDto;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
 

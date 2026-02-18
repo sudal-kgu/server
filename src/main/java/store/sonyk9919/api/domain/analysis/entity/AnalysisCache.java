@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 import org.springframework.data.redis.core.TimeToLive;
-import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
+import store.sonyk9919.api.domain.analysis.dto.response.AnalysisResponseDto;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Getter

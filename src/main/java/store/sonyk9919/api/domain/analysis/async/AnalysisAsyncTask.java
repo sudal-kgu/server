@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.client.AnalysisClient;
-import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
+import store.sonyk9919.api.domain.analysis.dto.response.AnalysisResponseDto;
 
 @Slf4j
 @Component
