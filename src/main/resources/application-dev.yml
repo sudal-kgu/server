@@ -19,6 +19,7 @@ spring:
         - classpath:/db/category.sql
         - classpath:/db/subcategory.sql
         - classpath:/db/taxonomy.sql
+        - classpath:/db/disposal.sql
 
   jpa:
     hibernate:
