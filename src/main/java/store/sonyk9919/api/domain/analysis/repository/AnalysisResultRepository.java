@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.analysis.repository.jpa;
+package store.sonyk9919.api.domain.analysis.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisResult;
