@@ -10,7 +10,7 @@ import store.sonyk9919.api.domain.analysis.async.AnalysisAsyncTask;
 import store.sonyk9919.api.domain.analysis.async.AnalysisCompletionHandler;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
-import store.sonyk9919.api.domain.analysis.repository.jpa.AnalysisRequestRepository;
+import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
 import store.sonyk9919.api.global.file.FileStorage;
 
 @Slf4j
