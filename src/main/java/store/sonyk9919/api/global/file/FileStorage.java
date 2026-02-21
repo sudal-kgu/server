@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
+import store.sonyk9919.api.global.file.constants.FileDirectory;
 
 @Slf4j
 @Component
@@ -23,7 +24,9 @@ public class FileStorage {
     public void saveFile(MultipartFile image, String fileName) {
         try {
             String extension = extensionResolver.resolve(image);
-            File destination = new File(UPLOAD_DIR + fileName + extension);
+            String file = fileName + extension;
+
+            File destination = new File(UPLOAD_DIR + FileDirectory.INPUTS + file);
             image.transferTo(destination);
             log.info("[FileStorage] Saved successfully: {}{}", fileName, extension);
         } catch (IOException e) {
