@@ -12,16 +12,16 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-import store.sonyk9919.api.domain.analysis.manager.AnalysisSubscriptionManager;
-import store.sonyk9919.api.domain.analysis.service.AnalysisService;
+import store.sonyk9919.api.domain.analysis.service.AnalysisFacade;
+import store.sonyk9919.api.domain.analysis.service.AnalysisSseFacade;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
 
 @RestController
 @RequestMapping("/api/v1/analysis")
 @RequiredArgsConstructor
 public class AnalysisController {
-    private final AnalysisService analysisService;
-    private final AnalysisSubscriptionManager subscriptionManager;
+    private final AnalysisFacade analysisFacade;
+    private final AnalysisSseFacade analysisSseFacade;
 
     @Operation(
             summary = "이미지 분석 요청 등록",
@@ -30,7 +30,7 @@ public class AnalysisController {
     )
     @PostMapping(value = "/request", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<BaseResponse<String>> requestAnalysis(@RequestParam("image") MultipartFile image) {
-        return BaseResponse.success(analysisService.submitAnalysis(image));
+        return BaseResponse.success(analysisFacade.submitAnalysis(image));
     }
 
     @Operation(
@@ -40,7 +40,7 @@ public class AnalysisController {
     )
     @GetMapping(value = "/subscribe/{requestId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<SseEmitter> subscribeAnalysis(@PathVariable("requestId") String requestId) {
-        SseEmitter emitter = subscriptionManager.subscribe(requestId);
+        SseEmitter emitter = analysisSseFacade.subscribe(requestId);
 
         return ResponseEntity.ok()
                 .header("X-Accel-Buffering", "no")
