@@ -24,7 +24,11 @@ public class SseEmitterService {
         sseEmitterRepository.save(requestId, emitter);
 
         setupEmitterCallbacks(emitter, requestId);
-        sendEvent(requestId, SseEventType.CONNECT, BaseResponse.success("connected"));
+        sendEvent(
+                requestId,
+                SseEventType.CONNECT,
+                BaseResponse.success("connected").getBody()
+        );
 
         return emitter;
     }
