@@ -1,5 +1,10 @@
 package store.sonyk9919.api.domain.taxonomy.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -7,13 +12,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
-
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.assertj.core.api.Assertions.*;
-
 
 @SpringBootTest
 class TrashTaxonomyRepositoryTest {
@@ -69,4 +67,17 @@ class TrashTaxonomyRepositoryTest {
         assertThat(taxonomy).isNull();
     }
 
+    @Test
+    @DisplayName("category의 name과 subcategory의 alias의 조합한 키들(list)로 일치하는 taxonomy 다중 조회")
+    void findTaxonomiesByCombinedKeys() {
+        List<String> keys = List.of("플라스틱 용기류:Bottle", "유리병류:Bottle");
+
+        List<TrashTaxonomy> result = trashTaxonomyRepository.findAllByExactCategoryAndSubcategoryPairs(keys);
+
+        assertThat(result).hasSize(2);
+        assertThat(result).extracting(t -> t.getCategory().getName())
+                .containsExactlyInAnyOrder("플라스틱 용기류", "유리병류");
+        assertThat(result).extracting(t -> t.getSubCategory().getAlias())
+                .containsExactlyInAnyOrder("Bottle", "Bottle");
+    }
 }
