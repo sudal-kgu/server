@@ -27,7 +27,7 @@ public class SseEmitterService {
         sendEvent(
                 requestId,
                 SseEventType.CONNECT,
-                BaseResponse.success("connected").getBody()
+                BaseResponse.success().getBody()
         );
 
         return emitter;
