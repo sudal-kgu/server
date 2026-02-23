@@ -18,23 +18,5 @@ public class AnalysisResponseDto {
     private Integer count;
 
     @JsonProperty("detected_items")
-    private List<DetectedItem> detectedItems;
-
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @ToString
-    public static class DetectedItem {
-        private String category;
-        private String subcategory;
-        private Confidence confidence;
-        private String filename;
-
-        @Getter
-        @NoArgsConstructor(access = AccessLevel.PROTECTED)
-        @ToString
-        public static class Confidence {
-            private Double object;
-            private Double material;
-        }
-    }
+    private List<DetectedItemDto> detectedItems;
 }
