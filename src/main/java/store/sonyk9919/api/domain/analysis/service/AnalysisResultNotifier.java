@@ -24,7 +24,7 @@ public class AnalysisResultNotifier {
     }
 
     public void notifyIfAlreadyCompleted(String requestId) {
-        TrashResultDto saved = trashService.getSavedItemsByRequestId(requestId);
+        TrashResultDto saved = trashService.fetchSavedItemsByRequestId(requestId);
         if (saved.isEmptyItems()) return;
 
         sseResultSender.sendSuccess(requestId, saved);
