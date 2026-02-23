@@ -1,0 +1,39 @@
+services:
+  trash-db:
+    image: mysql:8.0
+    container_name: trash-db
+    ports:
+      - "${DB_PORT}:3306"
+    environment:
+      - MYSQL_DATABASE=${DB_NAME}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_OPTS="--default-time-zone=+09:00"
+    volumes:
+      - /home/github/trash/mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+    restart: always
+
+  trash-redis:
+    image: redis:latest
+    container_name: trash-redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    restart: always
+
+  trash-app:
+    build: .
+    container_name: trash-app
+    ports:
+      - "${APP_PORT}:8080"
+    depends_on:
+      trash-db:
+        condition: service_healthy
+    environment:
+      - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
+      - IMAGE_UPLOAD_PATH=${IMAGE_PATH}
+      - TZ=Asia/Seoul
+    volumes:
+      - ${IMAGE_PATH}:${IMAGE_PATH}

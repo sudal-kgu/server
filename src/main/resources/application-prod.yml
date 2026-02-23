@@ -8,7 +8,11 @@ spring:
       auto-commit: false
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create
+  data:
+    redis:
+      host: ${custom.prod.redis.host}
+      port: ${custom.prod.redis.port}
 
 file:
   upload-dir: ${custom.prod.uploadDir}
