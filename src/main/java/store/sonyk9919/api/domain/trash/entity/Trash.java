@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,9 +21,12 @@ import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Trash {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "trash_id", updatable = false, nullable = false)
-    private String trashId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "trash_id")
+    private Long id;
+
+    @Column(name = "trash_uuid", updatable = false, nullable = false, unique = true)
+    private String trashUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "request_id", nullable = false)
@@ -39,6 +43,7 @@ public class Trash {
     private String filename;
 
     private Trash(AnalysisRequest analysisRequest, TrashTaxonomy taxonomy, String filename) {
+        this.trashUuid = UUID.randomUUID().toString();
         this.analysisRequest = analysisRequest;
         this.taxonomy = taxonomy;
         this.filename = filename;
