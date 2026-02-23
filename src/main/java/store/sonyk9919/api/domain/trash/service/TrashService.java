@@ -12,8 +12,6 @@ import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto.DetectedItem;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.service.AnalysisRequestService;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashCategory;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashSubCategory;
 import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
 import store.sonyk9919.api.domain.taxonomy.service.TrashTaxonomyService;
 import store.sonyk9919.api.domain.trash.dto.TrashItemDto;
@@ -56,7 +54,7 @@ public class TrashService {
 
     private List<TrashItemDto> toResultItems(List<Trash> trashes) {
         return trashes.stream()
-                .map(this::convertToDto)
+                .map(TrashItemDto::from)
                 .collect(Collectors.toList());
     }
 
@@ -68,18 +66,5 @@ public class TrashService {
         }
 
         return Trash.create(request, taxonomy, item.getFilename());
-    }
-
-    private TrashItemDto convertToDto(Trash trash) {
-        TrashTaxonomy taxonomy = trash.getTaxonomy();
-        TrashCategory category = taxonomy.getCategory();
-        TrashSubCategory subCategory = taxonomy.getSubCategory();
-
-        return TrashItemDto.of(
-                trash.getTrashId(),
-                trash.getFilename(),
-                category.getName(),
-                subCategory.getAlias()
-        );
     }
 }

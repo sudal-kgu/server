@@ -4,17 +4,30 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.domain.taxonomy.entitiy.TrashCategory;
+import store.sonyk9919.api.domain.taxonomy.entitiy.TrashSubCategory;
+import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.trash.entity.Trash;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TrashItemDto {
-    private String trashId;
+    private String trashUuid;
     private String filename;
     private String category;
     private String subcategory;
 
-    public static TrashItemDto of(String trashId, String filename, String category, String subcategory) {
-        return new TrashItemDto(trashId, filename, category, subcategory);
+    public static TrashItemDto from(Trash trash) {
+        TrashTaxonomy taxonomy = trash.getTaxonomy();
+        TrashCategory category = taxonomy.getCategory();
+        TrashSubCategory subCategory = taxonomy.getSubCategory();
+
+        return new TrashItemDto(
+                trash.getTrashUuid(),
+                trash.getFilename(),
+                category.getName(),
+                subCategory.getAlias()
+        );
     }
 }
