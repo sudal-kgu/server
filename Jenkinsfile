@@ -16,6 +16,10 @@ pipeline {
         }
 
         stage('Deploy') {
+            when {
+                branch 'develop'
+            }
+
             steps {
                 withCredentials([
                         string(credentialsId: 'DBPW', variable: 'DB_PASSWORD'),
