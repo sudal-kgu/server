@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.taxonomy.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.DisplayName;
@@ -76,12 +77,15 @@ class TrashTaxonomyRepositoryTest {
                 DetectedItemDto.of("유리병류", "Bottle")
         );
 
-        List<TrashTaxonomy> result = trashTaxonomyRepository.findAllByExactCategoryAndSubcategoryPairs(detectedItems);
+        Map<String, TrashTaxonomy> result = trashTaxonomyRepository.findAllByExactCategoryAndSubcategoryPairs(detectedItems);
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(t -> t.getCategory().getName())
-                .containsExactlyInAnyOrder("플라스틱 용기류", "유리병류");
-        assertThat(result).extracting(t -> t.getSubCategory().getAlias())
+        assertThat(result.keySet()).containsExactlyInAnyOrder(
+                TrashTaxonomy.generateKey("플라스틱 용기류", "Bottle"),
+                TrashTaxonomy.generateKey("유리병류", "Bottle")
+        );
+        assertThat(result.values())
+                .extracting(t -> t.getSubCategory().getAlias())
                 .containsExactlyInAnyOrder("Bottle", "Bottle");
     }
 }

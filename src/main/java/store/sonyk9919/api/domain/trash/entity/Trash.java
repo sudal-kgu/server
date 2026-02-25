@@ -25,7 +25,7 @@ public class Trash {
     @Column(name = "trash_id")
     private Long id;
 
-    @Column(name = "trash_uuid", updatable = false, nullable = false, unique = true)
+    @Column(name = "trash_uuid", updatable = false, nullable = false)
     private String trashUuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
