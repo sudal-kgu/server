@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -43,5 +44,9 @@ public class DetectedItemDto {
     @Override
     public int hashCode() {
         return Objects.hash(category, subcategory);
+    }
+
+    public String getKey() {
+        return TrashTaxonomy.generateKey(category, subcategory);
     }
 }
