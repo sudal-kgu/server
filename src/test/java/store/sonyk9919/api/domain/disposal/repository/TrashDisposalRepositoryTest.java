@@ -14,6 +14,6 @@ class TrashDisposalRepositoryTest {
     private TrashDisposalRepository trashDisposalRepository;
 
     @Test
-    @DisplayName("전체 Disposal은 94개이다")
-    public void isCountCorrect() { assertThat(trashDisposalRepository.count()).isEqualTo(94); }
+    @DisplayName("전체 Disposal은 총 36개")
+    public void isCountCorrect() { assertThat(trashDisposalRepository.count()).isEqualTo(36); }
 }
