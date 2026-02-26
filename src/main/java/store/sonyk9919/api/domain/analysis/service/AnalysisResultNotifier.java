@@ -36,7 +36,7 @@ public class AnalysisResultNotifier {
         switch (request.getState()){
             case PENDING -> {return;}
             case FAILED -> {
-                notifyError(requestId, ErrorStatus.INTERNAL_SERVER_ERROR);
+                sseResultSender.sendError(requestId, ErrorStatus.INTERNAL_SERVER_ERROR);
                 return;
             }
         }
