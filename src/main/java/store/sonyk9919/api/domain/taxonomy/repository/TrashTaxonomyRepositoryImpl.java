@@ -27,16 +27,16 @@ public class TrashTaxonomyRepositoryImpl implements TrashTaxonomyRepositoryCusto
     private static final QTrashSubCategory subCategory = QTrashSubCategory.trashSubCategory;
 
     @Override
-    public Map<String, TrashTaxonomy> findAllByExactCategoryAndSubcategoryPairs(List<DetectedItemDto> detectedItems) {
+    public Map<String, TrashTaxonomy> findAllTaxonomy(List<DetectedItemDto> detectedItems) {
         BooleanExpression condition = buildOrCondition(detectedItems);
 
         if (condition == null) {
             return Collections.emptyMap();
         }
 
-        StringExpression key = category.name
+        StringExpression key = category.ko
                 .concat(TrashTaxonomy.KEY_DELIMITER)
-                .concat(subCategory.name);
+                .concat(subCategory.ko);
 
         return queryFactory
                 .selectFrom(taxonomy)
@@ -49,8 +49,8 @@ public class TrashTaxonomyRepositoryImpl implements TrashTaxonomyRepositoryCusto
     private BooleanExpression buildOrCondition(List<DetectedItemDto> detectedItems) {
         return detectedItems.stream()
                 .distinct()
-                .map(item -> category.name.eq(item.getCategory())
-                        .and(subCategory.name.eq(item.getSubcategory())))
+                .map(item -> category.ko.eq(item.getCategory())
+                        .and(subCategory.ko.eq(item.getSubcategory())))
                 .reduce(BooleanExpression::or)
                 .orElse(null);
     }

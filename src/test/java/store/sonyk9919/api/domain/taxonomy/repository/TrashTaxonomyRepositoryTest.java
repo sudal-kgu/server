@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
 import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.global.language.type.Language;
 
 @SpringBootTest
 class TrashTaxonomyRepositoryTest {
@@ -46,9 +47,11 @@ class TrashTaxonomyRepositoryTest {
     })
     @DisplayName("카테고리 이름과 서브 카테고리의 이름으로 최종 분류를 찾을 수 있음")
     void findTaxonomy(String categoryName, String subCategoryName) {
-        TrashTaxonomy taxonomy = trashTaxonomyRepository
-                .getTrashTaxonomiesByCategory_NameAndSubCategory_Name(categoryName, subCategoryName)
-                .orElse(null);
+        Map<String, TrashTaxonomy> allTaxonomy = trashTaxonomyRepository
+                .findAllTaxonomy(List.of(DetectedItemDto.of(categoryName, subCategoryName)));
+
+        assertThat(allTaxonomy.size()).isNotZero();
+        TrashTaxonomy taxonomy = allTaxonomy.get(TrashTaxonomy.generateKey(categoryName, subCategoryName));
 
         assertThat(taxonomy).isNotNull();
         assertThat(taxonomy.getCategory().getName()).isEqualTo(categoryName);
@@ -62,11 +65,10 @@ class TrashTaxonomyRepositoryTest {
     })
     @DisplayName("없는 조합으로 검색 시 Null 값이 반환")
     void notFoundTaxonomy(String categoryName, String subCategoryName) {
-        TrashTaxonomy taxonomy = trashTaxonomyRepository
-                .getTrashTaxonomiesByCategory_NameAndSubCategory_Name(categoryName, subCategoryName)
-                .orElse(null);
+        Map<String, TrashTaxonomy> allTaxonomy = trashTaxonomyRepository
+                .findAllTaxonomy(List.of(DetectedItemDto.of(categoryName, subCategoryName)));
 
-        assertThat(taxonomy).isNull();
+        assertThat(allTaxonomy.size()).isZero();
     }
 
     @Test
@@ -77,7 +79,7 @@ class TrashTaxonomyRepositoryTest {
                 DetectedItemDto.of("전용함", "일반페트병(페트병류)")
         );
 
-        Map<String, TrashTaxonomy> result = trashTaxonomyRepository.findAllByExactCategoryAndSubcategoryPairs(detectedItems);
+        Map<String, TrashTaxonomy> result = trashTaxonomyRepository.findAllTaxonomy(detectedItems);
 
         assertThat(result).hasSize(2);
         assertThat(result.keySet()).containsExactlyInAnyOrder(

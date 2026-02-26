@@ -33,7 +33,7 @@ public class TrashService {
         }
 
         AnalysisRequest analysisRequest = analysisRequestService.getByRequestId(requestId);
-        Map<String, TrashTaxonomy> taxonomyMap = taxonomyRepository.findAllByExactCategoryAndSubcategoryPairs(detectedItems);
+        Map<String, TrashTaxonomy> taxonomyMap = taxonomyRepository.findAllTaxonomy(detectedItems);
 
         List<Trash> trashes = trashMapper.toTrashes(analysisRequest, detectedItems, taxonomyMap);
         trashRepository.saveAll(trashes);
