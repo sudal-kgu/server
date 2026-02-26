@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.analysis.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.analysis.entity.AnalysisProgress;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.exception.AnalysisStatus;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
@@ -19,6 +20,12 @@ public class AnalysisRequestService {
         requestRepository.save(request);
 
         return request.getRequestId();
+    }
+
+    @Transactional
+    public void updateAnalysisProgress(String requestId, AnalysisProgress progress) {
+        AnalysisRequest request = getByRequestId(requestId);
+        request.updateState(progress);
     }
 
     public AnalysisRequest getByRequestId(String requestId) {

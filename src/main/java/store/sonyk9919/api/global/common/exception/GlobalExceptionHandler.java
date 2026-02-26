@@ -13,6 +13,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
 import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
@@ -54,6 +55,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BaseResponse<Void>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e, HttpServletRequest request) {
         log.warn("Method Not Allowed at {}: {}", request.getRequestURI(), e.getMessage());
         return BaseResponse.error(ErrorStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(AsyncRequestTimeoutException.class)
+    public void  handleAsyncRequestTimeout(AsyncRequestTimeoutException e) {
+        log.warn("SSE connection timeout: {}", e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)
