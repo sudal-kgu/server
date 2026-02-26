@@ -36,7 +36,7 @@ public class TrashTaxonomyRepositoryImpl implements TrashTaxonomyRepositoryCusto
 
         StringExpression key = category.name
                 .concat(TrashTaxonomy.KEY_DELIMITER)
-                .concat(subCategory.alias);
+                .concat(subCategory.name);
 
         return queryFactory
                 .selectFrom(taxonomy)
@@ -50,7 +50,7 @@ public class TrashTaxonomyRepositoryImpl implements TrashTaxonomyRepositoryCusto
         return detectedItems.stream()
                 .distinct()
                 .map(item -> category.name.eq(item.getCategory())
-                        .and(subCategory.alias.eq(item.getSubcategory())))
+                        .and(subCategory.name.eq(item.getSubcategory())))
                 .reduce(BooleanExpression::or)
                 .orElse(null);
     }

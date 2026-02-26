@@ -15,6 +15,6 @@ class TrashSubCategoryRepositoryTest {
     private TrashSubCategoryRepository trashSubCategoryRepository;
 
     @Test
-    @DisplayName("전체 SubCategory 287개")
-    void isCountCorrect() { assertThat(trashSubCategoryRepository.count()).isEqualTo(287); }
+    @DisplayName("전체 SubCategory 54개")
+    void isCountCorrect() { assertThat(trashSubCategoryRepository.count()).isEqualTo(54); }
 }
