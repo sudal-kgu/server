@@ -27,7 +27,7 @@ public class TrashItemDto {
                 trash.getTrashUuid(),
                 trash.getFilename(),
                 category.getName(),
-                subCategory.getAlias()
+                subCategory.getName()
         );
     }
 }

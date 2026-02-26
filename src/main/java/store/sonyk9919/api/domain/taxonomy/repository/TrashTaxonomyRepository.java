@@ -16,5 +16,5 @@ public interface TrashTaxonomyRepository
     List<TrashTaxonomy> findAll();
 
     @EntityGraph(attributePaths = { "category", "subCategory" })
-    Optional<TrashTaxonomy> getTrashTaxonomiesByCategory_NameAndSubCategory_Alias(String name, String alias);
+    Optional<TrashTaxonomy> getTrashTaxonomiesByCategory_NameAndSubCategory_Name(String categoryName, String subCategoryName);
 }
