@@ -24,11 +24,20 @@ public class AnalysisRequest extends BaseEntity {
     @Column(name = "request_id", nullable = false, unique = true)
     private String requestId;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private AnalysisProgress state;
+
     private AnalysisRequest(String requestId) {
         this.requestId = requestId;
+        this.state = AnalysisProgress.PENDING;
     }
 
     public static AnalysisRequest createWithUUID() {
         return new AnalysisRequest(UUID.randomUUID().toString());
+    }
+
+    public void updateState(AnalysisProgress progress){
+        this.state = progress;
     }
 }
