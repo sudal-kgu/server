@@ -5,5 +5,5 @@ import store.sonyk9919.api.domain.taxonomy.entitiy.TrashCategory;
 
 public interface TrashCategoryRepository extends Repository<TrashCategory, Long> {
     int count();
-    boolean existsByName(String name);
+    boolean existsByKo(String ko);
 }

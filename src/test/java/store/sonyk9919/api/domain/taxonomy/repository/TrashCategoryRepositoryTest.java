@@ -29,6 +29,6 @@ class TrashCategoryRepositoryTest {
     })
     @DisplayName("필수 기초 카테고리 데이터가 모두 존재해야 함")
     void allCategoriesMustExist(String categoryName) {
-        assertThat(trashCategoryRepository.existsByName(categoryName)).isTrue();
+        assertThat(trashCategoryRepository.existsByKo(categoryName)).isTrue();
     }
 }

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.global.language.type.Language;
 
 @Entity
 @Getter
@@ -15,6 +16,20 @@ public class TrashSubCategory {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String name;
+    @Column(nullable = false)
+    private String ko;
+
+    @Column(nullable = false)
+    private String en;
+
+    public String getName() {
+        return getName(Language.KO);
+    }
+
+    public String getName(Language language) {
+        return switch (language) {
+            case KO -> ko;
+            case EN -> en;
+        };
+    }
 }

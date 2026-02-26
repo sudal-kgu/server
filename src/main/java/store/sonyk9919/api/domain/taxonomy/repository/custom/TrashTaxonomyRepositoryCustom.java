@@ -6,5 +6,5 @@ import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
 import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
 
 public interface TrashTaxonomyRepositoryCustom {
-    Map<String, TrashTaxonomy> findAllByExactCategoryAndSubcategoryPairs(List<DetectedItemDto> detectedItems);
+    Map<String, TrashTaxonomy> findAllTaxonomy(List<DetectedItemDto> detectedItems);
 }
