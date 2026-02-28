@@ -40,6 +40,7 @@ public class Trash {
     @JoinColumn(name = "taxonomy_id", nullable = false)
     private TrashTaxonomy taxonomy;
 
+    @Column(nullable = false)
     private String filename;
 
     private Trash(AnalysisRequest analysisRequest, TrashTaxonomy taxonomy, String filename) {

@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import store.sonyk9919.api.domain.analysis.dto.AnalysisResultDto;
 import store.sonyk9919.api.domain.analysis.service.AnalysisFacade;
+import store.sonyk9919.api.domain.analysis.service.AnalysisResultFinder;
 import store.sonyk9919.api.domain.analysis.service.AnalysisSseFacade;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
+import store.sonyk9919.api.global.dto.PageRequestDto;
+import store.sonyk9919.api.global.dto.PageResponseDto;
 
 @RestController
 @RequestMapping("/api/v1/analysis")
@@ -22,6 +26,7 @@ import store.sonyk9919.api.global.common.dto.BaseResponse;
 public class AnalysisController {
     private final AnalysisFacade analysisFacade;
     private final AnalysisSseFacade analysisSseFacade;
+    private final AnalysisResultFinder analysisResultFinder;
 
     @Operation(
             summary = "이미지 분석 요청 등록",
@@ -45,5 +50,13 @@ public class AnalysisController {
         return ResponseEntity.ok()
                 .header("X-Accel-Buffering", "no")
                 .body(emitter);
+    }
+
+    @GetMapping("/result/{serial}")
+    public PageResponseDto<AnalysisResultDto> getAnalysisResults(
+            @PathVariable String serial,
+            PageRequestDto pageRequestDto
+    ) {
+        return analysisResultFinder.searchResults(serial, pageRequestDto.toPageable());
     }
 }
