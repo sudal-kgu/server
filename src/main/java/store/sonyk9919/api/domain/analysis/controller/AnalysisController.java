@@ -1,15 +1,16 @@
 package store.sonyk9919.api.domain.analysis.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.ErrorResponse;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResultDto;
@@ -52,6 +53,16 @@ public class AnalysisController {
                 .body(emitter);
     }
 
+    @Operation(
+            summary = "분석 결과 페이징 조회",
+            description = "Serial로 분석된 쓰레기 목록을 가져옵니다. 존재하지 않는 Serial인 경우 404를 반환합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "Serial이 존재하지 않은 경우",
+                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+    })
+    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/result/{serial}")
     public PageResponseDto<AnalysisResultDto> getAnalysisResults(
             @PathVariable String serial,
