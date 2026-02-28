@@ -27,6 +27,22 @@ services:
     networks:
       - trash-bridge
 
+  trash-rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: trash-rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:5672"
+      - "${RABBITMQ_MANAGEMENT_PORT}:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_USERNAME}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_PASSWORD}
+    healthcheck:
+      test: [ "CMD", "rabbitmq-diagnostics", "ping" ]
+      timeout: 5s
+      retries: 10
+    networks:
+      - trash-bridge
+
   trash-app:
     build: .
     container_name: trash-app
@@ -35,9 +51,13 @@ services:
     depends_on:
       trash-db:
         condition: service_healthy
+      trash-rabbitmq:
+        condition: service_healthy
     environment:
       - SPRING_PROFILES_ACTIVE=${SPRING_PROFILE}
       - IMAGE_UPLOAD_PATH=${IMAGE_PATH}
+      - RABBITMQ_USERNAME=${RABBITMQ_USERNAME}
+      - RABBITMQ_PASSWORD=${RABBITMQ_PASSWORD}
       - TZ=Asia/Seoul
     volumes:
       - ${IMAGE_PATH}:${IMAGE_PATH}
