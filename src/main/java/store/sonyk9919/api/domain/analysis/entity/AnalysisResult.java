@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.global.common.entity.BaseEntity;
 
+import java.util.UUID;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -20,7 +22,14 @@ public class AnalysisResult extends BaseEntity {
     @Column(name = "result_id")
     private Long id;
 
+    @Column(name = "serial", nullable = false)
+    private String serial;
+
+    private AnalysisResult(String serial) {
+        this.serial = serial;
+    }
+
     public static AnalysisResult create() {
-        return new AnalysisResult();
+        return new AnalysisResult(UUID.randomUUID().toString());
     }
 }

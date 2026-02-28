@@ -20,6 +20,8 @@ spring:
         - classpath:/db/subcategory.sql
         - classpath:/db/taxonomy.sql
         - classpath:/db/disposal.sql
+        - classpath:/db/analysis-example.sql
+        - classpath:/db/trash-example.sql
 
   jpa:
     hibernate:
