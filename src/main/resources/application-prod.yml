@@ -18,6 +18,7 @@ spring:
 
 file:
   upload-dir: ${custom.prod.uploadDir}
+  external-path: ${custom.prod.externalPath}
 
 analysis:
   fastApi:

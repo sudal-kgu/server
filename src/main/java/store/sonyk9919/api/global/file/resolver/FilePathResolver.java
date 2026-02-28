@@ -17,6 +17,9 @@ public class FilePathResolver {
     @Value("${file.upload-dir}")
     private String UPLOAD_DIR;
 
+    @Value("${file.external-path}")
+    private String EXTERNAL_PATH;
+
     public String resolveInputPath(MultipartFile image, String name) {
         String ext = imageExtensionResolver.resolve(image);
         return Paths.get(UPLOAD_DIR, FileDirectory.INPUTS.toString(), name + ext)
@@ -24,7 +27,7 @@ public class FilePathResolver {
     }
 
     public String resolveOutput(String name) {
-        return Paths.get(UPLOAD_DIR, FileDirectory.OUTPUTS.toString(), name)
+        return Paths.get(EXTERNAL_PATH, name)
                 .toString();
     }
 }

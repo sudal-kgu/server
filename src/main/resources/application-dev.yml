@@ -48,6 +48,7 @@ logging:
 
 file:
   upload-dir: ${custom.dev.uploadDir:./upload/}
+  external-path: ${custom.dev.externalPath:./external/}
 
 analysis:
   fastApi:
