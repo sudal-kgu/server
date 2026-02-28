@@ -33,12 +33,12 @@ public class AnalysisResultNotifier {
     public void notifyIfAlreadyCompleted(String requestId) {
         AnalysisRequest request = analysisRequestService.getByRequestId(requestId);
 
-        switch (request.getState()){
-            case PENDING -> {return;}
-            case FAILED -> {
-                sseResultSender.sendError(requestId, ErrorStatus.INTERNAL_SERVER_ERROR);
-                return;
-            }
+        if(request.getState() == AnalysisProgress.PENDING) {
+            return;
+        }
+        if(request.getState() == AnalysisProgress.FAILED){
+            sseResultSender.sendError(requestId, ErrorStatus.INTERNAL_SERVER_ERROR);
+            return;
         }
 
         TrashResultDto saved = trashService.fetchSavedItemsByRequestId(requestId);
