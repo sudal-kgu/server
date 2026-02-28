@@ -1,4 +1,4 @@
-package store.sonyk9919.api.global.file;
+package store.sonyk9919.api.global.file.service;
 
 import java.io.File;
 import java.io.IOException;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
+import store.sonyk9919.api.global.file.resolver.ImageExtensionResolver;
 import store.sonyk9919.api.global.file.resolver.FilePathResolver;
 
 @Slf4j

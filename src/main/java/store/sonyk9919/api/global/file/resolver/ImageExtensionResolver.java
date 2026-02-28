@@ -1,4 +1,4 @@
-package store.sonyk9919.api.global.file;
+package store.sonyk9919.api.global.file.resolver;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;

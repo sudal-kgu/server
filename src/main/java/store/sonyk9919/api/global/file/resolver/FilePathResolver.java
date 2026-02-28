@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import store.sonyk9919.api.global.file.ImageExtensionResolver;
 import store.sonyk9919.api.global.file.constants.FileDirectory;
 
 import java.nio.file.Paths;

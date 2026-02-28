@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import store.sonyk9919.api.domain.analysis.async.AnalysisAsyncTask;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
-import store.sonyk9919.api.global.file.FileStorage;
+import store.sonyk9919.api.global.file.service.FileStorage;
 
 @Slf4j
 @Service
