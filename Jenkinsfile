@@ -34,6 +34,10 @@ pipeline {
                         DB_NAME=${env.DB_NAME} \
                         IMAGE_PATH=${env.IMAGE_PATH_FROM_SPRING}\
                         DB_PASSWORD='${DB_PASSWORD}' \
+                        RABBITMQ_PORT=${env.RABBITMQ_PROD_PORT} \
+                        RABBITMQ_MANAGEMENT_PORT=${env.RABBITMQ_MANAGEMENT_PROD_PORT} \
+                        RABBITMQ_USERNAME=${env.RABBITMQ_PROD_USERNAME} \
+                        RABBITMQ_PASSWORD=${env.RABBITMQ_PROD_PASSWORD} \
                         docker compose up -d --build
                     """
                 }

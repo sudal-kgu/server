@@ -36,5 +36,10 @@ springdoc:
   api-docs:
     path: /v3/api-docs
 
-
+rabbitmq:
+  request-queue-name: analysis.request.queue
+  result-queue-name: analysis.result.queue
+  exchange: analysis.exchange
+  request-routing-key: analysis.request
+  result-routing-key: analysis.result
 

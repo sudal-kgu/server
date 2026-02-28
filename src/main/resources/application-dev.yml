@@ -31,6 +31,12 @@ spring:
         use_sql_comments: true
     defer-datasource-initialization: true
 
+  rabbitmq:
+    host: ${custom.dev.rabbitmq.host:localhost}
+    port: 5672
+    username: ${custom.dev.rabbitmq.username:test}
+    password: ${custom.dev.rabbitmq.password:1234}
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

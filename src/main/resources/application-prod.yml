@@ -10,6 +10,12 @@ spring:
     hibernate:
       ddl-auto: create
 
+  rabbitmq:
+    host: ${custom.prod.rabbitmq.host}
+    port: ${custom.prod.rabbitmq.port}
+    username: ${custom.prod.rabbitmq.username}
+    password: ${custom.prod.rabbitmq.password}
+
 file:
   upload-dir: ${custom.prod.uploadDir}
 
