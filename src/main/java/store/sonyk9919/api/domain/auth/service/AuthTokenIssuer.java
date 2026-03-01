@@ -20,13 +20,25 @@ public class AuthTokenIssuer {
     @Value("${jwt.expiry.access}")
     private long accessTokenExpiry;
 
+    @Value("${jwt.expiry.refresh}")
+    private long refreshTokenExpiry;
+
     public List<TokenResponseDto> issue(AuthMemberDto member) {
-        return List.of(issueAccessToken(member));
+        return List.of(
+                issueAccessToken(member),
+                issueRefreshToken(member)
+        );
     }
 
     private TokenResponseDto issueAccessToken(AuthMemberDto member) {
         Claims claims = jwtProvider.createClaims(member);
         String jwt = jwtProvider.createJwt(claims, accessTokenExpiry * 1000);
         return TokenResponseDto.from(TokenCookieName.ACCESS_TOKEN, jwt, accessTokenExpiry);
+    }
+
+    private TokenResponseDto issueRefreshToken(AuthMemberDto member) {
+        Claims claims = jwtProvider.createClaims(member);
+        String jwt = jwtProvider.createJwt(claims, refreshTokenExpiry * 1000);
+        return TokenResponseDto.from(TokenCookieName.REFRESH_TOKEN, jwt, refreshTokenExpiry);
     }
 }

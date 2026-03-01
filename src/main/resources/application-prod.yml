@@ -27,7 +27,8 @@ analysis:
 jwt:
   secret: ${custom.jwt.secret}
   expiry:
-    access: 3600
+    access: ${custom.jwt.access:3600}
+    refresh: ${custom.jwt.refresh:604800}
 
 security:
   cookie:
