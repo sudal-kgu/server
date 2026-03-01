@@ -10,6 +10,11 @@ spring:
     hibernate:
       ddl-auto: create
 
+  data:
+    redis:
+      host: ${custom.redis.host}
+      port: ${custom.redis.port}
+
   rabbitmq:
     host: ${custom.prod.rabbitmq.host}
     port: ${custom.prod.rabbitmq.port}
