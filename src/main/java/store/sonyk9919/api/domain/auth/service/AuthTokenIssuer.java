@@ -26,7 +26,7 @@ public class AuthTokenIssuer {
 
     private TokenResponseDto issueAccessToken(AuthMemberDto member) {
         Claims claims = jwtProvider.createClaims(member);
-        String jwt = jwtProvider.createJwt(claims, accessTokenExpiry);
+        String jwt = jwtProvider.createJwt(claims, accessTokenExpiry * 1000);
         return TokenResponseDto.from(TokenCookieName.ACCESS_TOKEN, jwt, accessTokenExpiry);
     }
 }
