@@ -3,9 +3,11 @@ package store.sonyk9919.api.global.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.RedisScript;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
@@ -36,5 +38,11 @@ public class RedisConfig {
         redisTemplate.setHashValueSerializer(new StringRedisSerializer());
 
         return redisTemplate;
+    }
+
+    @Bean
+    public RedisScript<Boolean> clearMemberRefreshTokens() {
+        ClassPathResource classPathResource = new ClassPathResource("redis/scripts/create_new_refresh_token_member.lua");
+        return RedisScript.of(classPathResource, Boolean.class);
     }
 }

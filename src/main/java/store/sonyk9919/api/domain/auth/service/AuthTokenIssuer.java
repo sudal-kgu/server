@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.dto.TokenCookieName;
 import store.sonyk9919.api.domain.auth.dto.TokenResponseDto;
+import store.sonyk9919.api.domain.member.service.RefreshTokenService;
 import store.sonyk9919.api.global.jwt.service.JwtProvider;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.List;
 public class AuthTokenIssuer {
 
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Value("${jwt.expiry.access}")
     private long accessTokenExpiry;
@@ -24,21 +26,15 @@ public class AuthTokenIssuer {
     private long refreshTokenExpiry;
 
     public List<TokenResponseDto> issue(AuthMemberDto member) {
-        return List.of(
-                issueAccessToken(member),
-                issueRefreshToken(member)
-        );
+        TokenResponseDto accessToken = createToken(member, TokenCookieName.ACCESS_TOKEN, accessTokenExpiry);
+        TokenResponseDto refreshToken = createToken(member, TokenCookieName.REFRESH_TOKEN, refreshTokenExpiry);
+        refreshTokenService.createRefreshToken(member.getId(), refreshToken.getToken(), refreshTokenExpiry);
+        return List.of(accessToken, refreshToken);
     }
 
-    private TokenResponseDto issueAccessToken(AuthMemberDto member) {
+    private TokenResponseDto createToken(AuthMemberDto member, String name, Long expiry) {
         Claims claims = jwtProvider.createClaims(member);
-        String jwt = jwtProvider.createJwt(claims, accessTokenExpiry * 1000);
-        return TokenResponseDto.from(TokenCookieName.ACCESS_TOKEN, jwt, accessTokenExpiry);
-    }
-
-    private TokenResponseDto issueRefreshToken(AuthMemberDto member) {
-        Claims claims = jwtProvider.createClaims(member);
-        String jwt = jwtProvider.createJwt(claims, refreshTokenExpiry * 1000);
-        return TokenResponseDto.from(TokenCookieName.REFRESH_TOKEN, jwt, refreshTokenExpiry);
+        String jwt = jwtProvider.createJwt(claims, expiry * 1000);
+        return TokenResponseDto.from(name, jwt, expiry);
     }
 }

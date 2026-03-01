@@ -2,6 +2,7 @@ package store.sonyk9919.api.domain.auth.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.dto.TokenResponseDto;
 import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
