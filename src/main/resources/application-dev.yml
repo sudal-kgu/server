@@ -58,6 +58,7 @@ jwt:
   secret: ${custom.security.jwt.secret:ZiF5Qkeoy20Fk/iVa3MiQyc50tz5sm7S2i6UER7QkAo=}
   expiry:
     access: 3600
+    refresh: 604800
 
 security:
   cookie:

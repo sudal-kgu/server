@@ -18,7 +18,6 @@ public class AuthLoginFacade {
 
     public List<TokenResponseDto> login(String name, String password) {
         MemberAccount memberAccount = memberAccountService.getMemberAccount(name, password);
-
         return authTokenIssuer.issue(AuthMemberDto.from(memberAccount));
     }
 }
