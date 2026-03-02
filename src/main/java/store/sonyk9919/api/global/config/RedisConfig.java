@@ -15,7 +15,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableRedisRepositories
 public class RedisConfig {
 
-
     @Value("${spring.data.redis.host}")
     private String host;
 
@@ -43,6 +42,12 @@ public class RedisConfig {
     @Bean
     public RedisScript<Boolean> clearMemberRefreshTokens() {
         ClassPathResource classPathResource = new ClassPathResource("redis/scripts/create_new_refresh_token_member.lua");
+        return RedisScript.of(classPathResource, Boolean.class);
+    }
+
+    @Bean
+    public RedisScript<Boolean> rotateRefreshToken() {
+        ClassPathResource classPathResource = new ClassPathResource("redis/scripts/rotate_refresh_token.lua");
         return RedisScript.of(classPathResource, Boolean.class);
     }
 }
