@@ -27,6 +27,11 @@ spring:
       hibernate:
         format_sql: true
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
 logging:
   level:
     org.hibernate.SQL: DEBUG
@@ -42,6 +47,7 @@ jwt:
   secret: ZiF5Qkeoy20Fk/iVa3MiQyc50tz5sm7S2i6UER7QkAo=
   expiry:
     access: 3600
+    refresh: 604800
 
 security:
   cookie:
