@@ -72,6 +72,11 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+    // Test Container
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation "org.testcontainers:testcontainers-junit-jupiter:2.0.2"
+    testImplementation "com.redis:testcontainers-redis:2.2.4"
     testImplementation 'org.springframework.boot:spring-boot-starter-amqp-test'
 }
 
