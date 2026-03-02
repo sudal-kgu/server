@@ -14,6 +14,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.dto.TokenCookieName;
+import store.sonyk9919.api.domain.auth.service.AuthTokenIssuer;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.cookie.CookieProvider;
 import store.sonyk9919.api.global.jwt.service.JwtProvider;
@@ -28,6 +29,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final CookieProvider cookieProvider;
     private final JwtProvider jwtProvider;
     private final HandlerExceptionResolver handlerExceptionResolver;
+    private final AuthTokenIssuer authTokenIssuer;
 
     @Override
     protected void doFilterInternal(
@@ -36,15 +38,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String accessToken = cookieProvider.resolveCookie(request, TokenCookieName.ACCESS_TOKEN);
+        String refreshToken = cookieProvider.resolveCookie(request, TokenCookieName.REFRESH_TOKEN);
 
         try {
             if (accessToken != null) {
                 Claims claims = jwtProvider.parseJwt(accessToken);
                 injectSecurityContext(AuthMemberDto.from(claims));
+            } else if (refreshToken != null) {
+                Claims claims = jwtProvider.parseJwt(refreshToken);
+                reissueAuthenticationToken(AuthMemberDto.from(claims), refreshToken, response);
             }
             filterChain.doFilter(request, response);
         } catch (CustomException e) {
             cookieProvider.expireCookie(response, TokenCookieName.ACCESS_TOKEN);
+            cookieProvider.expireCookie(response, TokenCookieName.REFRESH_TOKEN);
             handlerExceptionResolver.resolveException(request, response, null, e);
         }
 
@@ -55,5 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         UsernamePasswordAuthenticationToken authentication =
                 new UsernamePasswordAuthenticationToken(member, null, authorities);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
+
+    private void reissueAuthenticationToken(AuthMemberDto member, String refreshToken, HttpServletResponse response) {
+        authTokenIssuer.reissue(member, refreshToken)
+                .forEach(token ->
+                        cookieProvider.addCookie(response, token.getName(), token.getToken(), token.getExpiry()));
+        injectSecurityContext(member);
     }
 }
