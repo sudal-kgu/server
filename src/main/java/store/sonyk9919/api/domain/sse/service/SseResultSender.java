@@ -16,7 +16,7 @@ public class SseResultSender {
         sseEmitterService.sendAndComplete(
                 requestId,
                 SseEventType.ANALYSIS_RESULT,
-                BaseResponse.success(data).getBody()
+                BaseResponse.success(data)
         );
     }
 

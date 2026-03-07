@@ -13,39 +13,33 @@ public class BaseResponse<T> {
 
     private BaseResponse(BaseResponseStatus status, String message, T data) {
         this.code = status.getCode();
-        this.message = message;
+        this.message = (message != null) ? message : status.getMessage();
         this.data = data;
     }
 
-    public static ResponseEntity<BaseResponse<Void>> success() {
-        return build(SuccessStatus.SUCCESS, null, null);
+    public static BaseResponse<Void> success (){
+        return new BaseResponse<>(SuccessStatus.SUCCESS, null, null);
     }
 
-    public static <T> ResponseEntity<BaseResponse<T>> success(T data) {
-        return build(SuccessStatus.SUCCESS, null, data);
-    }
-
-    public static <T> ResponseEntity<BaseResponse<T>> success(BaseResponseStatus status, T data) {
-        return build(status, null, data);
+    public static <T> BaseResponse<T> success(T data) {
+        return new BaseResponse<>(SuccessStatus.SUCCESS, null, data);
     }
 
     public static ResponseEntity<BaseResponse<Void>> error(BaseResponseStatus status) {
-        return build(status, null, null);
+        return buildError(status, null, null);
     }
 
     public static ResponseEntity<BaseResponse<Void>> error(BaseResponseStatus status, String customMessage) {
-        return build(status, customMessage, null);
+        return buildError(status, customMessage, null);
     }
 
     public static <T> ResponseEntity<BaseResponse<T>> error(BaseResponseStatus status, T data) {
-        return build(status, null, data);
+        return buildError(status, null, data);
     }
 
-    private static <T> ResponseEntity<BaseResponse<T>> build(BaseResponseStatus status, String customMessage, T data) {
-        String message = (customMessage != null) ? customMessage : status.getMessage();
-
+    private static <T> ResponseEntity<BaseResponse<T>> buildError(BaseResponseStatus status, String customMessage, T data) {
         return ResponseEntity
                 .status(status.getHttpStatus())
-                .body(new BaseResponse<>(status, message, data));
+                .body(new BaseResponse<>(status, customMessage, data));
     }
 }
