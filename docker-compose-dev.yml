@@ -8,3 +8,9 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+  trash-redis:
+    image: redis:latest
+    container_name: trash-redis
+    ports:
+      - "6379:6379"
+    restart: always
