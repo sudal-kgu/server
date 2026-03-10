@@ -28,10 +28,4 @@ public class TrashTaxonomy {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false)
     private TrashSubCategory subCategory;
-
-    public static final String KEY_DELIMITER = ":";
-
-    public static String generateKey(String category, String subcategory) {
-        return category + KEY_DELIMITER + subcategory;
-    }
 }

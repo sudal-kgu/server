@@ -5,31 +5,24 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class DetectedItemDto {
     private String category;
-    private String subcategory;
-    private Confidence confidence;
+    private Double confidence;
     private String filename;
 
-    @Getter
-    @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    @ToString
-    public static class Confidence {
-        private Double object;
-        private Double material;
+    private DetectedItemDto(String category){
+        this.category = category;
+    }
+    public static DetectedItemDto from(String category) {
+        return new DetectedItemDto(category);
     }
 
-    public static DetectedItemDto of(String category, String subcategory) {
-        DetectedItemDto item = new DetectedItemDto();
-        item.category = category;
-        item.subcategory = subcategory;
-        return item;
+    public static DetectedItemDto of(String category, Double confidence, String filename) {
+        return new DetectedItemDto(category, confidence, filename);
     }
 
     @Override
@@ -37,16 +30,11 @@ public class DetectedItemDto {
         if (this == o) return true;
         if (!(o instanceof DetectedItemDto)) return false;
         DetectedItemDto other = (DetectedItemDto) o;
-        return Objects.equals(category, other.category)
-                && Objects.equals(subcategory, other.subcategory);
+        return Objects.equals(category, other.category);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(category, subcategory);
-    }
-
-    public String getKey() {
-        return TrashTaxonomy.generateKey(category, subcategory);
+        return Objects.hash(category);
     }
 }
