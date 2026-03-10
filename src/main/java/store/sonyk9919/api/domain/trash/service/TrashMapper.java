@@ -17,7 +17,7 @@ public class TrashMapper {
     public List<Trash> toTrashes(AnalysisRequest analysisRequest, List<DetectedItemDto> detectedItems, Map<String, TrashTaxonomy> taxonomyMap) {
         return detectedItems.stream()
                 .filter(item -> hasTaxonomy(item, taxonomyMap))
-                .map(item -> Trash.create(analysisRequest, taxonomyMap.get(item.getKey()), item.getFilename()))
+                .map(item -> Trash.create(analysisRequest, taxonomyMap.get(item.getCategory()), item.getFilename()))
                 .collect(Collectors.toList());
     }
 
@@ -28,11 +28,9 @@ public class TrashMapper {
     }
 
     private boolean hasTaxonomy(DetectedItemDto detectedItem, Map<String, TrashTaxonomy> taxonomyMap) {
-        boolean exists = taxonomyMap.containsKey(detectedItem.getKey());
+        boolean exists = taxonomyMap.containsKey(detectedItem.getCategory());
         if (!exists) {
-            log.warn("[Taxonomy] fail to mapping - category: {}, subcategory: {}",
-                    detectedItem.getCategory(),
-                    detectedItem.getSubcategory());
+            log.warn("[Taxonomy] fail to mapping - category: {}", detectedItem.getCategory());
         }
         return exists;
     }

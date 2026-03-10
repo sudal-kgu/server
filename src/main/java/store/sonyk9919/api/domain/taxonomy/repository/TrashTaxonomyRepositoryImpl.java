@@ -3,7 +3,6 @@ package store.sonyk9919.api.domain.taxonomy.repository;
 import static com.querydsl.core.group.GroupBy.groupBy;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.Collections;
 import java.util.List;
@@ -34,23 +33,18 @@ public class TrashTaxonomyRepositoryImpl implements TrashTaxonomyRepositoryCusto
             return Collections.emptyMap();
         }
 
-        StringExpression key = category.ko
-                .concat(TrashTaxonomy.KEY_DELIMITER)
-                .concat(subCategory.ko);
-
         return queryFactory
                 .selectFrom(taxonomy)
                 .join(taxonomy.category, category).fetchJoin()
                 .join(taxonomy.subCategory, subCategory).fetchJoin()
                 .where(condition)
-                .transform(groupBy(key).as(taxonomy));
+                .transform(groupBy(subCategory.ko).as(taxonomy));
     }
 
     private BooleanExpression buildOrCondition(List<DetectedItemDto> detectedItems) {
         return detectedItems.stream()
                 .distinct()
-                .map(item -> category.ko.eq(item.getCategory())
-                        .and(subCategory.ko.eq(item.getSubcategory())))
+                .map(item -> subCategory.ko.eq(item.getCategory()))
                 .reduce(BooleanExpression::or)
                 .orElse(null);
     }
