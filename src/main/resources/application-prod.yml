@@ -6,9 +6,24 @@ spring:
     password: ${custom.prod.db.password}
     hikari:
       auto-commit: false
+
   jpa:
     hibernate:
       ddl-auto: create
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:/db/category.sql
+        - classpath:/db/subcategory.sql
+        - classpath:/db/taxonomy.sql
+        - classpath:/db/disposal.sql
+        - classpath:/db/disposal_category.sql
+        - classpath:/db/disposal_subcategory.sql
+        - classpath:/db/analysis-example.sql
+        - classpath:/db/trash-example.sql
 
   data:
     redis:
