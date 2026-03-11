@@ -10,7 +10,7 @@ import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.service.AnalysisRequestService;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.taxonomy.repository.TrashTaxonomyRepository;
 import store.sonyk9919.api.domain.trash.dto.TrashResultDto;
 import store.sonyk9919.api.domain.trash.entity.Trash;

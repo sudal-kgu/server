@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashCategory;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
 
 @Entity
 @Getter

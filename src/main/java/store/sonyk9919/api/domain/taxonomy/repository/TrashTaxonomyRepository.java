@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.repository.Repository;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.taxonomy.repository.custom.TrashTaxonomyRepositoryCustom;
 
 public interface TrashTaxonomyRepository

@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.taxonomy.entitiy;
+package store.sonyk9919.api.domain.taxonomy.entity;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;

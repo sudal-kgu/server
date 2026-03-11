@@ -14,7 +14,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisResult;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 
 @Entity
 @Getter

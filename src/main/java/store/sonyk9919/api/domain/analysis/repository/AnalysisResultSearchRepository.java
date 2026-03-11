@@ -11,9 +11,9 @@ import store.sonyk9919.api.domain.trash.entity.Trash;
 import java.util.List;
 
 import static store.sonyk9919.api.domain.analysis.entity.QAnalysisResult.*;
-import static store.sonyk9919.api.domain.taxonomy.entitiy.QTrashCategory.*;
-import static store.sonyk9919.api.domain.taxonomy.entitiy.QTrashSubCategory.*;
-import static store.sonyk9919.api.domain.taxonomy.entitiy.QTrashTaxonomy.*;
+import static store.sonyk9919.api.domain.taxonomy.entity.QTrashCategory.*;
+import static store.sonyk9919.api.domain.taxonomy.entity.QTrashSubCategory.*;
+import static store.sonyk9919.api.domain.taxonomy.entity.QTrashTaxonomy.*;
 import static store.sonyk9919.api.domain.trash.entity.QTrash.*;
 
 @Repository
