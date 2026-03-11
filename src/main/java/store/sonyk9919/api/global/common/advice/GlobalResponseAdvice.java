@@ -17,7 +17,8 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
     public boolean supports(@NonNull MethodParameter returnType,
                             @NonNull Class<? extends HttpMessageConverter<?>> converterType
     ) {
-        return true;
+        String className = returnType.getContainingClass().getName();
+        return !className.contains("org.springdoc") && !className.contains("org.springframework.boot.actuate");
     }
 
 
