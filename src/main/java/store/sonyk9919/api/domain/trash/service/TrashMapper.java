@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.trash.dto.TrashItemDto;
 import store.sonyk9919.api.domain.trash.entity.Trash;
 

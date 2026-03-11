@@ -4,9 +4,9 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashCategory;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashSubCategory;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashSubCategory;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.trash.entity.Trash;
 
 @Getter

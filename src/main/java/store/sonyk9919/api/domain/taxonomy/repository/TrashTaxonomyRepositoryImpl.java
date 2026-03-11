@@ -11,10 +11,10 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
-import store.sonyk9919.api.domain.taxonomy.entitiy.QTrashCategory;
-import store.sonyk9919.api.domain.taxonomy.entitiy.QTrashSubCategory;
-import store.sonyk9919.api.domain.taxonomy.entitiy.QTrashTaxonomy;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.QTrashCategory;
+import store.sonyk9919.api.domain.taxonomy.entity.QTrashSubCategory;
+import store.sonyk9919.api.domain.taxonomy.entity.QTrashTaxonomy;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.taxonomy.repository.custom.TrashTaxonomyRepositoryCustom;
 
 @Repository

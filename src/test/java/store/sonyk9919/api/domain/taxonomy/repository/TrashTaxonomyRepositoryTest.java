@@ -13,8 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import store.sonyk9919.api.domain.analysis.dto.DetectedItemDto;
-import store.sonyk9919.api.domain.taxonomy.entitiy.TrashTaxonomy;
-import store.sonyk9919.api.global.language.type.Language;
+import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 
 @SpringBootTest
 class TrashTaxonomyRepositoryTest {
