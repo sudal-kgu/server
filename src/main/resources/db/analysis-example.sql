@@ -1,2 +1,2 @@
-INSERT INTO ANALYSIS_RESULT (serial) VALUES ( 'TEST1234');
-INSERT INTO ANALYSIS_REQUEST (request_id, state) VALUES ('TEST4312', 'COMPLETED');
+insert into analysis_result (serial) values ( 'TEST1234');
+insert into analysis_request (request_id, state) values ('TEST4312', 'COMPLETED');

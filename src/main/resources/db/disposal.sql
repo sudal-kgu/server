@@ -1,5 +1,5 @@
-INSERT INTO TRASH_DISPOSAL (ko, en)
-VALUES
+insert into trash_disposal (ko, en)
+values
 -- [대분류: 고철류 공통]
 ('철사, 못, 철판 등 자석에 붙는 고철은 이물질이 묻지 않도록 주의하여 배출합니다.
 고무나 플라스틱 등 타 재질이 섞인 경우 가급적 제거한 후 배출합니다.
