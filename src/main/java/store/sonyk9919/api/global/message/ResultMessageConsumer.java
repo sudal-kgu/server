@@ -18,10 +18,7 @@ public class ResultMessageConsumer {
     public void consume(AnalysisResponseDto analysisResponseDto){
         log.info("[MQ] Received result: requestId={}", analysisResponseDto.getRequestId());
         try {
-            analysisResultNotifier.saveAndNotify(
-                    analysisResponseDto.getRequestId(),
-                    analysisResponseDto
-            );
+            analysisResultNotifier.saveAndNotify(analysisResponseDto);
         } catch (Exception e) {
             log.error("[MQ] Failed to process result: requestId={}", analysisResponseDto.getRequestId(), e);
             analysisResultNotifier.notifyError(

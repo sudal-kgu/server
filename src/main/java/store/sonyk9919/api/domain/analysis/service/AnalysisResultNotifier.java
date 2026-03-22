@@ -19,10 +19,10 @@ public class AnalysisResultNotifier {
     private final AnalysisRequestService analysisRequestService;
 
     @Transactional
-    public void saveAndNotify(String requestId, AnalysisResponseDto result) {
-        TrashResultDto saved = trashService.saveDetectedItems(requestId, result);
-        analysisRequestService.updateAnalysisProgress(requestId, AnalysisProgress.COMPLETED);
-        sseResultSender.sendSuccess(requestId, saved);
+    public void saveAndNotify(AnalysisResponseDto result) {
+        TrashResultDto saved = trashService.saveDetectedItems(result.getRequestId(), result);
+        analysisRequestService.updateAnalysisProgress(result.getRequestId(), AnalysisProgress.COMPLETED);
+        sseResultSender.sendSuccess(result.getRequestId(), saved);
     }
 
     public void notifyError(String requestId, ErrorStatus status) {

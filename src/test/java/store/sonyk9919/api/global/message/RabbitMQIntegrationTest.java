@@ -1,8 +1,7 @@
 package store.sonyk9919.api.global.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -95,7 +94,7 @@ class RabbitMQIntegrationTest {
         );
 
         verify(analysisResultNotifier, timeout(3000))
-                .saveAndNotify(eq(requestId), any(AnalysisResponseDto.class));
+                .saveAndNotify(argThat(dto -> dto.getRequestId().equals(requestId)));
     }
 
     @TestConfiguration
