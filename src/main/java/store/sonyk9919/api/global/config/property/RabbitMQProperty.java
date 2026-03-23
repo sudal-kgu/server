@@ -14,4 +14,8 @@ public class RabbitMQProperty {
     private final String exchange;
     private final String requestRoutingKey;
     private final String resultRoutingKey;
+
+    private final String deadLetterRoutingKey;
+    private final String deadLetterQueueName;
+    private final String deadLetterExchange;
 }

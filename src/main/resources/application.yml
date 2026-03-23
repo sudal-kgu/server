@@ -39,7 +39,9 @@ springdoc:
 rabbitmq:
   request-queue-name: analysis.request.queue
   result-queue-name: analysis.result.queue
+  dead-letter-queue-name: analysis.dead.letter.queue
   exchange: analysis.exchange
+  dead-letter-exchange: analysis.dead.exchange
   request-routing-key: analysis.request
   result-routing-key: analysis.result
-
+  dead-letter-routing-key: analysis.dead.letter
