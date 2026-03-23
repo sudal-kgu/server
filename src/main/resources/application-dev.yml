@@ -45,6 +45,12 @@ spring:
     port: 5672
     username: ${custom.dev.rabbitmq.username:test}
     password: ${custom.dev.rabbitmq.password:1234}
+    listener:
+      simple:
+        retry:
+          enabled: true
+          max-retries: 2
+        default-requeue-rejected: false
 
 logging:
   level:

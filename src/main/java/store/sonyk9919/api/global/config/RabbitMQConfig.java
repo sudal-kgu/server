@@ -1,13 +1,11 @@
 package store.sonyk9919.api.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.QueueBuilder;
 import org.springframework.amqp.core.TopicExchange;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.JacksonJsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +16,8 @@ import store.sonyk9919.api.global.config.property.RabbitMQProperty;
 @RequiredArgsConstructor
 public class RabbitMQConfig {
     private final RabbitMQProperty property;
+    public static final String X_DEAD_LETTER_EXCHANGE = "x-dead-letter-exchange";
+    public static final String X_DEAD_LETTER_ROUTING_KEY = "x-dead-letter-routing-key";
 
     @Bean
     public Queue requestQueue(){
@@ -26,12 +26,25 @@ public class RabbitMQConfig {
 
     @Bean
     public Queue resultQueue(){
-        return new Queue(property.getResultQueueName());
+        return QueueBuilder.durable(property.getResultQueueName())
+                .withArgument(X_DEAD_LETTER_EXCHANGE, property.getDeadLetterExchange())
+                .withArgument(X_DEAD_LETTER_ROUTING_KEY, property.getDeadLetterRoutingKey())
+                .build();
+    }
+
+    @Bean
+    public Queue deadLetterQueue(){
+        return new Queue(property.getDeadLetterQueueName());
     }
 
     @Bean
     public TopicExchange exchange(){
         return new TopicExchange(property.getExchange());
+    }
+
+    @Bean
+    public TopicExchange deadLetterExchange() {
+        return new TopicExchange(property.getDeadLetterExchange());
     }
 
     @Bean
@@ -48,6 +61,14 @@ public class RabbitMQConfig {
                 .bind(resultQueue())
                 .to(exchange())
                 .with(property.getResultRoutingKey());
+    }
+
+    @Bean
+    public Binding deadLetterBinding() {
+        return BindingBuilder
+                .bind(deadLetterQueue())
+                .to(deadLetterExchange())
+                .with(property.getDeadLetterRoutingKey());
     }
 
     @Bean
