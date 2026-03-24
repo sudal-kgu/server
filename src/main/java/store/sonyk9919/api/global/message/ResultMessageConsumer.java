@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.service.AnalysisResultNotifier;
+import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Slf4j
 @Component
@@ -16,6 +17,15 @@ public class ResultMessageConsumer {
     @RabbitListener(queues = "${rabbitmq.result-queue-name}")
     public void consume(AnalysisResponseDto analysisResponseDto){
         log.info("[MQ] Received result: requestId={}", analysisResponseDto.getRequestId());
+
+        if (!analysisResponseDto.isSuccess()) {
+            log.error("[FastAPI] analysis failed requestId: {}: {}",
+                    analysisResponseDto.getRequestId(),
+                    analysisResponseDto.getError()
+            );
+            analysisResultNotifier.notifyError(analysisResponseDto.getRequestId(), ErrorStatus.IMAGE_NOT_FOUND);
+            return;
+        }
         analysisResultNotifier.saveAndNotify(analysisResponseDto);
     }
 }
