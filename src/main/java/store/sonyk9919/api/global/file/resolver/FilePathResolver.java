@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 import store.sonyk9919.api.global.file.constants.FileDirectory;
 
 import java.nio.file.Paths;
@@ -27,7 +28,8 @@ public class FilePathResolver {
     }
 
     public String resolveOutput(String name) {
-        return Paths.get(EXTERNAL_PATH, name)
-                .toString();
+        return UriComponentsBuilder.fromUriString(EXTERNAL_PATH)
+                .path(name)
+                .toUriString();
     }
 }
