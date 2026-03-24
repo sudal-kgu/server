@@ -5,8 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
+import store.sonyk9919.api.domain.analysis.exception.AnalysisStatus;
 import store.sonyk9919.api.domain.analysis.service.AnalysisResultNotifier;
-import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Slf4j
 @Component
@@ -19,11 +19,14 @@ public class ResultMessageConsumer {
         log.info("[MQ] Received result: requestId={}", analysisResponseDto.getRequestId());
 
         if (!analysisResponseDto.isSuccess()) {
-            log.error("[FastAPI] analysis failed requestId: {}: {}",
+            String error = analysisResponseDto.getError();
+
+            log.error("[FastAPI] analysis failed requestId={}: error={}", analysisResponseDto.getRequestId(), error);
+
+            analysisResultNotifier.notifyError(
                     analysisResponseDto.getRequestId(),
-                    analysisResponseDto.getError()
+                    AnalysisStatus.fromFastApiError(error)
             );
-            analysisResultNotifier.notifyError(analysisResponseDto.getRequestId(), ErrorStatus.IMAGE_NOT_FOUND);
             return;
         }
         analysisResultNotifier.saveAndNotify(analysisResponseDto);

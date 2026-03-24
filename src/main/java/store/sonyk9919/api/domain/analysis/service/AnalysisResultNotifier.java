@@ -9,6 +9,7 @@ import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.sse.service.SseResultSender;
 import store.sonyk9919.api.domain.trash.dto.TrashResultDto;
 import store.sonyk9919.api.domain.trash.service.TrashService;
+import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Service
@@ -25,7 +26,7 @@ public class AnalysisResultNotifier {
         sseResultSender.sendSuccess(result.getRequestId(), saved);
     }
 
-    public void notifyError(String requestId, ErrorStatus status) {
+    public void notifyError(String requestId, BaseResponseStatus status) {
         analysisRequestService.updateAnalysisProgress(requestId, AnalysisProgress.FAILED);
         sseResultSender.sendError(requestId, status);
     }
