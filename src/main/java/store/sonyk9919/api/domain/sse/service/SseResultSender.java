@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.sse.type.SseEventType;
 import store.sonyk9919.api.domain.trash.dto.TrashResultDto;
 import store.sonyk9919.api.global.common.dto.BaseResponse;
-import store.sonyk9919.api.global.common.dto.ErrorStatus;
+import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 
 @Component
 @RequiredArgsConstructor
@@ -20,7 +20,7 @@ public class SseResultSender {
         );
     }
 
-    public void sendError(String requestId, ErrorStatus status) {
+    public void sendError(String requestId, BaseResponseStatus status) {
         sseEmitterService.sendAndComplete(
                 requestId,
                 SseEventType.ERROR,
