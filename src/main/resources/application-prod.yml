@@ -62,6 +62,7 @@ security:
   cors:
     origins:
       - https://sonyk9919.store:20024
+      - https://api.sonyk9919.store:20024
       - http://localhost:3000
       - http://localhost:5173
     methods:
