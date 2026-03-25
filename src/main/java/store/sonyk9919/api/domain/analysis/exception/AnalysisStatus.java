@@ -19,7 +19,6 @@ public enum AnalysisStatus implements BaseResponseStatus {
     private final String message;
 
     public static AnalysisStatus fromFastApiError(String error) {
-        if (error == null || error.isBlank()) return null;
         return switch (error) {
             case "IMAGE_NOT_FOUND" -> ANALYSIS_IMAGE_NOT_FOUND;
             case "ANALYSIS_FAILED" -> ANALYSIS_FAILED;
