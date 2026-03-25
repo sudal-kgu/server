@@ -57,4 +57,8 @@ public class Trash {
     public void confirmResult(AnalysisResult analysisResult) {
         this.analysisResult = analysisResult;
     }
+
+    public boolean isConfirmed(){
+        return analysisResult != null;
+    }
 }

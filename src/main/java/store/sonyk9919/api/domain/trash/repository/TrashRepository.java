@@ -9,4 +9,6 @@ public interface TrashRepository extends JpaRepository<Trash, Long> {
 
     @EntityGraph(attributePaths = {"taxonomy", "taxonomy.category", "taxonomy.subCategory"})
     List<Trash> findByAnalysisRequest_RequestId(String requestId);
+
+    List<Trash> findAllByTrashUuidIn(List<String> trashUuids);
 }

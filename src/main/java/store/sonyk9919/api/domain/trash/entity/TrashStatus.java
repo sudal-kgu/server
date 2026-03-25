@@ -8,9 +8,10 @@ import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 @Getter
 @RequiredArgsConstructor
 public enum TrashStatus implements BaseResponseStatus {
-    NOT_FOUND_TRASH("TRASH-001", HttpStatus.NOT_FOUND, "존재하지 않는 쓰레기 입니다.");
+    NOT_FOUND_TRASH(HttpStatus.NOT_FOUND, "TRASH-001", "존재하지 않는 쓰레기 입니다."),
+    ALREADY_CONFIRMED_TRASH(HttpStatus.CONFLICT, "TRASH-002", "이미 확정 처리된 쓰레기입니다.");
 
-    private final String code;
     private final HttpStatus httpStatus;
+    private final String code;
     private final String message;
 }
