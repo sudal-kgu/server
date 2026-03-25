@@ -37,6 +37,6 @@ public class AnalysisResponseDto {
     }
 
     public boolean isSuccess() {
-        return this.error == null || this.error.isBlank();
+        return error == null || error.isBlank();
     }
 }
