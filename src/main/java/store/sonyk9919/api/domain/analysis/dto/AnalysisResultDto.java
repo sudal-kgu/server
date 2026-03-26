@@ -19,7 +19,7 @@ public class AnalysisResultDto {
     public static AnalysisResultDto from(Trash trash) {
         return new AnalysisResultDto(
                 trash.getTrashUuid(),
-                trash.getFilename(),
+                trash.getCropImagePath(),
                 trash.getTaxonomy().getCategory().getName(),
                 trash.getTaxonomy().getSubCategory().getName()
         );
