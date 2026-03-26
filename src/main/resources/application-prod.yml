@@ -39,12 +39,6 @@ spring:
     port: ${custom.prod.rabbitmq.port}
     username: ${custom.prod.rabbitmq.username}
     password: ${custom.prod.rabbitmq.password}
-    listener:
-      simple:
-        retry:
-          enabled: true
-          max-retries: 2
-        default-requeue-rejected: false
 
 file:
   upload-dir: ${custom.prod.uploadDir}

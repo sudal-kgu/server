@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.exception.AnalysisStatus;
 import store.sonyk9919.api.domain.analysis.service.AnalysisResultNotifier;
+import store.sonyk9919.api.global.common.dto.ErrorStatus;
 
 @Slf4j
 @Component
@@ -16,12 +17,12 @@ public class ResultMessageConsumer {
 
     @RabbitListener(queues = "${rabbitmq.result-queue-name}")
     public void consume(AnalysisResponseDto analysisResponseDto){
-        log.info("[MQ] Received result: requestId={}", analysisResponseDto.getRequestId());
+        log.info("[MQ] received result: requestId={}", analysisResponseDto.getRequestId());
 
         if (!analysisResponseDto.isSuccess()) {
             String error = analysisResponseDto.getError();
 
-            log.error("[FastAPI] analysis failed requestId={}: error={}", analysisResponseDto.getRequestId(), error);
+            log.error("[FastAPI] failed to analysis, requestId={}: error={}", analysisResponseDto.getRequestId(), error);
 
             analysisResultNotifier.notifyError(
                     analysisResponseDto.getRequestId(),
@@ -29,6 +30,15 @@ public class ResultMessageConsumer {
             );
             return;
         }
-        analysisResultNotifier.saveAndNotify(analysisResponseDto);
+
+        try {
+            analysisResultNotifier.saveAndNotify(analysisResponseDto);
+        } catch (Exception e) {
+            log.error("[MQ] failed to process result: requestId={}", analysisResponseDto.getRequestId(), e);
+            analysisResultNotifier.notifyError(
+                    analysisResponseDto.getRequestId(),
+                    ErrorStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }
