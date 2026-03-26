@@ -6,10 +6,12 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
+import store.sonyk9919.api.domain.analysis.entity.QAnalysisRequest;
 import store.sonyk9919.api.domain.trash.entity.Trash;
 
 import java.util.List;
 
+import static store.sonyk9919.api.domain.analysis.entity.QAnalysisRequest.*;
 import static store.sonyk9919.api.domain.analysis.entity.QAnalysisResult.*;
 import static store.sonyk9919.api.domain.taxonomy.entity.QTrashCategory.*;
 import static store.sonyk9919.api.domain.taxonomy.entity.QTrashSubCategory.*;
@@ -25,9 +27,10 @@ public class AnalysisResultSearchRepository {
     public Page<Trash> findAllBy(String serial, Pageable pageable) {
         List<Trash> contents = factory.selectFrom(trash)
                 .join(trash.analysisResult, analysisResult)
-                .join(trash.taxonomy, trashTaxonomy)
-                .join(trashTaxonomy.category, trashCategory)
-                .join(trashTaxonomy.subCategory, trashSubCategory)
+                .join(trash.taxonomy, trashTaxonomy).fetchJoin()
+                .join(trashTaxonomy.category, trashCategory).fetchJoin()
+                .join(trashTaxonomy.subCategory, trashSubCategory).fetchJoin()
+                .join(trash.analysisRequest, analysisRequest).fetchJoin()
                 .where(trash.analysisResult.serial.eq(serial))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
