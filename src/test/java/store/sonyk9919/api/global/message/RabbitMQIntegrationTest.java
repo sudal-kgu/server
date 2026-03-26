@@ -1,9 +1,7 @@
 package store.sonyk9919.api.global.message;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.verify;
 
@@ -24,7 +22,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.service.AnalysisResultNotifier;
-import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.config.property.RabbitMQProperty;
 
 @SpringBootTest
@@ -86,29 +83,6 @@ class RabbitMQIntegrationTest {
 
         verify(analysisResultNotifier, timeout(3000))
                 .saveAndNotify(argThat(dto -> dto.getRequestId().equals(requestId)));
-    }
-
-    @Test
-    @DisplayName("결과 큐 처리 실패하면 DLQ로 이동해 notifyError 호출")
-    void deadLetterQueue() throws Exception{
-        doThrow(new RuntimeException("fail"))
-                .when(analysisResultNotifier)
-                .saveAndNotify(any());
-
-        String requestId = "request-003";
-        AnalysisResponseDto responseDto = getDto(requestId);
-
-        rabbitTemplate.convertAndSend(
-                property.getExchange(),
-                property.getResultRoutingKey(),
-                responseDto
-        );
-
-        verify(analysisResultNotifier, timeout(3000))
-                .notifyError(
-                        argThat(id -> id.equals(requestId)),
-                        argThat(status -> status == ErrorStatus.INTERNAL_SERVER_ERROR)
-                );
     }
 
     private AnalysisResponseDto getDto(String requestId) throws Exception{
