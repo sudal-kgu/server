@@ -5,6 +5,7 @@ import lombok.Getter;
 import store.sonyk9919.api.global.file.serializer.ImageSerializer;
 import tools.jackson.databind.annotation.JsonSerialize;
 
+import java.nio.file.Paths;
 import java.util.*;
 
 @Getter
@@ -21,13 +22,14 @@ public class TrashDetailDto {
     public TrashDetailDto(
             String category,
             String subcategory,
-            String image,
+            String requestId,
+            String filename,
             Set<String> disposalCategory,
             Set<String> disposalSubCategory
     ) {
         this.category = category;
         this.subcategory = subcategory;
-        this.image = image;
+        this.image = Paths.get(requestId, filename).toString();
         this.disposal = new HashMap<>();
         initDisposal(disposal, disposalCategory, DISPOSAL_CATEGORY_NAME);
         initDisposal(disposal, disposalSubCategory, DISPOSAL_SUB_CATEGORY_NAME);
