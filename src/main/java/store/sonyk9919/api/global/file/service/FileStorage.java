@@ -8,7 +8,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
-import store.sonyk9919.api.global.file.resolver.ImageExtensionResolver;
 import store.sonyk9919.api.global.file.resolver.FilePathResolver;
 
 @Slf4j
@@ -16,7 +15,6 @@ import store.sonyk9919.api.global.file.resolver.FilePathResolver;
 @RequiredArgsConstructor
 public class FileStorage {
 
-    private final ImageExtensionResolver extensionResolver;
     private final FilePathResolver filePathResolver;
 
     public void saveFile(MultipartFile image, String fileName) {

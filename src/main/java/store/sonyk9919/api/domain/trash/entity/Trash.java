@@ -54,6 +54,18 @@ public class Trash {
         return new Trash(analysisRequest, taxonomy, filename);
     }
 
+    public String getCategoryName() {
+        return taxonomy.getCategory().getName();
+    }
+
+    public String getSubCategoryName() {
+        return taxonomy.getSubCategory().getName();
+    }
+
+    public String getCropImagePath() {
+        return analysisRequest.getRequestId() + "/" + filename;
+    }
+
     public void confirmResult(AnalysisResult analysisResult) {
         this.analysisResult = analysisResult;
     }
