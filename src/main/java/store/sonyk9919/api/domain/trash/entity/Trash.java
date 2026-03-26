@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import java.nio.file.Paths;
 import java.util.UUID;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -63,7 +64,7 @@ public class Trash {
     }
 
     public String getCropImagePath() {
-        return analysisRequest.getRequestId() + "/" + filename;
+        return Paths.get(analysisRequest.getRequestId(), filename).toString();
     }
 
     public void confirmResult(AnalysisResult analysisResult) {
