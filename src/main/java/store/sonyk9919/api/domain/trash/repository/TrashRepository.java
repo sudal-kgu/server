@@ -7,6 +7,6 @@ import store.sonyk9919.api.domain.trash.entity.Trash;
 
 public interface TrashRepository extends JpaRepository<Trash, Long> {
 
-    @EntityGraph(attributePaths = {"taxonomy", "taxonomy.category", "taxonomy.subCategory"})
+    @EntityGraph(attributePaths = {"taxonomy", "taxonomy.category", "taxonomy.subCategory", "analysisRequest"})
     List<Trash> findByAnalysisRequest_RequestId(String requestId);
 }

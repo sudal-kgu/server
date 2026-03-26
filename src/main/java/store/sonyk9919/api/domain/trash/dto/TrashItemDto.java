@@ -4,30 +4,25 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
-import store.sonyk9919.api.domain.taxonomy.entity.TrashSubCategory;
-import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.trash.entity.Trash;
+import store.sonyk9919.api.global.file.serializer.ImageSerializer;
+import tools.jackson.databind.annotation.JsonSerialize;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TrashItemDto {
     private String trashUuid;
-    private String filename;
+    @JsonSerialize(using = ImageSerializer.class) private String filename;
     private String category;
     private String subcategory;
 
     public static TrashItemDto from(Trash trash) {
-        TrashTaxonomy taxonomy = trash.getTaxonomy();
-        TrashCategory category = taxonomy.getCategory();
-        TrashSubCategory subCategory = taxonomy.getSubCategory();
-
         return new TrashItemDto(
                 trash.getTrashUuid(),
-                trash.getFilename(),
-                category.getName(),
-                subCategory.getName()
+                trash.getCropImagePath(),
+                trash.getCategoryName(),
+                trash.getSubCategoryName()
         );
     }
 }
