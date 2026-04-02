@@ -14,12 +14,14 @@ public class PageResponseDto<R> {
 
     private final long totalPage;
     private final int currentPage;
+    private final long totalItems;
     private final List<R> content;
 
     public static <T, R> PageResponseDto<R> from(Page<T> page, Function<T, R> transformer) {
         return new PageResponseDto<>(
                 page.getTotalPages(),
                 page.getNumber() + 1,
+                page.getTotalElements(),
                 page.getContent()
                         .stream()
                         .map(transformer)
