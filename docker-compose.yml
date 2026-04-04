@@ -51,6 +51,7 @@ services:
   trash-app:
     build: .
     container_name: trash-app
+    user: "${APP_UID}:${APP_GID}"
     ports:
       - "${APP_PORT}:8080"
     depends_on:
