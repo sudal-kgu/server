@@ -7,7 +7,7 @@ import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
 import store.sonyk9919.api.domain.auth.dto.TokenResponseDto;
 import store.sonyk9919.api.domain.auth.entity.OAuthProvider;
 import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
-import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
+import store.sonyk9919.api.domain.member.entity.MemberAccount;
 import store.sonyk9919.api.domain.member.service.MemberAccountService;
 import store.sonyk9919.api.global.common.exception.CustomException;
 

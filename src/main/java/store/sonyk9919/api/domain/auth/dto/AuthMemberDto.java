@@ -4,8 +4,8 @@ import io.jsonwebtoken.Claims;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import store.sonyk9919.api.domain.member.entitiy.AccountRole;
-import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
+import store.sonyk9919.api.domain.member.entity.AccountRole;
+import store.sonyk9919.api.domain.member.entity.MemberAccount;
 import store.sonyk9919.api.global.jwt.dto.ClaimsConvertible;
 
 import java.util.Map;

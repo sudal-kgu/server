@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.dto.TokenCookieName;
 import store.sonyk9919.api.domain.auth.dto.TokenResponseDto;
-import store.sonyk9919.api.domain.member.entitiy.RefreshToken;
+import store.sonyk9919.api.domain.member.entity.RefreshToken;
 import store.sonyk9919.api.domain.member.service.RefreshTokenService;
 import store.sonyk9919.api.global.jwt.service.JwtProvider;
 
