@@ -3,8 +3,8 @@ package store.sonyk9919.api.domain.member.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
-import store.sonyk9919.api.domain.member.entitiy.MemberProfile;
+import store.sonyk9919.api.domain.member.entity.MemberAccount;
+import store.sonyk9919.api.domain.member.entity.MemberProfile;
 
 @Service
 @RequiredArgsConstructor

@@ -14,7 +14,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import store.sonyk9919.api.domain.auth.filter.JwtAuthenticationFilter;
-import store.sonyk9919.api.domain.member.entitiy.AccountRole;
 import store.sonyk9919.api.global.config.property.CorsProperty;
 
 @Configuration

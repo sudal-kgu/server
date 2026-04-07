@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.member.entitiy;
+package store.sonyk9919.api.domain.member.entity;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

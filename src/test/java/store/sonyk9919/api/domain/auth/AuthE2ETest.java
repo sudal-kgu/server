@@ -28,7 +28,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import store.sonyk9919.api.domain.auth.dto.AuthDto;
 import store.sonyk9919.api.domain.auth.filter.JwtAuthenticationFilter;
-import store.sonyk9919.api.domain.member.entitiy.AccountRole;
+import store.sonyk9919.api.domain.member.entity.AccountRole;
 import tools.jackson.databind.ObjectMapper;
 
 import java.util.Arrays;

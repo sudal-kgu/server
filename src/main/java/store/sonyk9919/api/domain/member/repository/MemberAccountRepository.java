@@ -2,7 +2,7 @@ package store.sonyk9919.api.domain.member.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
-import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
+import store.sonyk9919.api.domain.member.entity.MemberAccount;
 
 import java.util.Optional;
 
