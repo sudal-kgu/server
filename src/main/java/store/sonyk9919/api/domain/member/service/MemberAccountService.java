@@ -20,6 +20,11 @@ public class MemberAccountService {
     private final MemberAccountRepository memberAccountRepository;
     private final PasswordEncoder passwordEncoder;
 
+    public MemberAccount getMemberAccount(Long memberAccountId) {
+        return memberAccountRepository.findById(memberAccountId)
+                .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
+    }
+
     @Transactional
     public MemberAccount createMemberAccount(String account, String password) {
         MemberAccount memberAccount = MemberAccount.from(account, passwordEncoder.encode(password), AccountRole.USER);
