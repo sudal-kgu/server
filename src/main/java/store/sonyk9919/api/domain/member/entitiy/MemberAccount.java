@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
+import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
 
 @Entity
 @Getter
@@ -11,26 +13,44 @@ import lombok.NoArgsConstructor;
 public class MemberAccount {
 
     @Id
+    @Column(name = "member_account_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
+    @Column(unique = true)
+    private String account;
 
-    @Column(nullable = false)
+    @Column
     private String password;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false, name = "account_role")
     private AccountRole role;
 
-    private MemberAccount(String name, String password, AccountRole role) {
-        this.name = name;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "provider_type")
+    private OAuthProviderType type;
+
+    @Column(name = "provider_id")
+    private String providerId;
+
+    private MemberAccount(String account, String password, AccountRole role) {
+        this.account = account;
         this.password = password;
+        this.role = role;
+    }
+
+    private MemberAccount(String providerId, OAuthProviderType type, AccountRole role) {
+        this.providerId = providerId;
+        this.type = type;
         this.role = role;
     }
 
     public static MemberAccount from(String name, String password, AccountRole role) {
         return new MemberAccount(name, password, role);
+    }
+
+    public static MemberAccount from(OAuthUserInfoDto userInfo, OAuthProviderType type, AccountRole role) {
+        return new MemberAccount(userInfo.getId(), type, role);
     }
 }

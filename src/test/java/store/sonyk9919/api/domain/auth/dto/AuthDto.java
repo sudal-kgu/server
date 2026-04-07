@@ -8,16 +8,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class AuthDto {
 
-    private String name;
+    private String account;
     private String password;
 
-    private AuthDto(String name, String password) {
-        this.name = name;
+    private AuthDto(String account, String password) {
+        this.account = account;
         this.password = password;
     }
 
-    public static AuthDto from(String name, String password) {
-        return new AuthDto(name, password);
+    public static AuthDto from(String account, String password) {
+        return new AuthDto(account, password);
     }
 
 }

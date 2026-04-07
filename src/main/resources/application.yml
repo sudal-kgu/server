@@ -22,6 +22,10 @@ spring:
       max-file-size: 10MB
       max-request-size: 15MB
 
+kakao:
+  auth: https://kauth.kakao.com
+  api: https://kapi.kakao.com
+
 logging:
   level:
     org.hibernate.SQL: INFO

@@ -24,14 +24,14 @@ public class AuthMemberMembershipTestController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public void register(@RequestBody AuthDto authDto) {
-        memberAccountService.createMemberAccount(authDto.getName(), authDto.getPassword());
+        memberAccountService.createMemberAccount(authDto.getAccount(), authDto.getPassword());
     }
 
     @PostMapping(value = "/login")
     @ResponseStatus(HttpStatus.OK)
     public void login(@RequestBody AuthDto authDto, HttpServletResponse response) {
         List<TokenResponseDto> tokens = authLoginFacade.login(
-                authDto.getName(),
+                authDto.getAccount(),
                 authDto.getPassword()
         );
 
