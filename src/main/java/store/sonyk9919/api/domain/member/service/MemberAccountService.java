@@ -1,7 +1,6 @@
 package store.sonyk9919.api.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
@@ -18,29 +17,10 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 public class MemberAccountService {
 
     private final MemberAccountRepository memberAccountRepository;
-    private final PasswordEncoder passwordEncoder;
 
     public MemberAccount getMemberAccount(Long memberAccountId) {
         return memberAccountRepository.findById(memberAccountId)
                 .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
-    }
-
-    @Transactional
-    public MemberAccount createMemberAccount(String account, String password) {
-        MemberAccount memberAccount = MemberAccount.from(account, passwordEncoder.encode(password), AccountRole.USER);
-        memberAccountRepository.save(memberAccount);
-        return memberAccount;
-    }
-
-    public MemberAccount getMemberAccount(String account, String password) {
-        MemberAccount memberAccount = memberAccountRepository.findByAccount(account)
-                .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_UNAUTHORIZED));
-
-        if (!passwordEncoder.matches(password, memberAccount.getPassword())) {
-            throw new CustomException(MemberStatus.MEMBER_ACCOUNT_UNAUTHORIZED);
-        }
-
-        return memberAccount;
     }
 
     @Transactional

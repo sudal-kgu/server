@@ -21,11 +21,6 @@ public class AuthLoginFacade {
     private final OAuthProviderFactory oAuthProviderFactory;
     private final AuthTokenIssuer authTokenIssuer;
 
-    public List<TokenResponseDto> login(String name, String password) {
-        MemberAccount memberAccount = memberAccountService.getMemberAccount(name, password);
-        return authTokenIssuer.issue(AuthMemberDto.from(memberAccount));
-    }
-
     public List<TokenResponseDto> login(OAuthProviderType type, String code) {
         OAuthProvider provider = oAuthProviderFactory.getProvider(type);
         OAuthUserInfoDto userInfo = provider.getUserInfo(code);
