@@ -19,12 +19,6 @@ public class MemberAccount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
-    private String account;
-
-    @Column
-    private String password;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, name = "account_role")
     private AccountRole role;
@@ -40,20 +34,10 @@ public class MemberAccount {
     @JoinColumn(name = "member_id")
     private MemberProfile profile;
 
-    private MemberAccount(String account, String password, AccountRole role) {
-        this.account = account;
-        this.password = password;
-        this.role = role;
-    }
-
     private MemberAccount(String providerId, OAuthProviderType type, AccountRole role) {
         this.providerId = providerId;
         this.type = type;
         this.role = role;
-    }
-
-    public static MemberAccount from(String name, String password, AccountRole role) {
-        return new MemberAccount(name, password, role);
     }
 
     public static MemberAccount from(OAuthUserInfoDto userInfo, OAuthProviderType type, AccountRole role) {
