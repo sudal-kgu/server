@@ -36,6 +36,7 @@ public class KakaoTokenDto {
             map.add("client_id", clientId);
             map.add("code", code);
             map.add("client_secret", clientSecret);
+            map.add("redirect_uri", redirectUri);
             return map;
         }
     }
