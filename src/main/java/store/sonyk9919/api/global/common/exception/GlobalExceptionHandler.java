@@ -1,12 +1,15 @@
 package store.sonyk9919.api.global.common.exception;
 
 import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.HashMap;
 import java.util.Map;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -17,6 +20,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import store.sonyk9919.api.global.common.dto.BaseResponse;
 import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 import store.sonyk9919.api.global.common.dto.ErrorStatus;
+
 
 @Slf4j
 @RestControllerAdvice
@@ -29,6 +33,20 @@ public class GlobalExceptionHandler {
         log.warn("CustomException occurred at {}: [{}] {}",
                 request.getRequestURI(), status.getCode(), e.getMessage());
         return BaseResponse.error(status, e.getMessage());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<BaseResponse<Void>> handleAuthenticationException(AuthenticationException e, HttpServletRequest request) {
+        log.warn("[AUTH ERROR] Unauthorized access attempt. URI: {}, Method: {}, Message: {}",
+                request.getRequestURI(), request.getMethod(), e.getMessage());
+        return BaseResponse.error(ErrorStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<BaseResponse<Void>> handleAccessDeniedException(AccessDeniedException e, HttpServletRequest request) {
+        log.warn("[ACCESS DENIED] tried to access protected resource. URI: {}, Method: {}, Reason: {}",
+                request.getRequestURI(), request.getMethod(), e.getMessage());
+        return BaseResponse.error(ErrorStatus.NO_PERMISSION);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
