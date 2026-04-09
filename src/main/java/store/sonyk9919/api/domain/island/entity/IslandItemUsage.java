@@ -47,6 +47,6 @@ public class IslandItemUsage {
     }
 
     public void incrementUseCount() {
-        this.useCount++;
+        useCount++;
     }
 }
