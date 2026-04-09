@@ -23,6 +23,11 @@ public class MemberAccountService {
                 .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
     }
 
+    public MemberAccount getMemberAccountWithProfile(Long memberAccountId) {
+        return memberAccountRepository.findWithProfileById(memberAccountId)
+                .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
+    }
+
     @Transactional
     public MemberAccount createMemberAccount(OAuthUserInfoDto userInfo, OAuthProviderType type) {
         MemberAccount memberAccount = MemberAccount.from(userInfo, type, AccountRole.USER);
