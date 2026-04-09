@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/v1/oauth/**",
                                 "/v3/api-docs/**",
-                                "/swagger-ui/**"
+                                "/swagger-ui/**",
+                                "/h2-console/**"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority(AccountRole.USER.getKey(), AccountRole.ADMIN.getKey())
                 )
