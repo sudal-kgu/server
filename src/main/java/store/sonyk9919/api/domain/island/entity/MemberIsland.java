@@ -35,6 +35,9 @@ public class MemberIsland {
     @Column(nullable = false)
     private int recyclingContributionExp;
 
+    @Column(nullable = false)
+    private int itemContributionExp;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_account_id", nullable = false, unique = true)
     private MemberAccount memberAccount;
@@ -44,6 +47,7 @@ public class MemberIsland {
         this.level = 1;
         this.cumulativeExp = 0;
         this.recyclingContributionExp = 0;
+        this.itemContributionExp = 0;
         this.memberAccount = memberAccount;
     }
 
