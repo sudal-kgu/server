@@ -17,7 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class MemberResources {
+public class MemberResource {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,14 +35,14 @@ public class MemberResources {
     @JoinColumn(name = "island_id", nullable = false)
     private MemberIsland island;
 
-    private MemberResources(ResourceType resourceType, MemberIsland island) {
+    private MemberResource(ResourceType resourceType, MemberIsland island) {
         this.resourceType = resourceType;
         this.amount = 0;
         this.island = island;
     }
 
-    public static MemberResources create(ResourceType resourceType, MemberIsland island) {
-        return new MemberResources(resourceType, island);
+    public static MemberResource create(ResourceType resourceType, MemberIsland island) {
+        return new MemberResource(resourceType, island);
     }
 
     public void addAmount(long amount) {
