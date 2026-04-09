@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class LevelConfig {
+public class LevelSpec {
 
     @Id
     private int level;
@@ -21,5 +21,5 @@ public class LevelConfig {
     @Column(nullable = false)
     private int recyclingContributionExpLimit;
 
-    private Integer itemContributionExpRequired;
+    private Integer itemContributionExpMin;
 }
