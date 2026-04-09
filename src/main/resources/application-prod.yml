@@ -44,10 +44,6 @@ file:
   upload-dir: ${custom.prod.uploadDir}
   external-path: ${custom.prod.externalPath}
 
-analysis:
-  fastApi:
-    url: ${custom.prod.fastApiUrl}
-
 jwt:
   secret: ${custom.jwt.secret}
   expiry:
