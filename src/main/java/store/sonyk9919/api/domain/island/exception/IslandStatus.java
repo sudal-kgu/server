@@ -1,0 +1,17 @@
+package store.sonyk9919.api.domain.island.exception;
+
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
+
+@Getter
+@RequiredArgsConstructor
+public enum IslandStatus implements BaseResponseStatus {
+    INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "ISLAND-001", "amount는 0보다 커야 합니다."),
+    INSUFFICIENT_AMOUNT(HttpStatus.BAD_REQUEST, "ISLAND-002", "보유 자원이 부족합니다.");
+
+    private final HttpStatus httpStatus;
+    private final String code;
+    private final String message;
+}
