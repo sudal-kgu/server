@@ -57,10 +57,6 @@ file:
   upload-dir: ${custom.dev.uploadDir:./upload/}
   external-path: ${custom.dev.externalPath:./external/}
 
-analysis:
-  fastApi:
-    url: ${custom.dev.fastApiUrl:http://localhost:8989}
-
 jwt:
   secret: ${custom.security.jwt.secret:ZiF5Qkeoy20Fk/iVa3MiQyc50tz5sm7S2i6UER7QkAo=}
   expiry:

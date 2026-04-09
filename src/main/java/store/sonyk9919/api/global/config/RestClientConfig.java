@@ -16,31 +16,12 @@ import store.sonyk9919.api.domain.auth.entity.KakaoAuthClient;
 
 @Configuration
 public class RestClientConfig {
-    @Value("${analysis.fastApi.url}")
-    private String fastAPIUrl;
 
     @Value("${kakao.auth}")
     private String kakaoAuthUrl;
 
     @Value("${kakao.api}")
     private String kakaoApiUrl;
-
-    @Bean
-    public RestClient fastApiClient() {
-        HttpClient httpClient = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_1_1)
-                .connectTimeout(Duration.ofSeconds(10))
-                .build();
-
-        JdkClientHttpRequestFactory requestFactory = new JdkClientHttpRequestFactory(httpClient);
-        requestFactory.setReadTimeout(Duration.ofSeconds(10));
-
-        return RestClient.builder()
-                .requestFactory(requestFactory)
-                .baseUrl(fastAPIUrl)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
-    }
 
     @Bean
     public KakaoAuthClient kakaoAuthClient() {
