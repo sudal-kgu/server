@@ -8,8 +8,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +16,6 @@ import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = "member_account_id"))
 public class MemberIsland {
 
     @Id
@@ -39,7 +36,7 @@ public class MemberIsland {
     private int recyclingContributionExp;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_account_id", nullable = false)
+    @JoinColumn(name = "member_account_id", nullable = false, unique = true)
     private MemberAccount memberAccount;
 
     private MemberIsland(String nickname, MemberAccount memberAccount) {
