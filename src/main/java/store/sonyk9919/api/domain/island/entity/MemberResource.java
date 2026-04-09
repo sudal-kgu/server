@@ -13,6 +13,8 @@ import jakarta.persistence.ManyToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.domain.island.exception.IslandStatus;
+import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Entity
 @Getter
@@ -46,10 +48,13 @@ public class MemberResource {
     }
 
     public void addAmount(long amount) {
+        if (amount <= 0) throw new CustomException(IslandStatus.INVALID_AMOUNT);
         this.amount += amount;
     }
 
     public void subtractAmount(long amount) {
+        if (amount <= 0) throw new CustomException(IslandStatus.INVALID_AMOUNT);
+        if (this.amount - amount < 0) throw new CustomException(IslandStatus.INSUFFICIENT_AMOUNT);
         this.amount -= amount;
     }
 }
