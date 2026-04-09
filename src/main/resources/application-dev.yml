@@ -24,6 +24,8 @@ spring:
         - classpath:/db/disposal_subcategory.sql
         - classpath:/db/analysis-example.sql
         - classpath:/db/trash-example.sql
+        - classpath:/db/items.sql
+        - classpath:/db/level_spec.sql
 
   jpa:
     hibernate:
