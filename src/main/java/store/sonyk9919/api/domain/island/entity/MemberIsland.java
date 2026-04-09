@@ -11,7 +11,7 @@ import jakarta.persistence.OneToOne;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import store.sonyk9919.api.domain.member.entitiy.MemberAccount;
+import store.sonyk9919.api.domain.member.entity.MemberAccount;
 
 @Entity
 @Getter
