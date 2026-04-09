@@ -1,0 +1,55 @@
+package store.sonyk9919.api.domain.island.entity;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class MemberResources {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "member_resource_id")
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ResourceType resourceType;
+
+    @Column(nullable = false)
+    private long amount;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "island_id", nullable = false)
+    private MemberIsland island;
+
+    private MemberResources(ResourceType resourceType, MemberIsland island) {
+        this.resourceType = resourceType;
+        this.amount = 0;
+        this.island = island;
+    }
+
+    public static MemberResources create(ResourceType resourceType, MemberIsland island) {
+        return new MemberResources(resourceType, island);
+    }
+
+    public void addAmount(long amount) {
+        this.amount += amount;
+    }
+
+    public void subtractAmount(long amount) {
+        this.amount -= amount;
+    }
+}
