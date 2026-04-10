@@ -23,7 +23,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id", "slot_number"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"island_id", "slot_number"})})
 public class Slot {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,8 +31,8 @@ public class Slot {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", nullable = false)
-    private MemberIsland member;
+    @JoinColumn(name = "island_id", nullable = false)
+    private MemberIsland island;
 
     @Column(nullable = false)
     private int slotNumber;
@@ -44,8 +44,8 @@ public class Slot {
     @JoinColumn(name = "building_id")
     private Building building;
 
-    private Slot(MemberIsland member, int slotNumber) {
-        this.member = member;
+    private Slot(MemberIsland island, int slotNumber) {
+        this.island = island;
         this.slotNumber = slotNumber;
         this.activated = false;
     }
