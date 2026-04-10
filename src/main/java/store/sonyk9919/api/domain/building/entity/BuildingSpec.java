@@ -33,6 +33,15 @@ public class BuildingSpec {
     private int level;
 
     @Column(nullable = false)
+    private int requiredLevel;
+
+    @Column(nullable = false)
+    private int costShells;
+
+    @Column(nullable = false)
+    private int costGems;
+
+    @Column(nullable = false)
     private int pph;
 
     @Column(nullable = false)
