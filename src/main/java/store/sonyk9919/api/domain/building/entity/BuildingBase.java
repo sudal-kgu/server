@@ -35,15 +35,6 @@ public class BuildingBase {
     @Column(nullable = false)
     private String model;
 
-    @Column(nullable = false)
-    private int requiredLevel;
-
-    @Column(nullable = false)
-    private int costShells;
-
-    @Column(nullable = false)
-    private int costGems;
-
     @OneToMany(mappedBy = "buildingBase")
     private List<BuildingSpec> specs = new ArrayList<>();
 
