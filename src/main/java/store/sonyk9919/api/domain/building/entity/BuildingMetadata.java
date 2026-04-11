@@ -22,7 +22,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 public class BuildingMetadata {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "building_base_id")
+    @Column(name = "building_metadata_id")
     private Long id;
 
     @Enumerated(EnumType.STRING)
@@ -35,17 +35,17 @@ public class BuildingMetadata {
     @Column(nullable = false)
     private String model;
 
-    @OneToMany(mappedBy = "buildingBase")
-    private List<BuildingYield> specs = new ArrayList<>();
+    @OneToMany(mappedBy = "buildingMetadata")
+    private List<BuildingYield> yields = new ArrayList<>();
 
     public boolean isProductionType() {
         return category == BuildingCategory.PRODUCTION;
     }
 
-    public BuildingYield getSpecForLevel(int level) {
-        return specs.stream()
-                .filter(spec -> spec.getLevel() == level)
+    public BuildingYield getYieldForLevel(int level) {
+        return yields.stream()
+                .filter(yield -> yield.getLevel() == level)
                 .findFirst()
-                .orElseThrow(() -> new CustomException(BuildingStatus.BUILDING_SPEC_NOT_FOUND));
+                .orElseThrow(() -> new CustomException(BuildingStatus.BUILDING_YIELD_NOT_FOUND));
     }
 }

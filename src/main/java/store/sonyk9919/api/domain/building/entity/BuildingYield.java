@@ -16,17 +16,17 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"building_base_id", "level"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"building_metadata_id", "level"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BuildingYield {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "building_spec_id")
+    @Column(name = "building_yield_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "building_base_id", nullable = false)
+    @JoinColumn(name = "building_metadata_id", nullable = false)
     private BuildingMetadata buildingMetadata;
 
     @Column(nullable = false)

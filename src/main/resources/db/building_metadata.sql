@@ -1,4 +1,4 @@
-INSERT INTO building_base (category, name, model) VALUES
+INSERT INTO building_metadata (category, name, model) VALUES
 ('PRODUCTION', '풍력 발전소', 'model_wind_01'),
 ('PRODUCTION', '폐기물 분류기', 'model_waste_01'),
 ('PRODUCTION', '옷 재활용 공장', 'model_clothes_01'),
