@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface MemberIslandRepository extends JpaRepository<MemberIsland, Long> {
 
-    Optional<MemberIsland> findByMemberAccountId(Long MemberAccountId);
+    Optional<MemberIsland> findByMemberAccountId(Long memberAccountId);
 }
