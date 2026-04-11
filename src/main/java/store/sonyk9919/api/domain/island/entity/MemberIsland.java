@@ -52,6 +52,8 @@ public class MemberIsland {
     }
 
     public static MemberIsland create(String nickname, MemberAccount memberAccount) {
-        return new MemberIsland(nickname, memberAccount);
+        MemberIsland island = new MemberIsland(nickname, memberAccount);
+        memberAccount.registerMemberIsland(island);
+        return island;
     }
 }
