@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicUpdate;
 import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
 import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
+import store.sonyk9919.api.domain.island.entity.MemberIsland;
 
 @Entity
 @Getter
@@ -30,6 +31,9 @@ public class MemberAccount {
     @Column(name = "provider_id")
     private String providerId;
 
+    @OneToOne(mappedBy = "memberAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+    private MemberIsland island;
+
     private MemberAccount(String providerId, OAuthProviderType type, AccountRole role) {
         this.providerId = providerId;
         this.type = type;
@@ -38,5 +42,10 @@ public class MemberAccount {
 
     public static MemberAccount from(OAuthUserInfoDto userInfo, OAuthProviderType type, AccountRole role) {
         return new MemberAccount(userInfo.getId(), type, role);
+    }
+
+    public void registerMemberIsland(MemberIsland island) {
+        if (this.island != null) throw new IllegalStateException();
+        this.island = island;
     }
 }
