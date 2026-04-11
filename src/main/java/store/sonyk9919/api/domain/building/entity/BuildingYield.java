@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"building_base_id", "level"})})
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BuildingSpec {
+public class BuildingYield {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_spec_id")
@@ -27,7 +27,7 @@ public class BuildingSpec {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_base_id", nullable = false)
-    private BuildingBase buildingBase;
+    private BuildingMetadata buildingMetadata;
 
     @Column(nullable = false)
     private int level;

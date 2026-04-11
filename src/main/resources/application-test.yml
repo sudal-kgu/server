@@ -21,8 +21,8 @@ spring:
         - classpath:/db/trash-example.sql
         - classpath:/db/item.sql
         - classpath:/db/level_spec.sql
-        - classpath:/db/building_base.sql
-        - classpath:/db/building_spec.sql
+        - classpath:/db/building_metadata.sql
+        - classpath:/db/building_yield.sql
 
   jpa:
     hibernate:

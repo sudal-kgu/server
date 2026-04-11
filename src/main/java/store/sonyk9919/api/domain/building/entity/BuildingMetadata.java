@@ -19,7 +19,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BuildingBase {
+public class BuildingMetadata {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_base_id")
@@ -36,13 +36,13 @@ public class BuildingBase {
     private String model;
 
     @OneToMany(mappedBy = "buildingBase")
-    private List<BuildingSpec> specs = new ArrayList<>();
+    private List<BuildingYield> specs = new ArrayList<>();
 
     public boolean isProductionType() {
         return category == BuildingCategory.PRODUCTION;
     }
 
-    public BuildingSpec getSpecForLevel(int level) {
+    public BuildingYield getSpecForLevel(int level) {
         return specs.stream()
                 .filter(spec -> spec.getLevel() == level)
                 .findFirst()
