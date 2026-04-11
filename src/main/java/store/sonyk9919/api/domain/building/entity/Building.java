@@ -26,7 +26,7 @@ public class Building {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "building_base_id", nullable = false)
+    @JoinColumn(name = "building_metadata_id", nullable = false)
     private BuildingMetadata buildingMetadata;
 
     @ManyToOne(fetch = FetchType.LAZY)
