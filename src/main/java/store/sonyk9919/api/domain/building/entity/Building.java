@@ -36,8 +36,8 @@ public class Building {
     @Column(nullable = false)
     private int currentLevel;
 
-    private LocalDateTime lastFueledAt;
     private LocalDateTime lastCollectedAt;
+    private LocalDateTime fuelExpiredAt;
 
     private Building(BuildingBase buildingBase) {
         this.buildingBase = buildingBase;
@@ -48,29 +48,29 @@ public class Building {
         return new Building(buildingBase);
     }
 
-    public void operate(LocalDateTime now) {
+    public void operate(LocalDateTime now, int durationSecond) {
         if (!buildingBase.isProductionType()) {
             throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
         }
-        lastFueledAt = now;
+
         lastCollectedAt = now;
+        fuelExpiredAt = now.plusSeconds(durationSecond);
     }
 
     public boolean isOperating(LocalDateTime now) {
-        if (lastFueledAt == null) return false;
-
-        int duration = buildingBase.getSpecForLevel(currentLevel).getDurationSecond();
-        LocalDateTime fuelExpiredAt = lastFueledAt.plusSeconds(duration);
-
+        if (fuelExpiredAt == null) return false;
         return now.isBefore(fuelExpiredAt);
     }
 
-    public void updateCollectedTime(LocalDateTime now) {
-        if (lastFueledAt == null || lastCollectedAt == null) {
+    public void updateCollectedTime(LocalDateTime now, LocalDateTime fuelExpiredAt) {
+        if (fuelExpiredAt == null || lastCollectedAt == null) {
             throw new CustomException(BuildingStatus.NOT_OPERATING);
         }
         if (now.isBefore(lastCollectedAt)) {
             throw new CustomException(BuildingStatus.INVALID_COLLECT_TIME);
+        }
+        if (!lastCollectedAt.isBefore(fuelExpiredAt)) {
+            throw new CustomException(BuildingStatus.NOT_OPERATING);
         }
 
         lastCollectedAt = now;
