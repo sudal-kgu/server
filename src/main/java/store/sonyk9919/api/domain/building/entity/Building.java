@@ -27,7 +27,7 @@ public class Building {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "building_base_id", nullable = false)
-    private BuildingBase buildingBase;
+    private BuildingMetadata buildingMetadata;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "island_id", nullable = false)
@@ -39,17 +39,17 @@ public class Building {
     private LocalDateTime lastCollectedAt;
     private LocalDateTime fuelExpiredAt;
 
-    private Building(BuildingBase buildingBase) {
-        this.buildingBase = buildingBase;
+    private Building(BuildingMetadata buildingMetadata) {
+        this.buildingMetadata = buildingMetadata;
         this.currentLevel = 1;
     }
 
-    public static Building of(BuildingBase buildingBase){
-        return new Building(buildingBase);
+    public static Building of(BuildingMetadata buildingMetadata){
+        return new Building(buildingMetadata);
     }
 
     public void operate(LocalDateTime now, int durationSecond) {
-        if (!buildingBase.isProductionType()) {
+        if (!buildingMetadata.isProductionType()) {
             throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
         }
 
