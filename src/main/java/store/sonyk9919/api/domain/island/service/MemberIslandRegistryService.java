@@ -32,6 +32,11 @@ public class MemberIslandRegistryService {
                 .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
     }
 
+    public MemberIsland getIslandWithWriteLock(Long memberAccountId) {
+        return memberIslandRepository.findWithWriteLockByMemberAccountId(memberAccountId)
+                .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
+    }
+
     public MemberIslandDto getIslandDto(Long memberAccountId) {
         MemberIsland island = memberIslandRepository.findByMemberAccountId(memberAccountId)
                 .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
