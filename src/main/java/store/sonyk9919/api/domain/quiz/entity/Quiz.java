@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -25,4 +28,7 @@ public class Quiz {
 
     @Column(nullable = false)
     private boolean isActive;
+
+    @OneToMany(mappedBy = "quiz")
+    private List<QuizOption> options = new ArrayList<>();
 }
