@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
+import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Entity
@@ -28,15 +29,23 @@ public class Building {
     @JoinColumn(name = "building_base_id", nullable = false)
     private BuildingBase buildingBase;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "island_id", nullable = false)
+    private MemberIsland island;
+
     @Column(nullable = false)
     private int currentLevel;
 
     private LocalDateTime lastFueledAt;
     private LocalDateTime lastCollectedAt;
 
-    public Building(BuildingBase buildingBase) {
+    private Building(BuildingBase buildingBase) {
         this.buildingBase = buildingBase;
         this.currentLevel = 1;
+    }
+
+    public static Building of(BuildingBase buildingBase){
+        return new Building(buildingBase);
     }
 
     public void operate(LocalDateTime now) {
