@@ -1,0 +1,35 @@
+package store.sonyk9919.api.domain.quiz.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.quiz.entity.QuizSession;
+import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
+import store.sonyk9919.api.domain.quiz.repository.QuizSessionRepository;
+import store.sonyk9919.api.global.common.exception.CustomException;
+
+import java.time.LocalDateTime;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class QuizSessionRegistryService {
+
+    private final QuizSessionRepository quizSessionRepository;
+
+    @Transactional
+    public QuizSession create(MemberIsland island) {
+        if (quizSessionRepository.existsByIslandAndIsActiveAndExpiredAtAfter(island, true, LocalDateTime.now())) {
+            throw new CustomException(QuizStatus.ALREADY_ACTIVATE);
+        }
+        QuizSession session = QuizSession.from(island);
+        quizSessionRepository.save(session);
+        return session;
+    }
+
+    public Optional<QuizSession> getActiveSession(MemberIsland island) {
+        return quizSessionRepository.findByIslandAndIsActiveAndExpiredAtAfter(island, true, LocalDateTime.now());
+    }
+}

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -15,6 +16,7 @@ public class QuizSession {
 
     @Id
     @Column(name = "quiz_session_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -26,4 +28,14 @@ public class QuizSession {
 
     @Column(nullable = false)
     private LocalDateTime expiredAt;
+
+    private QuizSession(MemberIsland island) {
+        this.island = island;
+        isActive = true;
+        expiredAt = LocalDate.now().plusDays(1).atStartOfDay();
+    }
+
+    public static QuizSession from(MemberIsland island) {
+        return new QuizSession(island);
+    }
 }

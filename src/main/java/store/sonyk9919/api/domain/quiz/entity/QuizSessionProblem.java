@@ -37,4 +37,15 @@ public class QuizSessionProblem {
 
     @Column(name = "quiz_expired_at")
     private LocalDateTime expiredAt;
+
+    private QuizSessionProblem(QuizSession session, Quiz quiz, Long answer, String displayOrder) {
+        this.session = session;
+        this.quiz = quiz;
+        this.answer = answer;
+        this.displayOrder = displayOrder;
+    }
+
+    public static QuizSessionProblem from(QuizSession session, Quiz quiz, Long answer, String displayOrder) {
+        return new QuizSessionProblem(session, quiz, answer, displayOrder);
+    }
 }
