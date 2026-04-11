@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.trash.dto.TrashDetailDto;
+import store.sonyk9919.api.domain.trash.entity.Trash;
 import store.sonyk9919.api.domain.trash.entity.TrashStatus;
+import store.sonyk9919.api.domain.trash.repository.TrashRepository;
 import store.sonyk9919.api.domain.trash.repository.TrashSearchRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.language.type.Language;
@@ -15,9 +17,15 @@ import store.sonyk9919.api.global.language.type.Language;
 public class TrashSearchService {
 
     private final TrashSearchRepository trashSearchRepository;
+    private final TrashRepository trashRepository;
 
     public TrashDetailDto getTrash(String serial, Language language) {
         return trashSearchRepository.findBy(serial, language)
+                .orElseThrow(() -> new CustomException(TrashStatus.NOT_FOUND_TRASH));
+    }
+
+    public Trash getTrashWithCategory(String serial) {
+        return trashRepository.findWithCategoryByTrashUuid(serial)
                 .orElseThrow(() -> new CustomException(TrashStatus.NOT_FOUND_TRASH));
     }
 }
