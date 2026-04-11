@@ -30,10 +30,6 @@ public class MemberAccount {
     @Column(name = "provider_id")
     private String providerId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private MemberProfile profile;
-
     private MemberAccount(String providerId, OAuthProviderType type, AccountRole role) {
         this.providerId = providerId;
         this.type = type;
@@ -42,10 +38,5 @@ public class MemberAccount {
 
     public static MemberAccount from(OAuthUserInfoDto userInfo, OAuthProviderType type, AccountRole role) {
         return new MemberAccount(userInfo.getId(), type, role);
-    }
-
-    public void registerMemberProfile(MemberProfile profile) {
-        if (this.profile != null) throw new IllegalStateException();
-        this.profile = profile;
     }
 }
