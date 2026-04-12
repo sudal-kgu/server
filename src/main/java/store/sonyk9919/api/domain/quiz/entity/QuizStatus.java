@@ -11,7 +11,10 @@ public enum QuizStatus implements BaseResponseStatus {
     ALREADY_ACTIVATE(HttpStatus.BAD_REQUEST, "QUIZ-001", "이미 풀고 있는 퀴즈가 존재합니다."),
     NOT_ENOUGH_QUIZ_NUMBER(HttpStatus.INTERNAL_SERVER_ERROR, "QUIZ-002", "서버 내부 오류가 발생했습니다."),
     NO_ANSWER_IN_OPTIONS(HttpStatus.INTERNAL_SERVER_ERROR, "QUIZ-003", "서버 내부 오류가 발생했습니다."),
-    ;
+    NOT_FOUND_QUIZ_OPTION(HttpStatus.INTERNAL_SERVER_ERROR, "QUIZ-OPTION-001", "서버 내부 오류가 발생했습니다."),
+    FORBIDDEN(HttpStatus.FORBIDDEN, "QUIZ-SESSION-001", "접근 권한이 없습니다."),
+    EXPIRED_QUIZ_SESSION(HttpStatus.GONE, "QUIZ-SESSION-002", "퀴즈 세션이 만료되었습니다."),
+    NOT_FOUND_QUIZ_SESSION_PROBLEM(HttpStatus.NOT_FOUND, "QUIZ-SESSION-PROBLEM-001", "퀴즈를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

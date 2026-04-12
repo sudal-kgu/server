@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.quiz.entity.*;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionProblemRepository;
+import store.sonyk9919.api.domain.quiz.repository.QuizSessionProblemSearchRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.List;
 public class QuizSessionProblemRegistryService {
 
     private final QuizSessionProblemRepository quizSessionProblemRepository;
+    private final QuizSessionProblemSearchRepository quizSessionProblemSearchRepository;
 
     @Transactional
     public List<QuizSessionProblem> createAll(QuizSession session, List<Quiz> quizzes) {
@@ -50,5 +52,14 @@ public class QuizSessionProblemRegistryService {
 
     public List<QuizSessionProblem> getProblems(QuizSession session) {
         return quizSessionProblemRepository.findAllBySession(session);
+    }
+
+    public QuizSessionProblem getProblem(Long memberAccountId, Long sessionId, Long problemId) {
+        QuizSessionProblem problem = quizSessionProblemSearchRepository.findBy(memberAccountId, sessionId, problemId)
+                .orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION_PROBLEM));
+        if (problem.getSession().isExpired()) {
+            throw new CustomException(QuizStatus.EXPIRED_QUIZ_SESSION);
+        }
+        return problem;
     }
 }

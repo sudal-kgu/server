@@ -38,4 +38,8 @@ public class QuizSession {
     public static QuizSession from(MemberIsland island) {
         return new QuizSession(island);
     }
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expiredAt) || !isActive;
+    }
 }
