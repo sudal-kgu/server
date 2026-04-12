@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.quiz.dto.QuizCreateRequestDto;
+import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
 import store.sonyk9919.api.domain.quiz.service.QuizGenerateFacade;
 
@@ -23,5 +24,15 @@ public class QuizController {
             @RequestBody QuizCreateRequestDto request
     ) {
         return quizGenerateFacade.generate(authMember.getId(), request.getSerial());
+    }
+
+    @GetMapping("/sessions/{sessionId}/problems/{problemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public QuizProblemResponseDto getQuizProblem(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Long sessionId,
+            @PathVariable Long problemId
+    ) {
+        return quizGenerateFacade.getQuizProblem(authMember.getId(), sessionId, problemId);
     }
 }

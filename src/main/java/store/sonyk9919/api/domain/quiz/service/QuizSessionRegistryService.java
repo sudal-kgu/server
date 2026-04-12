@@ -7,6 +7,7 @@ import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.quiz.entity.QuizSession;
 import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionRepository;
+import store.sonyk9919.api.domain.quiz.repository.QuizSessionSearchRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ import java.util.Optional;
 public class QuizSessionRegistryService {
 
     private final QuizSessionRepository quizSessionRepository;
+    private final QuizSessionSearchRepository quizSessionSearchRepository;
 
     @Transactional
     public QuizSession create(MemberIsland island) {
@@ -31,5 +33,9 @@ public class QuizSessionRegistryService {
 
     public Optional<QuizSession> getActiveSession(MemberIsland island) {
         return quizSessionRepository.findByIslandAndIsActiveAndExpiredAtAfter(island, true, LocalDateTime.now());
+    }
+
+    public boolean existsQuizSession(Long memberAccountId, Long sessionId) {
+        return quizSessionSearchRepository.existsBy(memberAccountId, sessionId);
     }
 }

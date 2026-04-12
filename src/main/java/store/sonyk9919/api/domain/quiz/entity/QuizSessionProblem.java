@@ -48,4 +48,9 @@ public class QuizSessionProblem {
     public static QuizSessionProblem from(QuizSession session, Quiz quiz, Long answer, String displayOrder) {
         return new QuizSessionProblem(session, quiz, answer, displayOrder);
     }
+
+    public void updateExpiredAt() {
+        if (expiredAt != null) return;
+        expiredAt = LocalDateTime.now().plusSeconds(20);
+    }
 }
