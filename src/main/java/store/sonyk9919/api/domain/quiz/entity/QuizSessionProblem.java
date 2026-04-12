@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.time.LocalDateTime;
@@ -49,8 +50,17 @@ public class QuizSessionProblem {
         return new QuizSessionProblem(session, quiz, answer, displayOrder);
     }
 
+    public boolean isExpired() {
+        return expiredAt != null && expiredAt.isBefore(LocalDateTime.now());
+    }
+
     public void updateExpiredAt() {
         if (expiredAt != null) return;
         expiredAt = LocalDateTime.now().plusSeconds(20);
+    }
+
+    public void confirmChoice(Long choice) {
+        if (this.choice != null) throw new CustomException(QuizStatus.ALREADY_CHOICE_QUIZ_SESSION_PROBLEM);
+        this.choice = choice;
     }
 }
