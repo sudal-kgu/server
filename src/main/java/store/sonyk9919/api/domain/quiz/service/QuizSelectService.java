@@ -3,7 +3,7 @@ package store.sonyk9919.api.domain.quiz.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import store.sonyk9919.api.domain.quiz.entity.Quiz;
-import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.domain.quiz.repository.QuizRepository;
 import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
 import store.sonyk9919.api.global.common.exception.CustomException;

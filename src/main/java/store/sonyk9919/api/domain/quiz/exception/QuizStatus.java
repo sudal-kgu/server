@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.quiz.entity;
+package store.sonyk9919.api.domain.quiz.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

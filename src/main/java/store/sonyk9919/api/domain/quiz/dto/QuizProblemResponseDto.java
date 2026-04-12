@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import store.sonyk9919.api.domain.quiz.entity.QuizOption;
 import store.sonyk9919.api.domain.quiz.entity.QuizSessionProblem;
-import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.time.LocalDateTime;

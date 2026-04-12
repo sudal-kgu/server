@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.quiz.entity.*;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionProblemRepository;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionProblemSearchRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;

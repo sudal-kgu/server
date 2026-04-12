@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.quiz.entity.QuizSession;
-import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionRepository;
 import store.sonyk9919.api.domain.quiz.repository.QuizSessionSearchRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
