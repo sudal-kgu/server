@@ -20,7 +20,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class QuizGenerateFacade {
+public class QuizPlayService {
 
     private final QuizSelectService quizSelectService;
     private final QuizSessionRegistryService quizSessionRegistryService;
@@ -29,18 +29,19 @@ public class QuizGenerateFacade {
     private final MemberIslandRegistryService memberIslandRegistryService;
 
     @Transactional
-    public QuizSessionResponseDto generate(Long memberAccountId, String serial) {
+    public QuizSessionResponseDto startSession(Long memberAccountId, String serial) {
         MemberIsland island = memberIslandRegistryService.getIslandWithWriteLock(memberAccountId);
-
         return quizSessionRegistryService.getActiveSession(island).map(session -> {
             List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(session);
             return QuizSessionResponseDto.from(session, problems);
-        }).orElseGet(() -> {
-            QuizSession session = quizSessionRegistryService.create(island);
-            List<Quiz> quizzes = getQuizzes(serial);
-            List<QuizSessionProblem> problems = quizSessionProblemRegistryService.createAll(session, quizzes);
-            return QuizSessionResponseDto.from(session, problems);
-        });
+        }).orElseGet(() -> createNewSession(island, serial));
+    }
+
+    private QuizSessionResponseDto createNewSession(MemberIsland island, String serial) {
+        QuizSession session = quizSessionRegistryService.create(island);
+        List<Quiz> quizzes = getQuizzes(serial);
+        List<QuizSessionProblem> problems = quizSessionProblemRegistryService.createAll(session, quizzes);
+        return QuizSessionResponseDto.from(session, problems);
     }
 
     private List<Quiz> getQuizzes(String serial) {

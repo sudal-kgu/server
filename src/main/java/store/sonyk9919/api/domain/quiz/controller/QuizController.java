@@ -8,14 +8,14 @@ import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.quiz.dto.QuizCreateRequestDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
-import store.sonyk9919.api.domain.quiz.service.QuizGenerateFacade;
+import store.sonyk9919.api.domain.quiz.service.QuizPlayService;
 
 @RestController
 @RequestMapping("/v1/quizzes")
 @RequiredArgsConstructor
 public class QuizController {
 
-    private final QuizGenerateFacade quizGenerateFacade;
+    private final QuizPlayService quizPlayService;
 
     @PostMapping("/sessions")
     @ResponseStatus(HttpStatus.CREATED)
@@ -23,13 +23,13 @@ public class QuizController {
             @AuthMember AuthMemberDto authMember,
             @RequestBody QuizCreateRequestDto request
     ) {
-        return quizGenerateFacade.generate(authMember.getId(), request.getSerial());
+        return quizPlayService.startSession(authMember.getId(), request.getSerial());
     }
 
     @GetMapping("/sessions")
     @ResponseStatus(HttpStatus.OK)
     public QuizSessionResponseDto getActiveQuizSession(@AuthMember AuthMemberDto authMember) {
-        return quizGenerateFacade.getActiveQuizSession(authMember.getId());
+        return quizPlayService.getActiveQuizSession(authMember.getId());
     }
 
     @GetMapping("/sessions/{sessionId}/problems/{problemId}")
@@ -39,6 +39,6 @@ public class QuizController {
             @PathVariable Long sessionId,
             @PathVariable Long problemId
     ) {
-        return quizGenerateFacade.getQuizProblem(authMember.getId(), sessionId, problemId);
+        return quizPlayService.getQuizProblem(authMember.getId(), sessionId, problemId);
     }
 }
