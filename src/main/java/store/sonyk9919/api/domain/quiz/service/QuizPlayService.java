@@ -59,11 +59,28 @@ public class QuizPlayService {
 
     @Transactional
     public QuizProblemResponseDto getQuizProblem(Long memberAccountId, Long sessionId, Long problemId) {
+        QuizSessionProblem problem = getValidatedProblem(memberAccountId, sessionId, problemId);
+        problem.updateExpiredAt();
+        return QuizProblemResponseDto.from(problem);
+    }
+
+    @Transactional
+    public QuizProblemResponseDto confirmQuizChoice(
+            Long memberAccountId,
+            Long sessionId,
+            Long problemId,
+            Long choice
+    ) {
+        QuizSessionProblem problem = getValidatedProblem(memberAccountId, sessionId, problemId);
+        if (problem.isExpired() || problem.getSession().isExpired()) throw new CustomException(QuizStatus.EXPIRED_QUIZ_SESSION);
+        problem.confirmChoice(choice);
+        return QuizProblemResponseDto.from(problem);
+    }
+
+    private QuizSessionProblem getValidatedProblem(Long memberAccountId, Long sessionId, Long problemId) {
         if (!quizSessionRegistryService.existsQuizSession(memberAccountId, sessionId)) {
             throw new CustomException(QuizStatus.FORBIDDEN);
         }
-        QuizSessionProblem problem = quizSessionProblemRegistryService.getProblem(memberAccountId, sessionId, problemId);
-        problem.updateExpiredAt();
-        return QuizProblemResponseDto.from(problem);
+        return quizSessionProblemRegistryService.getProblem(memberAccountId, sessionId, problemId);
     }
 }

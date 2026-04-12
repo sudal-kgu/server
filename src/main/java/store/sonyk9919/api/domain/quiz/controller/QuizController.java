@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
+import store.sonyk9919.api.domain.quiz.dto.QuizChoiceRequestDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizCreateRequestDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
@@ -40,5 +41,16 @@ public class QuizController {
             @PathVariable Long problemId
     ) {
         return quizPlayService.getQuizProblem(authMember.getId(), sessionId, problemId);
+    }
+
+    @PostMapping("/sessions/{sessionId}/problems/{problemId}")
+    @ResponseStatus(HttpStatus.OK)
+    public QuizProblemResponseDto confirmQuizChoice(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Long sessionId,
+            @PathVariable Long problemId,
+            @RequestBody QuizChoiceRequestDto request
+    ) {
+        return quizPlayService.confirmQuizChoice(authMember.getId(), sessionId, problemId, request.getChoice());
     }
 }
