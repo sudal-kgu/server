@@ -10,7 +10,7 @@ import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.entity.Quiz;
 import store.sonyk9919.api.domain.quiz.entity.QuizSession;
 import store.sonyk9919.api.domain.quiz.entity.QuizSessionProblem;
-import store.sonyk9919.api.domain.quiz.entity.QuizStatus;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
 import store.sonyk9919.api.domain.trash.entity.Trash;
 import store.sonyk9919.api.domain.trash.service.TrashSearchService;
 import store.sonyk9919.api.global.common.exception.CustomException;
