@@ -26,6 +26,12 @@ public class QuizController {
         return quizGenerateFacade.generate(authMember.getId(), request.getSerial());
     }
 
+    @GetMapping("/sessions")
+    @ResponseStatus(HttpStatus.OK)
+    public QuizSessionResponseDto getActiveQuizSession(@AuthMember AuthMemberDto authMember) {
+        return quizGenerateFacade.getActiveQuizSession(authMember.getId());
+    }
+
     @GetMapping("/sessions/{sessionId}/problems/{problemId}")
     @ResponseStatus(HttpStatus.OK)
     public QuizProblemResponseDto getQuizProblem(
