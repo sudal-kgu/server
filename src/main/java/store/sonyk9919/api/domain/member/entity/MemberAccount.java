@@ -8,6 +8,8 @@ import org.hibernate.annotations.DynamicUpdate;
 import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
 import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.member.exception.MemberStatus;
+import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Entity
 @Getter
@@ -45,7 +47,7 @@ public class MemberAccount {
     }
 
     public void registerMemberIsland(MemberIsland island) {
-        if (this.island != null) throw new IllegalStateException();
+        if (this.island != null) throw new CustomException(MemberStatus.MEMBER_ACCOUNT_ISLAND_ALREADY_EXISTS);
         this.island = island;
     }
 }

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
-import store.sonyk9919.api.domain.island.entity.IslandStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.domain.member.entity.MemberAccount;
 import store.sonyk9919.api.domain.member.service.MemberAccountService;
@@ -21,14 +21,10 @@ public class MemberIslandRegistryService {
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname) {
-        try {
-            MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
-            MemberIsland island = MemberIsland.create(nickname, account);
-            memberIslandRepository.save(island);
-            return island;
-        } catch (IllegalStateException e) {
-            throw new CustomException(IslandStatus.ISLAND_ALREADY_EXISTS);
-        }
+        MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
+        MemberIsland island = MemberIsland.create(nickname, account);
+        memberIslandRepository.save(island);
+        return island;
     }
 
     public MemberIsland getIsland(Long memberAccountId) {
