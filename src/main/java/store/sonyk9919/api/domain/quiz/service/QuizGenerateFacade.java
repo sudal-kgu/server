@@ -48,6 +48,14 @@ public class QuizGenerateFacade {
         return quizSelectService.select(trash.getTaxonomy().getCategory(), 3);
     }
 
+    public QuizSessionResponseDto getActiveQuizSession(Long memberAccountId) {
+        MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
+        return quizSessionRegistryService.getActiveSession(island).map(session -> {
+            List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(session);
+            return QuizSessionResponseDto.from(session, problems);
+        }).orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION));
+    }
+
     @Transactional
     public QuizProblemResponseDto getQuizProblem(Long memberAccountId, Long sessionId, Long problemId) {
         if (!quizSessionRegistryService.existsQuizSession(memberAccountId, sessionId)) {
