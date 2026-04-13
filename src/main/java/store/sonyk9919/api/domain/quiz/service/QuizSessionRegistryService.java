@@ -31,6 +31,11 @@ public class QuizSessionRegistryService {
         return session;
     }
 
+    public QuizSession getSession(Long memberAccountId, Long sessionId) {
+        return quizSessionSearchRepository.findBy(memberAccountId, sessionId)
+                .orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION));
+    }
+
     public Optional<QuizSession> getActiveSession(MemberIsland island) {
         return quizSessionRepository.findByIslandAndIsActiveAndExpiredAtAfter(island, true, LocalDateTime.now());
     }

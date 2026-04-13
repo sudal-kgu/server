@@ -83,4 +83,13 @@ public class QuizPlayService {
         }
         return quizSessionProblemRegistryService.getProblem(memberAccountId, sessionId, problemId);
     }
+
+    @Transactional
+    public void completeQuizSession(Long memberAccountId, Long sessionId) {
+        QuizSession session = quizSessionRegistryService.getSession(memberAccountId, sessionId);
+        if (session.isExpired()) {
+            return;
+        }
+        session.expireSession();
+    }
 }

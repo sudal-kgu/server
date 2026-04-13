@@ -53,4 +53,10 @@ public class QuizController {
     ) {
         return quizPlayService.confirmQuizChoice(authMember.getId(), sessionId, problemId, request.getChoice());
     }
+
+    @PostMapping("/sessions/{sessionId}/complete")
+    @ResponseStatus(HttpStatus.OK)
+    public void completeQuizSession(@AuthMember AuthMemberDto authMember, @PathVariable Long sessionId) {
+        quizPlayService.completeQuizSession(authMember.getId(), sessionId);
+    }
 }
