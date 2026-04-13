@@ -5,6 +5,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.quiz.exception.QuizStatus;
+import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,5 +43,10 @@ public class QuizSession {
 
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiredAt) || !isActive;
+    }
+
+    public void expireSession() {
+        if (!isActive) throw new CustomException(QuizStatus.EXPIRED_QUIZ_SESSION);
+        isActive = false;
     }
 }
