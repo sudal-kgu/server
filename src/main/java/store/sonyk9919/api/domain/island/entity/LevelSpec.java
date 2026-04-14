@@ -22,4 +22,7 @@ public class LevelSpec {
     private int recyclingContributionExpLimit;
 
     private Integer itemContributionExpMin;
+
+    @Column(nullable = false)
+    private int maxSlotCount;
 }
