@@ -1,10 +1,9 @@
 package store.sonyk9919.api;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
+import store.sonyk9919.api.support.IntegrationTestSupport;
 
-@SpringBootTest
-class ApiApplicationTests {
+class ApiApplicationTests extends IntegrationTestSupport {
 
 	@Test
 	void contextLoads() {
