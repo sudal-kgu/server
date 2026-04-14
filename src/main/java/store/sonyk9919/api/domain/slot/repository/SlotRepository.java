@@ -9,4 +9,6 @@ import store.sonyk9919.api.domain.slot.entity.Slot;
 public interface SlotRepository extends JpaRepository<Slot, Long> {
     List<Slot> findAllByIsland(MemberIsland island);
     Optional<Slot> findByIslandAndSlotNumber(MemberIsland island, Integer slotNumber);
+
+    int countByIslandAndActivatedTrue(MemberIsland island);
 }
