@@ -4,11 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
@@ -18,8 +20,10 @@ import store.sonyk9919.api.domain.trash.dto.ConfirmResponseDto;
 import store.sonyk9919.api.domain.trash.entity.Trash;
 import store.sonyk9919.api.domain.trash.repository.TrashRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
+import store.sonyk9919.api.global.config.QueryDslConfig;
 
-@SpringBootTest
+@DataJpaTest
+@Import({QueryDslConfig.class, TrashConfirmService.class})
 @Transactional
 class TrashConfirmServiceTest {
 

@@ -44,6 +44,7 @@ logging:
 
 file:
   upload-dir: ./upload/
+  external-path: ./external/
 
 analysis:
   fastApi:
