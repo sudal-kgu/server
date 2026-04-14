@@ -23,6 +23,8 @@ spring:
         - classpath:/db/level_spec.sql
         - classpath:/db/building_metadata.sql
         - classpath:/db/building_yield.sql
+        - classpath:/db/quiz.sql
+        - classpath:/db/quiz_option.sql
 
   jpa:
     hibernate:
