@@ -7,16 +7,19 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.analysis.entity.AnalysisRequest;
 import store.sonyk9919.api.domain.analysis.repository.AnalysisRequestRepository;
 import store.sonyk9919.api.domain.taxonomy.entity.TrashTaxonomy;
 import store.sonyk9919.api.domain.taxonomy.repository.TrashTaxonomyRepository;
 import store.sonyk9919.api.domain.trash.entity.Trash;
+import store.sonyk9919.api.global.config.QueryDslConfig;
 
-@SpringBootTest
+@DataJpaTest
 @Transactional
+@Import(QueryDslConfig.class)
 class TrashRepositoryTest {
     @Autowired
     private TrashRepository trashRepository;

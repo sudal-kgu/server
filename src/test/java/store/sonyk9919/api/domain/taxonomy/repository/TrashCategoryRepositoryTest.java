@@ -5,11 +5,15 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
+import store.sonyk9919.api.global.config.QueryDslConfig;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
+@DataJpaTest
+@Import(QueryDslConfig.class)
 class TrashCategoryRepositoryTest {
 
     @Autowired
