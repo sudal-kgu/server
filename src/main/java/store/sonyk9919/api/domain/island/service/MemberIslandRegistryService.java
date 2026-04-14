@@ -9,6 +9,7 @@ import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.domain.member.entity.MemberAccount;
 import store.sonyk9919.api.domain.member.service.MemberAccountService;
+import store.sonyk9919.api.domain.slot.service.SlotSetupService;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Service
@@ -18,12 +19,15 @@ public class MemberIslandRegistryService {
 
     private final MemberIslandRepository memberIslandRepository;
     private final MemberAccountService memberAccountService;
+    private final SlotSetupService slotSetupService;
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname) {
         MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
         MemberIsland island = MemberIsland.create(nickname, account);
+
         memberIslandRepository.save(island);
+        slotSetupService.setupSlots(island);
         return island;
     }
 
