@@ -50,8 +50,8 @@ public class Slot {
         this.activated = false;
     }
 
-    public static Slot of(MemberIsland member, int slotNumber){
-        return new Slot(member, slotNumber);
+    public static Slot of(MemberIsland island, int slotNumber){
+        return new Slot(island, slotNumber);
     }
 
     public void activate() {
