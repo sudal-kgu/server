@@ -25,8 +25,8 @@ public class SlotQueryService {
     public List<SlotResponseDto> getAllSlot(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
-        List<Slot> slots = slotRepository.findAllByIsland(island);
-        return slots.stream()
+        return slotRepository.findAllByIsland(island)
+                .stream()
                 .map(SlotResponseDto::from)
                 .collect(Collectors.toList());
     }
@@ -34,8 +34,8 @@ public class SlotQueryService {
     public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
-        Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
+        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
+                .map(SlotDetailResponseDto::from)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
-        return SlotDetailResponseDto.from(slot);
     }
 }
