@@ -10,7 +10,10 @@ import store.sonyk9919.api.global.common.dto.BaseResponseStatus;
 public enum IslandStatus implements BaseResponseStatus {
     INVALID_AMOUNT(HttpStatus.BAD_REQUEST, "ISLAND-001", "amount는 0보다 커야 합니다."),
     INSUFFICIENT_AMOUNT(HttpStatus.BAD_REQUEST, "ISLAND-002", "보유 자원이 부족합니다."),
-    NOT_FOUND_ISLAND(HttpStatus.NOT_FOUND, "ISLAND-003", "섬을 찾을 수 없습니다.");
+    NOT_FOUND_ISLAND(HttpStatus.NOT_FOUND, "ISLAND-003", "섬을 찾을 수 없습니다."),
+    LEVEL_SPEC_NOT_FOUND(HttpStatus.INTERNAL_SERVER_ERROR, "ISLAND-004", "레벨 스펙을 찾을 수 없습니다."),
+    ALREADY_MAX_LEVEL(HttpStatus.BAD_REQUEST, "ISLAND-005", "이미 최대 레벨입니다."),
+    LOCK_ACQUISITION_FAILED(HttpStatus.CONFLICT, "ISLAND-006", "현재 요청이 많습니다. 잠시 후 다시 시도해 주세요.");
 
     private final HttpStatus httpStatus;
     private final String code;
