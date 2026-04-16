@@ -28,7 +28,7 @@ public class SlotActivateService {
     private final LevelSpecRepository levelSpecRepository;
 
     public SlotActivateResponseDto activate(Long memberId, Integer slotNumber) {
-        MemberIsland island = memberIslandService.getIsland(memberId);
+        MemberIsland island = memberIslandService.getIslandWithWriteLock(memberId);
         Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
 
