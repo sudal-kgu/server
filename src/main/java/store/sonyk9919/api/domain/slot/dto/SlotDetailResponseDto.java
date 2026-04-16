@@ -14,11 +14,11 @@ public class SlotDetailResponseDto {
     private boolean activated;
     private BuildingDetailDto building;
 
-    public static SlotDetailResponseDto from(Slot slot) {
+    public static SlotDetailResponseDto of(Slot slot, BuildingDetailDto buildingDto) {
         return new SlotDetailResponseDto(
                 slot.getSlotNumber(),
                 slot.isActivated(),
-                BuildingDetailDto.from(slot.getBuilding())
+                buildingDto
         );
     }
 }

@@ -15,8 +15,7 @@ public class ProductionInfoDto {
     private LocalDateTime lastCollectedAt;
     private LocalDateTime fuelExpiredAt;
 
-    public static ProductionInfoDto from(Building building, BuildingYield yield) {
-        if (!building.getBuildingMetadata().isProductionType()) return null;
+    public static ProductionInfoDto of(Building building, BuildingYield yield) {
         return new ProductionInfoDto(
                 yield.getPph(),
                 building.isOperating(LocalDateTime.now()),
