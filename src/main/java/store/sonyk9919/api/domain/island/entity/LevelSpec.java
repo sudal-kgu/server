@@ -25,4 +25,7 @@ public class LevelSpec {
 
     @Column(nullable = false)
     private int maxSlotCount;
+
+    @Column(nullable = false)
+    private int expPerRecycling;
 }
