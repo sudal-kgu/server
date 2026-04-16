@@ -18,19 +18,14 @@ public class BuildingDetailDto {
 
     private ProductionInfoDto productionInfo;
 
-    public static BuildingDetailDto from(Building building) {
-        if (building == null) return null;
-
-        BuildingMetadata metadata = building.getBuildingMetadata();
-        int level = building.getCurrentLevel();
-
+    public static BuildingDetailDto of(Building building, BuildingMetadata metadata, ProductionInfoDto productionInfo) {
         return new BuildingDetailDto(
                 building.getId(),
                 metadata.getName(),
                 metadata.getCategory().name(),
                 metadata.getModel(),
-                level,
-                ProductionInfoDto.from(building, metadata.getYieldForLevel(level))
+                building.getCurrentLevel(),
+                productionInfo
         );
     }
 }
