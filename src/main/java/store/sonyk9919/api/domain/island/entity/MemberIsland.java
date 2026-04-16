@@ -13,10 +13,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.member.entity.MemberAccount;
 
+import static java.lang.Math.min;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberIsland {
+
+    private static final int MAX_LEVEL = 7;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,16 +48,47 @@ public class MemberIsland {
 
     private MemberIsland(String nickname, MemberAccount memberAccount) {
         this.nickname = nickname;
-        this.level = 1;
-        this.cumulativeExp = 0;
-        this.recyclingContributionExp = 0;
-        this.itemContributionExp = 0;
         this.memberAccount = memberAccount;
+        level = 1;
+        cumulativeExp = 0;
+        recyclingContributionExp = 0;
+        itemContributionExp = 0;
     }
 
     public static MemberIsland create(String nickname, MemberAccount memberAccount) {
         MemberIsland island = new MemberIsland(nickname, memberAccount);
         memberAccount.registerMemberIsland(island);
         return island;
+    }
+
+    public boolean isMaxLevel() {
+        return level >= MAX_LEVEL;
+    }
+
+    public void addRecyclingExp(LevelSpec currentSpec) {
+        int remaining = currentSpec.getRecyclingContributionExpLimit() - recyclingContributionExp;
+        int gain = min(currentSpec.getExpPerRecycling(), remaining);
+        if (gain <= 0) return;
+        recyclingContributionExp += gain;
+        cumulativeExp += gain;
+    }
+
+    public void addItemExp(int expAmount) {
+        itemContributionExp += expAmount;
+        cumulativeExp += expAmount;
+    }
+
+    public boolean canLevelUp(LevelSpec currentSpec, LevelSpec nextSpec) {
+        if (isMaxLevel()) return false;
+        boolean expMet = cumulativeExp >= nextSpec.getRequiredExp();
+        boolean itemMet = currentSpec.getItemContributionExpMin() == null
+                || itemContributionExp >= currentSpec.getItemContributionExpMin();
+        return expMet && itemMet;
+    }
+
+    public void levelUp() {
+        level++;
+        recyclingContributionExp = 0;
+        itemContributionExp = 0;
     }
 }
