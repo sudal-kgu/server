@@ -61,6 +61,9 @@ public class QuizPlayService {
     public QuizProblemResponseDto getQuizProblem(Long memberAccountId, Long sessionId, Long problemId) {
         QuizSessionProblem problem = getValidatedProblem(memberAccountId, sessionId, problemId);
         problem.updateExpiredAt();
+        if (problem.getChoice() != null || problem.isExpired() || problem.getSession().isExpired()) {
+            return QuizProblemResponseDto.fromWithAnswer(problem);
+        }
         return QuizProblemResponseDto.from(problem);
     }
 
@@ -74,7 +77,7 @@ public class QuizPlayService {
         QuizSessionProblem problem = getValidatedProblem(memberAccountId, sessionId, problemId);
         if (problem.isExpired() || problem.getSession().isExpired()) throw new CustomException(QuizStatus.EXPIRED_QUIZ_SESSION);
         problem.confirmChoice(choice);
-        return QuizProblemResponseDto.from(problem);
+        return QuizProblemResponseDto.fromWithAnswer(problem);
     }
 
     private QuizSessionProblem getValidatedProblem(Long memberAccountId, Long sessionId, Long problemId) {

@@ -1,5 +1,6 @@
 package store.sonyk9919.api.domain.quiz.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import java.util.stream.IntStream;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class QuizProblemResponseDto {
 
     private final Long sessionId;
@@ -23,6 +25,9 @@ public class QuizProblemResponseDto {
     private final String description;
     private final List<QuizProblemChoiceDto> choices;
     private final LocalDateTime expiredAt;
+    private final Long answer;
+    private final Long choice;
+
 
     public static QuizProblemResponseDto from(QuizSessionProblem problem) {
         return new QuizProblemResponseDto(
@@ -30,7 +35,21 @@ public class QuizProblemResponseDto {
                 problem.getId(),
                 problem.getQuiz().getDescription(),
                 orderChoices(problem.getQuiz().getOptions(), problem.getDisplayOrder()),
-                problem.getExpiredAt()
+                problem.getExpiredAt(),
+                null,
+                null
+        );
+    }
+
+    public static QuizProblemResponseDto fromWithAnswer(QuizSessionProblem problem) {
+        return new QuizProblemResponseDto(
+                problem.getSession().getId(),
+                problem.getId(),
+                problem.getQuiz().getDescription(),
+                orderChoices(problem.getQuiz().getOptions(), problem.getDisplayOrder()),
+                problem.getExpiredAt(),
+                problem.getAnswer(),
+                problem.getChoice()
         );
     }
 
