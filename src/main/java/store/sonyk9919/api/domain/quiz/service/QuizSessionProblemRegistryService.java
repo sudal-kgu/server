@@ -55,6 +55,10 @@ public class QuizSessionProblemRegistryService {
         return quizSessionProblemRepository.findAllBySession(session);
     }
 
+    public List<QuizSessionProblem> getProblems(Long sessionId) {
+        return quizSessionProblemRepository.findAllBySessionId(sessionId);
+    }
+
     public QuizSessionProblem getProblem(Long memberAccountId, Long sessionId, Long problemId) {
         QuizSessionProblem problem = quizSessionProblemSearchRepository.findBy(memberAccountId, sessionId, problemId)
                 .orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION_PROBLEM));

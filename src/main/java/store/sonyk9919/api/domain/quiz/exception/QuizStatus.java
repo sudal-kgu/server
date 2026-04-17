@@ -15,6 +15,7 @@ public enum QuizStatus implements BaseResponseStatus {
     FORBIDDEN(HttpStatus.FORBIDDEN, "QUIZ-SESSION-001", "접근 권한이 없습니다."),
     EXPIRED_QUIZ_SESSION(HttpStatus.GONE, "QUIZ-SESSION-002", "퀴즈 세션이 만료되었습니다."),
     NOT_FOUND_QUIZ_SESSION(HttpStatus.NOT_FOUND, "QUIZ-SESSION-003", "활성화된 퀴즈 세션이 없습니다."),
+    QUIZ_NOT_COMPLETED(HttpStatus.FORBIDDEN, "QUIZ-SESSION-004", "퀴즈 세션이 완료되지 않았습니다."),
     NOT_FOUND_QUIZ_SESSION_PROBLEM(HttpStatus.NOT_FOUND, "QUIZ-SESSION-PROBLEM-001", "퀴즈를 찾을 수 없습니다."),
     ALREADY_CHOICE_QUIZ_SESSION_PROBLEM(HttpStatus.BAD_REQUEST, "QUIZ-SESSION-PROBLEM-002", "이미 정답을 선택했습니다.");
 
