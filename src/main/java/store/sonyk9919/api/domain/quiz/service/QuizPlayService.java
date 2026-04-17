@@ -57,6 +57,25 @@ public class QuizPlayService {
         }).orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION));
     }
 
+    public List<QuizProblemResponseDto> getQuizProblems(Long memberAccountId, Long sessionId) {
+        validateQuizSession(memberAccountId, sessionId);
+        List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(sessionId);
+        validateQuizSessionComplete(problems.getFirst().getSession());
+        return problems
+                .stream()
+                .map(QuizProblemResponseDto::fromWithAnswer)
+                .toList();
+    }
+
+    public void validateQuizSessionComplete(QuizSession session) {
+        if (!session.isExpired()) throw new CustomException(QuizStatus.QUIZ_NOT_COMPLETED);
+    }
+
+    public void validateQuizSession(Long memberAccountId, Long sessionId) {
+        if (!quizSessionRegistryService.existsQuizSession(memberAccountId, sessionId))
+            throw new CustomException(QuizStatus.FORBIDDEN);
+    }
+
     @Transactional
     public QuizProblemResponseDto getQuizProblem(Long memberAccountId, Long sessionId, Long problemId) {
         QuizSessionProblem problem = getValidatedProblem(memberAccountId, sessionId, problemId);
@@ -81,9 +100,7 @@ public class QuizPlayService {
     }
 
     private QuizSessionProblem getValidatedProblem(Long memberAccountId, Long sessionId, Long problemId) {
-        if (!quizSessionRegistryService.existsQuizSession(memberAccountId, sessionId)) {
-            throw new CustomException(QuizStatus.FORBIDDEN);
-        }
+        validateQuizSession(memberAccountId, sessionId);
         return quizSessionProblemRegistryService.getProblem(memberAccountId, sessionId, problemId);
     }
 

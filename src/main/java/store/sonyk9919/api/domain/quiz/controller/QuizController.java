@@ -15,6 +15,8 @@ import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
 import store.sonyk9919.api.domain.quiz.service.QuizPlayService;
 
+import java.util.List;
+
 @Tag(name = "퀴즈 (Quiz)", description = "퀴즈 세션 관리 및 문제 풀이 관련 API")
 @RestController
 @RequestMapping("/v1/quizzes")
@@ -43,6 +45,15 @@ public class QuizController {
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
         return quizPlayService.getActiveQuizSession(authMember.getId());
+    }
+
+    @GetMapping("/sessions/{sessionId}/problems")
+    @ResponseStatus(HttpStatus.OK)
+    public List<QuizProblemResponseDto> getQuizProblems(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Long sessionId
+    ) {
+        return quizPlayService.getQuizProblems(authMember.getId(), sessionId);
     }
 
     @Operation(summary = "퀴즈 문제 단건 조회", description = "세션 내의 특정 문제 상세 정보를 조회합니다. 조회 시 문제의 만료 시간이 갱신됩니다.")
