@@ -8,7 +8,8 @@ import store.sonyk9919.api.domain.quiz.entity.Quiz;
 import java.util.List;
 
 public interface QuizRepository extends JpaRepository<Quiz, Long> {
+    @Query("SELECT q.id FROM Quiz q WHERE  q.category.id = :categoryId")
+    List<Long> findAllIdByCategory(@Param("categoryId") Long categoryId);
 
-    @Query("SELECT q FROM Quiz q WHERE q.category.id = :categoryId AND q.isActive = TRUE ORDER BY RAND() LIMIT :limit")
-    List<Quiz> findAllByCategory(@Param("categoryId") Long categoryId, @Param("limit") int limit);
+    List<Quiz> findAllByIdIn(List<Long> ids);
 }
