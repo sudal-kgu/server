@@ -27,7 +27,7 @@ public class IslandLevelService {
         MemberIsland island = getIsland(memberAccountId);
         LevelSpec currentSpec = getLevelSpec(island.getLevel());
         island.addRecyclingExp(currentSpec);
-        checkAndProcessLevelUp(island, currentSpec);
+        checkAndProcessLevelUp(island);
     }
 
     @DistributedLock(key = "'island:' + #memberAccountId")
@@ -35,14 +35,14 @@ public class IslandLevelService {
     public void addItemExp(Long memberAccountId, int expAmount) {
         MemberIsland island = getIsland(memberAccountId);
         island.addItemExp(expAmount);
-        checkAndProcessLevelUp(island, getLevelSpec(island.getLevel()));
+        checkAndProcessLevelUp(island);
     }
 
-    private void checkAndProcessLevelUp(MemberIsland island, LevelSpec currentSpec) {
+    private void checkAndProcessLevelUp(MemberIsland island) {
         if (island.isMaxLevel()) return;
 
         LevelSpec nextSpec = getLevelSpec(island.getLevel() + 1);
-        if (!island.canLevelUp(currentSpec, nextSpec)) return;
+        if (!island.canLevelUp(nextSpec)) return;
 
         int previousLevel = island.getLevel();
         island.levelUp();
