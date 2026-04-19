@@ -78,12 +78,9 @@ public class MemberIsland {
         cumulativeExp += expAmount;
     }
 
-    public boolean canLevelUp(LevelSpec currentSpec, LevelSpec nextSpec) {
+    public boolean canLevelUp(LevelSpec nextSpec) {
         if (isMaxLevel()) return false;
-        boolean expMet = cumulativeExp >= nextSpec.getRequiredExp();
-        boolean itemMet = currentSpec.getItemContributionExpMin() == null
-                || itemContributionExp >= currentSpec.getItemContributionExpMin();
-        return expMet && itemMet;
+        return cumulativeExp >= nextSpec.getRequiredExp();
     }
 
     public void levelUp() {
