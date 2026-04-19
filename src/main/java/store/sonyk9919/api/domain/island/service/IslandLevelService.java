@@ -8,7 +8,6 @@ import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.event.IslandLevelUpEvent;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
-import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
@@ -19,7 +18,7 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 public class IslandLevelService {
 
     private final MemberIslandRepository memberIslandRepository;
-    private final LevelSpecRepository levelSpecRepository;
+    private final LevelSpecCache levelSpecCache;
     private final ApplicationEventPublisher eventPublisher;
 
     @DistributedLock(key = "'island:' + #memberAccountId")
@@ -62,7 +61,6 @@ public class IslandLevelService {
     }
 
     private LevelSpec getLevelSpec(int level) {
-        return levelSpecRepository.findById(level)
-                .orElseThrow(() -> new CustomException(IslandStatus.LEVEL_SPEC_NOT_FOUND));
+        return levelSpecCache.get(level);
     }
 }
