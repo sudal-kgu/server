@@ -13,7 +13,6 @@ import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
-import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Aspect
@@ -36,7 +35,7 @@ public class DistributedLockAspect {
                 distributedLock.timeUnit()
         );
         if (!acquired) {
-            throw new CustomException(IslandStatus.LOCK_ACQUISITION_FAILED);
+            throw new CustomException(LockStatus.LOCK_ACQUISITION_FAILED);
         }
 
         try {
