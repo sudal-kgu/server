@@ -49,6 +49,11 @@ public class Building {
         return new Building(island, buildingMetadata);
     }
 
+    public BuildingYield getCurrentYield() {
+        return buildingMetadata.getYieldForLevel(currentLevel);
+    }
+
+
     public void operate(LocalDateTime now, int durationSecond) {
         if (!buildingMetadata.isProductionType()) {
             throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
