@@ -20,6 +20,8 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class BuildingYield {
+    private static final double REFUND_RATE = 0.5;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_yield_id")
@@ -52,4 +54,12 @@ public class BuildingYield {
 
     @Embedded
     private BuildingEffect effect;
+
+    public int getRefundShell() {
+        return (int) (costShells * REFUND_RATE);
+    }
+
+    public int getRefundGem() {
+        return (int) (costGems * REFUND_RATE);
+    }
 }

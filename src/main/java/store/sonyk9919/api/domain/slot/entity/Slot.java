@@ -16,6 +16,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import store.sonyk9919.api.domain.building.entity.Building;
+import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.global.common.exception.CustomException;
@@ -65,5 +66,11 @@ public class Slot {
         if (building != null) throw new CustomException(SlotStatus.SLOT_ALREADY_BUILT);
 
         building = newBuilding;
+    }
+
+    public void demolish() {
+        if (building == null) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
+
+        building = null;
     }
 }
