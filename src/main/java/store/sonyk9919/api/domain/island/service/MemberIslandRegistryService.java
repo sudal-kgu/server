@@ -23,12 +23,20 @@ public class MemberIslandRegistryService {
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname) {
+        return createEntity(memberAccountId, nickname);
+    }
+
+    @Transactional
+    public MemberIslandDto createDto(Long memberAccountId, String nickname) {
+        MemberIsland island = createEntity(memberAccountId, nickname);
+        return MemberIslandDto.from(island);
+    }
+
+    private MemberIsland createEntity(Long memberAccountId, String nickname) {
         MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
         MemberIsland island = MemberIsland.create(nickname, account);
-
-        memberIslandRepository.save(island);
         slotSetupService.setupSlots(island);
-        return island;
+        return memberIslandRepository.save(island);
     }
 
     public MemberIsland getIsland(Long memberAccountId) {

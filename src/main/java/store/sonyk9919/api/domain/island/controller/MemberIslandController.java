@@ -29,11 +29,11 @@ public class MemberIslandController {
     })
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createIsland(
+    public MemberIslandDto createIsland(
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember,
             @Validated @RequestBody MemberIslandCreateRequestDto requestDto
     ) {
-        memberIslandRegistryService.create(authMember.getId(), requestDto.getNickname());
+        return memberIslandRegistryService.createDto(authMember.getId(), requestDto.getNickname());
     }
 
     @Operation(summary = "섬 정보 조회", description = "회원의 섬 정보를 상세 조회합니다.")
