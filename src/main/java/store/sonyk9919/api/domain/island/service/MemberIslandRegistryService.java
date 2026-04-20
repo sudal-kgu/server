@@ -35,8 +35,9 @@ public class MemberIslandRegistryService {
     private MemberIsland createEntity(Long memberAccountId, String nickname) {
         MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
         MemberIsland island = MemberIsland.create(nickname, account);
+        memberIslandRepository.save(island);
         slotSetupService.setupSlots(island);
-        return memberIslandRepository.save(island);
+        return island;
     }
 
     public MemberIsland getIsland(Long memberAccountId) {
