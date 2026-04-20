@@ -39,13 +39,14 @@ public class Building {
     private LocalDateTime lastCollectedAt;
     private LocalDateTime fuelExpiredAt;
 
-    private Building(BuildingMetadata buildingMetadata) {
+    private Building(MemberIsland island, BuildingMetadata buildingMetadata) {
         this.buildingMetadata = buildingMetadata;
+        this.island = island;
         this.currentLevel = 1;
     }
 
-    public static Building of(BuildingMetadata buildingMetadata){
-        return new Building(buildingMetadata);
+    public static Building of(MemberIsland island, BuildingMetadata buildingMetadata) {
+        return new Building(island, buildingMetadata);
     }
 
     public void operate(LocalDateTime now, int durationSecond) {
