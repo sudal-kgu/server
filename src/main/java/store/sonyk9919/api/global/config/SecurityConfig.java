@@ -38,6 +38,7 @@ public class SecurityConfig {
                                 "/v1/oauth/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
+                                "/swagger-ui.html",
                                 "/h2-console/**"
                         ).permitAll()
                         .anyRequest().hasAnyAuthority(AccountRole.USER.getKey(), AccountRole.ADMIN.getKey())
