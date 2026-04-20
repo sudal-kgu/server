@@ -58,7 +58,7 @@ jwt:
 
 security:
   cookie:
-    sameSite: Lax
+    sameSite: None
     domain: .sonyk9919.store
 
   cors:
