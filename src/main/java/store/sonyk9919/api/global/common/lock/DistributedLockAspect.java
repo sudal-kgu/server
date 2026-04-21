@@ -17,7 +17,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 
 @Aspect
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE - 1)  // @Transactional보다 먼저 실행 → 락이 트랜잭션을 감쌈
+@Order(Ordered.LOWEST_PRECEDENCE - 1)
 @RequiredArgsConstructor
 public class DistributedLockAspect {
 
