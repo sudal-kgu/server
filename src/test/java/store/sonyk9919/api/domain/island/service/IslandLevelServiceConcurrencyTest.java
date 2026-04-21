@@ -84,13 +84,13 @@ class IslandLevelServiceConcurrencyTest {
         int expectedExp = 300;
 
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
-        CountDownLatch startLatch = new CountDownLatch(1);  // 모든 스레드가 동시에 출발
-        CountDownLatch doneLatch = new CountDownLatch(threadCount);  // 모든 스레드가 끝날 때까지 대기
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
-                    startLatch.await();  // 신호 올 때까지 대기
+                    startLatch.await();
                     islandLevelService.addRecyclingExp(memberAccountId);
                 } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
@@ -100,8 +100,8 @@ class IslandLevelServiceConcurrencyTest {
             });
         }
 
-        startLatch.countDown();  // 모든 스레드 동시 출발
-        doneLatch.await();       // 모든 스레드 완료 대기
+        startLatch.countDown();
+        doneLatch.await();
         executor.shutdown();
 
         Integer cumulativeExp = jdbcTemplate.queryForObject(
