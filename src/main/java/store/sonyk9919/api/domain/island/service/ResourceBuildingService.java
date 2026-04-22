@@ -40,7 +40,7 @@ public class ResourceBuildingService {
     
     private void subtractByType(MemberIsland island, ResourceType type, int cost){
         MemberResource resource = memberResourceRepository
-                .findWithLockByIslandAndResourceType(island, type)
+                .findByIslandAndResourceType(island, type)
                 .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
 
         resource.subtractAmount(cost);
@@ -48,7 +48,7 @@ public class ResourceBuildingService {
 
     private void addByType(MemberIsland island, ResourceType type, int amount) {
         MemberResource resource = memberResourceRepository
-                .findWithLockByIslandAndResourceType(island, type)
+                .findByIslandAndResourceType(island, type)
                 .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
 
         resource.addAmount(amount);

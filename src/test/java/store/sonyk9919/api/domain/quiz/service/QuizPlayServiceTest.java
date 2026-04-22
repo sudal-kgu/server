@@ -60,7 +60,7 @@ class QuizPlayServiceTest {
         TrashTaxonomy taxonomy = mock(TrashTaxonomy.class);
         TrashCategory category = mock(TrashCategory.class);
 
-        given(memberIslandRegistryService.getIslandWithWriteLock(memberId)).willReturn(island);
+        given(memberIslandRegistryService.getIsland(memberId)).willReturn(island);
         given(quizSessionRegistryService.getActiveSession(island)).willReturn(Optional.empty());
 
         given(quizSessionRegistryService.create(island)).willReturn(newSession);

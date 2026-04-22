@@ -16,6 +16,7 @@ import store.sonyk9919.api.domain.trash.service.TrashSearchService;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 import java.util.List;
+import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Service
 @RequiredArgsConstructor
@@ -28,9 +29,10 @@ public class QuizPlayService {
     private final TrashSearchService trashSearchService;
     private final MemberIslandRegistryService memberIslandRegistryService;
 
+    @DistributedLock(key = "'quiz:' + #memberAccountId")
     @Transactional
     public QuizSessionResponseDto startSession(Long memberAccountId, String serial) {
-        MemberIsland island = memberIslandRegistryService.getIslandWithWriteLock(memberAccountId);
+        MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
         return quizSessionRegistryService.getActiveSession(island).map(session -> {
             List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(session);
             return QuizSessionResponseDto.from(session, problems);
