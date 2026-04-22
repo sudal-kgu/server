@@ -23,9 +23,19 @@ public class ResourceBuildingService {
     }
 
     @Transactional
+    public void subtractFuel(MemberIsland island, int fuel) {
+        if (fuel > 0) subtractByType(island, ResourceType.FUEL, fuel);
+    }
+
+    @Transactional
     public void addResource(MemberIsland island, int refundShells, int refundGems) {
         if (refundShells > 0) addByType(island, ResourceType.SHELL, refundShells);
         if (refundGems > 0) addByType(island, ResourceType.GEM, refundGems);
+    }
+
+    @Transactional
+    public void addGems(MemberIsland island, int gem) {
+        if (gem > 0) addByType(island, ResourceType.GEM, gem);
     }
     
     private void subtractByType(MemberIsland island, ResourceType type, int cost){

@@ -55,6 +55,12 @@ public class Slot {
         return new Slot(island, slotNumber);
     }
 
+    public Building getBuilding(){
+        if(building == null) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
+
+        return building;
+    }
+
     public void activate() {
         if (activated) throw new CustomException(SlotStatus.SLOT_ALREADY_ACTIVATED);
 
