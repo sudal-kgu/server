@@ -21,7 +21,7 @@ public class IslandLevelService {
     private final LevelSpecCache levelSpecCache;
     private final ApplicationEventPublisher eventPublisher;
 
-    @DistributedLock(key = "'island:' + #memberAccountId")
+    @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
     @Transactional
     public void addRecyclingExp(Long memberAccountId) {
         MemberIsland island = getIsland(memberAccountId);
@@ -30,7 +30,7 @@ public class IslandLevelService {
         checkAndProcessLevelUp(island);
     }
 
-    @DistributedLock(key = "'island:' + #memberAccountId")
+    @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
     @Transactional
     public void addItemExp(Long memberAccountId, int expAmount) {
         MemberIsland island = getIsland(memberAccountId);
