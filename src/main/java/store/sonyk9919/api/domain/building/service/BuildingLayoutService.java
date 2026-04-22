@@ -25,6 +25,7 @@ public class BuildingLayoutService {
     private final BuildingMetadataRepository metadataRepository;
     private final MemberIslandRegistryService memberIslandService;
     private final ResourceBuildingService resourceService;
+    private final IslandBoostCache islandBoostCache;
 
     @Transactional
     public void buildOf(Long memberId, Integer slotNumber, BuildingLayoutDto layoutDto) {
@@ -43,6 +44,7 @@ public class BuildingLayoutService {
         );
 
         slot.build(Building.of(island, metadata));
+        islandBoostCache.evictBoostCache(island);
     }
 
     @Transactional
@@ -62,6 +64,7 @@ public class BuildingLayoutService {
         );
 
         slot.demolish();
+        islandBoostCache.evictBoostCache(island);
     }
 
     private Slot getSlot(Long memberId, Integer slotNumber) {
