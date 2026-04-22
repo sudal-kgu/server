@@ -4,18 +4,17 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import store.sonyk9919.api.domain.auth.service.KakaoProvider;
 import store.sonyk9919.api.global.file.resolver.FilePathResolver;
+import store.sonyk9919.api.support.IntegrationTestSupport;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -23,18 +22,8 @@ import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
 @Testcontainers
-class IslandLevelServiceConcurrencyTest {
-
-    @MockitoBean
-    private KakaoProvider kakaoProvider;
-
-    @MockitoBean
-    private ConnectionFactory connectionFactory;
-
-    @MockitoBean
-    private FilePathResolver filePathResolver;
+class IslandLevelServiceConcurrencyTest extends IntegrationTestSupport {
 
     @Container
     private static final GenericContainer<?> redis =
