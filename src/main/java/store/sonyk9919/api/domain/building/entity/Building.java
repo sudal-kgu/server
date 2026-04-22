@@ -53,32 +53,34 @@ public class Building {
         return buildingMetadata.getYieldForLevel(currentLevel);
     }
 
-
-    public void operate(LocalDateTime now, int durationSecond) {
-        if (!buildingMetadata.isProductionType()) {
-            throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
-        }
-
-        lastCollectedAt = now;
-        fuelExpiredAt = now.plusSeconds(durationSecond);
-    }
-
     public boolean isOperating(LocalDateTime now) {
         if (fuelExpiredAt == null) return false;
         return now.isBefore(fuelExpiredAt);
     }
 
-    public void updateCollectedTime(LocalDateTime now, LocalDateTime fuelExpiredAt) {
+    public boolean canHarvest() {
+        if (fuelExpiredAt == null) return false;
+        return buildingMetadata.isProductionType();
+    }
+
+    public void operate(LocalDateTime now, int durationSecond) {
+        if (!buildingMetadata.isProductionType()) {
+            throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
+        }
+        if (isOperating(now)) {
+            throw new CustomException(BuildingStatus.ALREADY_OPERATING);
+        }
+        lastCollectedAt = now;
+        fuelExpiredAt = now.plusSeconds(durationSecond);
+    }
+
+    public void updateCollectedTime(LocalDateTime baseTime) {
         if (fuelExpiredAt == null || lastCollectedAt == null) {
             throw new CustomException(BuildingStatus.NOT_OPERATING);
         }
-        if (now.isBefore(lastCollectedAt)) {
+        if (baseTime.isBefore(lastCollectedAt)) {
             throw new CustomException(BuildingStatus.INVALID_COLLECT_TIME);
         }
-        if (!lastCollectedAt.isBefore(fuelExpiredAt)) {
-            throw new CustomException(BuildingStatus.NOT_OPERATING);
-        }
-
-        lastCollectedAt = now;
+        lastCollectedAt = baseTime;
     }
 }
