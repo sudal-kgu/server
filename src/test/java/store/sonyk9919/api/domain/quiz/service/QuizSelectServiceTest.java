@@ -11,12 +11,16 @@ import store.sonyk9919.api.domain.quiz.repository.QuizRepository;
 import store.sonyk9919.api.domain.taxonomy.entity.TrashCategory;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -34,12 +38,18 @@ class QuizSelectServiceTest {
         // Given
         TrashCategory category = mock(TrashCategory.class);
         int randomCount = ThreadLocalRandom.current().nextInt(3, 11);
+        List<Long> mockQuizIds = LongStream.range(0, randomCount)
+                .boxed()
+                .collect(Collectors.toCollection(ArrayList::new));
+
         List<Quiz> mockQuizzes = IntStream.range(0, randomCount)
                 .mapToObj(i -> mock(Quiz.class))
                 .toList();
 
         given(category.getId()).willReturn(1L);
-        given(quizRepository.findAllByCategory(1L, randomCount))
+        given(quizRepository.findAllIdByCategory(1L))
+                .willReturn(mockQuizIds);
+        given(quizRepository.findAllByIdIn(anyList()))
                 .willReturn(mockQuizzes);
 
         // When
@@ -56,11 +66,11 @@ class QuizSelectServiceTest {
         TrashCategory category = mock(TrashCategory.class);
         int requestCount = ThreadLocalRandom.current().nextInt(3, 11);
         int returnedCount = requestCount - 1;
-        List<Quiz> notEnoughQuizzes = IntStream.range(0, returnedCount)
-                .mapToObj(i -> mock(Quiz.class))
+        List<Long> notEnoughQuizzes = LongStream.range(0, returnedCount)
+                .boxed()
                 .toList();
 
-        given(quizRepository.findAllByCategory(1L, requestCount))
+        given(quizRepository.findAllIdByCategory(1L))
                 .willReturn(notEnoughQuizzes);
         given(category.getId()).willReturn(1L);
 
