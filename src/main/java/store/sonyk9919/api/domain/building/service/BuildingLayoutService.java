@@ -16,6 +16,7 @@ import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
+import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +28,7 @@ public class BuildingLayoutService {
     private final ResourceBuildingService resourceService;
     private final IslandBoostCache islandBoostCache;
 
+    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
     public void buildOf(Long memberId, Integer slotNumber, BuildingLayoutDto layoutDto) {
         Slot slot = getSlot(memberId, slotNumber);
@@ -47,6 +49,7 @@ public class BuildingLayoutService {
         islandBoostCache.evictBoostCache(island);
     }
 
+    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
     public void demolishOf(Long memberId, Integer slotNumber) {
         Slot slot = getSlot(memberId, slotNumber);

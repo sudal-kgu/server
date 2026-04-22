@@ -15,10 +15,10 @@ import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
+import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
 public class BuildingHarvestService {
 
     private final SlotRepository slotRepository;
@@ -26,6 +26,8 @@ public class BuildingHarvestService {
     private final ResourceBuildingService resourceService;
     private final IslandBoostCache islandBoostCache;
 
+    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
+    @Transactional
     public int harvest(Long memberId, Integer slotNumber) {
         Slot slot = getSlot(memberId, slotNumber);
         Building building = slot.getBuilding();
@@ -38,6 +40,8 @@ public class BuildingHarvestService {
         return gems;
     }
 
+    @DistributedLock(key = "'island:' + #memberId")
+    @Transactional
     public int harvestAll(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
         LocalDateTime now   = LocalDateTime.now();

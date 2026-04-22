@@ -15,4 +15,6 @@ public interface MemberResourceRepository extends JpaRepository<MemberResource, 
     Optional<MemberResource> findWithLockByIslandAndResourceType(MemberIsland island, ResourceType type);
 
     List<MemberResource> findAllByIslandMemberAccountId(Long memberAccountId);
+
+    Optional<MemberResource> findByIslandAndResourceType(MemberIsland island, ResourceType type);
 }
