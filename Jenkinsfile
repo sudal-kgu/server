@@ -8,10 +8,30 @@ pipeline {
             }
         }
 
-        stage('Test & Build') {
+        stage('Prepare') {
+            steps {
+                withCredentials([
+                        file(credentialsId: 'SECRET_YML', variable: 'SECRET_YML')
+                ]) {
+                    sh "cp ${SECRET_YML} ./src/main/resources/application-secret.yml"
+                }
+            }
+        }
+
+        stage('Test') {
             steps {
                 sh 'chmod +x gradlew'
-                sh './gradlew clean bootJar'
+                sh './gradlew clean test'
+            }
+        }
+
+        stage('Build') {
+            when {
+                branch 'develop'
+            }
+
+            steps {
+                sh './gradlew bootJar'
             }
         }
 
@@ -23,9 +43,7 @@ pipeline {
             steps {
                 withCredentials([
                         string(credentialsId: 'DBPW', variable: 'DB_PASSWORD'),
-                        file(credentialsId: 'SECRET_YML', variable: 'SECRET_YML')
                 ]) {
-                    sh "cp ${SECRET_YML} ./src/main/resources/application-secret.yml"
                     sh """
                         SPRING_PROFILE=${env.APP_PROD_PROFILE} \
                         APP_PORT=${env.APP_PROD_PORT} \
