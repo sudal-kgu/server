@@ -46,7 +46,7 @@ public class IslandLevelService {
 
         int previousLevel = island.getLevel();
         island.levelUp();
-        eventPublisher.publishEvent(new IslandLevelUpEvent(
+        eventPublisher.publishEvent(IslandLevelUpEvent.of(
                 island.getMemberAccount().getId(),
                 island.getId(),
                 previousLevel,
