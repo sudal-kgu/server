@@ -23,6 +23,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import store.sonyk9919.api.domain.analysis.dto.AnalysisResponseDto;
 import store.sonyk9919.api.domain.analysis.service.AnalysisResultNotifier;
 import store.sonyk9919.api.global.config.property.RabbitMQProperty;
+import org.redisson.api.RedissonClient;
 
 @SpringBootTest
 @Testcontainers
@@ -36,6 +37,9 @@ class RabbitMQIntegrationTest {
 
     @MockitoBean
     private AnalysisResultNotifier analysisResultNotifier;
+
+    @MockitoBean
+    private RedissonClient redissonClient;
 
     @Container
     private static final GenericContainer<?> rabbitMQ =
