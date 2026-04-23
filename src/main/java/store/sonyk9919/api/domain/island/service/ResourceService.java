@@ -1,0 +1,44 @@
+package store.sonyk9919.api.domain.island.service;
+
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
+import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.MemberResource;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.exception.ResourceStatus;
+import store.sonyk9919.api.domain.island.repository.MemberResourceRepository;
+import store.sonyk9919.api.global.common.exception.CustomException;
+
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
+public class ResourceService {
+
+    private final MemberResourceRepository memberResourceRepository;
+
+    @Transactional
+    public MemberResource add(MemberIsland island, ResourceType type, long amount) {
+        MemberResource resource = memberResourceRepository
+                .findWithLockByIslandAndResourceType(island, type)
+                .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
+        resource.addAmount(amount);
+        return resource;
+    }
+
+    @Transactional
+    public MemberResource subtract(MemberIsland island, ResourceType type, long amount) {
+        MemberResource resource = memberResourceRepository
+                .findWithLockByIslandAndResourceType(island, type)
+                .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
+        resource.subtractAmount(amount);
+        return resource;
+    }
+    
+    public ResourceBalanceResponse getBalance(Long memberAccountId) {
+        List<MemberResource> resources = memberResourceRepository.findAllByIslandMemberAccountId(memberAccountId);
+        return ResourceBalanceResponse.from(resources);
+    }
+}

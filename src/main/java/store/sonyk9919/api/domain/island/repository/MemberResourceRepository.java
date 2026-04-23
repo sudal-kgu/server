@@ -1,6 +1,7 @@
 package store.sonyk9919.api.domain.island.repository;
 
 import jakarta.persistence.LockModeType;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -12,4 +13,6 @@ public interface MemberResourceRepository extends JpaRepository<MemberResource, 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     Optional<MemberResource> findWithLockByIslandAndResourceType(MemberIsland island, ResourceType type);
+
+    List<MemberResource> findAllByIslandMemberAccountId(Long memberAccountId);
 }
