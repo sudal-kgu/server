@@ -7,7 +7,6 @@ import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 
 import java.util.List;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,13 +38,6 @@ class ResourceServiceTest {
     @Autowired private MemberResourceRepository memberResourceRepository;
     private MemberAccount savedAccount;
     private MemberIsland savedIsland;
-
-    @AfterEach
-    void tearDown() {
-        memberResourceRepository.deleteAll();
-        memberIslandRepository.deleteAll();
-        memberAccountRepository.deleteAll();
-    }
 
     private void setup(long shell, long gem, long fuel) {
         OAuthUserInfoDto userInfo = mock(OAuthUserInfoDto.class);
