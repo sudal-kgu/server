@@ -1,10 +1,12 @@
 package store.sonyk9919.api.domain.island.service;
 
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
+import store.sonyk9919.api.domain.island.dto.ResourceChange;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
@@ -37,6 +39,22 @@ public class ResourceService {
         return resource;
     }
     
+    @Transactional
+    public void applyMultiple(MemberIsland island, List<ResourceChange> changes) {
+        changes.stream()
+                .sorted(Comparator.comparingInt(c -> c.getType().ordinal()))
+                .forEach(change -> {
+                    MemberResource resource = memberResourceRepository
+                            .findWithLockByIslandAndResourceType(island, change.getType())
+                            .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
+                    if (change.getDelta() > 0) {
+                        resource.addAmount(change.getDelta());
+                    } else {
+                        resource.subtractAmount(-change.getDelta());
+                    }
+                });
+    }
+
     public ResourceBalanceResponse getBalance(Long memberAccountId) {
         List<MemberResource> resources = memberResourceRepository.findAllByIslandMemberAccountId(memberAccountId);
         return ResourceBalanceResponse.from(resources);
