@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.dto.ResourceChange;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.OperationType;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.ResourceStatus;
@@ -47,10 +48,9 @@ public class ResourceService {
                     MemberResource resource = memberResourceRepository
                             .findWithLockByIslandAndResourceType(island, change.getType())
                             .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
-                    if (change.getDelta() > 0) {
-                        resource.addAmount(change.getDelta());
-                    } else {
-                        resource.subtractAmount(-change.getDelta());
+                    switch (change.getOperation()) {
+                        case ADD -> resource.addAmount(change.getDelta());
+                        case SUBTRACT -> resource.subtractAmount(change.getDelta());
                     }
                 });
     }
