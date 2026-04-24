@@ -41,10 +41,10 @@ public class ResourceService {
     }
     
     @Transactional
-    public void applyMultiple(MemberIsland island, List<ResourceChange> changes) {
-        changes.stream()
+    public List<MemberResource> applyMultiple(MemberIsland island, List<ResourceChange> changes) {
+        return changes.stream()
                 .sorted(Comparator.comparingInt(c -> c.getType().ordinal()))
-                .forEach(change -> {
+                .map(change -> {
                     MemberResource resource = memberResourceRepository
                             .findWithLockByIslandAndResourceType(island, change.getType())
                             .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
@@ -52,7 +52,9 @@ public class ResourceService {
                         case ADD -> resource.addAmount(change.getDelta());
                         case SUBTRACT -> resource.subtractAmount(change.getDelta());
                     }
-                });
+                    return resource;
+                })
+                .toList();
     }
 
     public ResourceBalanceResponse getBalance(Long memberAccountId) {
