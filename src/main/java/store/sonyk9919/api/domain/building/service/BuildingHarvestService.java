@@ -26,21 +26,24 @@ public class BuildingHarvestService {
     private final ResourceBuildingService resourceService;
     private final IslandBoostCache islandBoostCache;
 
-    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
+    @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
     public int harvest(Long memberId, Integer slotNumber) {
-        Slot slot = getSlot(memberId, slotNumber);
+        MemberIsland island = memberIslandService.getIsland(memberId);
+        Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
+                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
+
         Building building = slot.getBuilding();
         LocalDateTime now = LocalDateTime.now();
 
-        int gems = computeGems(building, slot.getIsland(), now);
+        int gems = computeGems(building, island, now);
         if (gems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        applyHarvest(building, slot.getIsland(), gems, now);
+        applyHarvest(building, island, gems, now);
         return gems;
     }
 
-    @DistributedLock(key = "'island:' + #memberId")
+    @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
     public int harvestAll(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
@@ -89,12 +92,6 @@ public class BuildingHarvestService {
         if (calc.calculate(boostPercent) > 0) {
             building.updateCollectedTime(calc.getBaseTime());
         }
-    }
-
-    private Slot getSlot(Long memberId, Integer slotNumber) {
-        MemberIsland island = memberIslandService.getIsland(memberId);
-        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
     }
 
     private List<Slot> getHarvestableSlots(MemberIsland island) {
