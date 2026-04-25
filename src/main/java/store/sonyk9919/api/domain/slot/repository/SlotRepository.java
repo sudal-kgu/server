@@ -9,7 +9,7 @@ import store.sonyk9919.api.domain.slot.entity.Slot;
 
 public interface SlotRepository extends JpaRepository<Slot, Long> {
 
-    @EntityGraph(attributePaths = {"building", "building.buildingMetadata"})
+    @EntityGraph(attributePaths = {"building", "building.buildingMetadata", "building.buildingMetadata.yields"})
     List<Slot> findAllByIsland(MemberIsland island);
 
     @EntityGraph(attributePaths = {"building", "building.buildingMetadata"})
