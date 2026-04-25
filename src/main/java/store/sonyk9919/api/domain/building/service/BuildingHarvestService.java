@@ -44,7 +44,7 @@ public class BuildingHarvestService {
     @Transactional
     public int harvestAll(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
-        LocalDateTime now   = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         double boostPercent = islandBoostCache.getTotalBoost(island);
 
         List<Slot> harvestableSlots = getHarvestableSlots(island);
@@ -99,6 +99,7 @@ public class BuildingHarvestService {
 
     private List<Slot> getHarvestableSlots(MemberIsland island) {
         return slotRepository.findAllByIsland(island).stream()
+                .filter(Slot::hasBuilding)
                 .filter(slot -> slot.getBuilding().canHarvest())
                 .collect(Collectors.toList());
     }
