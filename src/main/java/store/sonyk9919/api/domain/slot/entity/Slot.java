@@ -55,6 +55,10 @@ public class Slot {
         return new Slot(island, slotNumber);
     }
 
+    public boolean hasBuilding() {
+        return building != null;
+    }
+
     public Building getBuilding(){
         if(building == null) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
 
