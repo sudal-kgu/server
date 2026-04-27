@@ -24,4 +24,8 @@ public class BuildingEffect {
     public static BuildingEffect of(EffectType type, double value) {
         return new BuildingEffect(type, value);
     }
+
+    public boolean isIslandBoost() {
+        return type != null && type == EffectType.ISLAND_BOOST;
+    }
 }
