@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.exception.ResourceStatus;
 import store.sonyk9919.api.domain.island.repository.MemberResourceRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
@@ -18,24 +19,27 @@ public class ResourceBuildingService {
 
     @Transactional
     public void subtractResource(MemberIsland island, int costShells, int costGems) {
-        if (costShells > 0)  subtractByType(island, ResourceType.SHELL, costShells);
+        validateResourceAmounts(costShells, costGems);
+        if (costShells > 0) subtractByType(island, ResourceType.SHELL, costShells);
         if (costGems > 0) subtractByType(island, ResourceType.GEM, costGems);
     }
 
     @Transactional
     public void subtractFuel(MemberIsland island, int fuel) {
-        if (fuel > 0) subtractByType(island, ResourceType.FUEL, fuel);
+        if (fuel <= 0) throw new CustomException(IslandStatus.INVALID_AMOUNT);
+        subtractByType(island, ResourceType.FUEL, fuel);
     }
 
-    @Transactional
     public void addResource(MemberIsland island, int refundShells, int refundGems) {
+        validateResourceAmounts(refundShells, refundGems);
         if (refundShells > 0) addByType(island, ResourceType.SHELL, refundShells);
         if (refundGems > 0) addByType(island, ResourceType.GEM, refundGems);
     }
 
     @Transactional
     public void addGems(MemberIsland island, int gem) {
-        if (gem > 0) addByType(island, ResourceType.GEM, gem);
+        if (gem <= 0) throw new CustomException(IslandStatus.INVALID_AMOUNT);
+        addByType(island, ResourceType.GEM, gem);
     }
     
     private void subtractByType(MemberIsland island, ResourceType type, int cost){
@@ -52,5 +56,14 @@ public class ResourceBuildingService {
                 .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
 
         resource.addAmount(amount);
+    }
+
+    private void validateResourceAmounts(int shells, int gems) {
+        if (shells < 0 || gems < 0) {
+            throw new CustomException(IslandStatus.INVALID_AMOUNT);
+        }
+        if (shells == 0 && gems == 0) {
+            throw new CustomException(IslandStatus.INVALID_AMOUNT);
+        }
     }
 }
