@@ -27,10 +27,6 @@ public class HarvestCalculator {
         return (int) (baseProduction * multiplier);
     }
 
-    public int calculate() {
-        return calculate(0.0);
-    }
-
     public LocalDateTime getBaseTime() {
         return baseTime;
     }
