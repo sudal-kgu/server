@@ -34,64 +34,39 @@ public class BuildingHarvestService {
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
 
         Building building = slot.getBuilding();
-        LocalDateTime now = LocalDateTime.now();
 
-        int gems = computeGems(building, island, now);
+        HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());
+        int gems = computeGems(island, calculator);
         if (gems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        applyHarvest(building, island, gems, now);
+        applyHarvest(building, island, gems, calculator);
         return gems;
+    }
+
+    private int computeGems(MemberIsland island, HarvestCalculator calculator) {
+        double boostPercent = islandBoostCache.getTotalBoost(island);
+
+        return calculator.calculate(boostPercent);
+    }
+
+    private void applyHarvest(Building building, MemberIsland island, int gems, HarvestCalculator calculator) {
+        building.updateCollectedTime(calculator.getBaseTime());
+        resourceService.addGems(island, gems);
     }
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
     public int harvestAll(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
-        LocalDateTime now = LocalDateTime.now();
         double boostPercent = islandBoostCache.getTotalBoost(island);
 
         List<Slot> harvestableSlots = getHarvestableSlots(island);
-        int totalGems = sumGems(harvestableSlots, boostPercent, now);
 
+        int totalGems = applyAndSumGems(harvestableSlots, boostPercent, LocalDateTime.now());
         if (totalGems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        harvestableSlots.forEach(slot ->
-                applyHarvestToBuilding(slot.getBuilding(), now, boostPercent)
-        );
         resourceService.addGems(island, totalGems);
-
         return totalGems;
-    }
-
-    private int computeGems(Building building, MemberIsland island, LocalDateTime now) {
-        double boostPercent = islandBoostCache.getTotalBoost(island);
-
-        return HarvestCalculator.of(building, now)
-                .calculate(boostPercent);
-    }
-
-    private int sumGems(List<Slot> slots, double boostPercent, LocalDateTime now) {
-        return slots.stream()
-                .mapToInt(slot ->
-                        HarvestCalculator.of(slot.getBuilding(), now)
-                                .calculate(boostPercent)
-                )
-                .sum();
-    }
-
-    private void applyHarvest(Building building, MemberIsland island, int gems, LocalDateTime now) {
-        HarvestCalculator calc = HarvestCalculator.of(building, now);
-
-        building.updateCollectedTime(calc.getBaseTime());
-        resourceService.addGems(island, gems);
-    }
-
-    private void applyHarvestToBuilding(Building building, LocalDateTime now, double boostPercent) {
-        HarvestCalculator calc = HarvestCalculator.of(building, now);
-
-        if (calc.calculate(boostPercent) > 0) {
-            building.updateCollectedTime(calc.getBaseTime());
-        }
     }
 
     private List<Slot> getHarvestableSlots(MemberIsland island) {
@@ -99,5 +74,17 @@ public class BuildingHarvestService {
                 .filter(Slot::hasBuilding)
                 .filter(slot -> slot.getBuilding().canHarvest())
                 .collect(Collectors.toList());
+    }
+
+    private int applyAndSumGems(List<Slot> slots, double boostPercent, LocalDateTime now) {
+        return slots.stream()
+                .mapToInt(slot -> {
+                    Building building = slot.getBuilding();
+                    HarvestCalculator calculator = HarvestCalculator.of(building, now);
+                    int gems = calculator.calculate(boostPercent);
+                    if (gems > 0) building.updateCollectedTime(calculator.getBaseTime());
+                    return gems;
+                })
+                .sum();
     }
 }
