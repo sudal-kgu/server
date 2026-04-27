@@ -53,7 +53,8 @@ public class Building {
         return buildingMetadata.getYieldForLevel(currentLevel);
     }
 
-    public boolean isOperating(LocalDateTime now) {
+    public boolean isOperating() {
+        LocalDateTime now = LocalDateTime.now();
         if (fuelExpiredAt == null) return false;
         return now.isBefore(fuelExpiredAt);
     }
@@ -63,11 +64,12 @@ public class Building {
         return buildingMetadata.isProductionType();
     }
 
-    public void operate(LocalDateTime now, int durationSecond) {
+    public void operate(int durationSecond) {
         if (!buildingMetadata.isProductionType()) {
             throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
         }
-        if (isOperating(now)) {
+        LocalDateTime now = LocalDateTime.now();
+        if (fuelExpiredAt != null && now.isBefore(fuelExpiredAt)) {
             throw new CustomException(BuildingStatus.ALREADY_OPERATING);
         }
         lastCollectedAt = now;

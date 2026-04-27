@@ -1,6 +1,5 @@
 package store.sonyk9919.api.domain.building.dto;
 
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,7 +25,7 @@ public class BuildingInfoDto {
                 metadata.getCategory().name(),
                 metadata.getModel(),
                 building.getCurrentLevel(),
-                building.isOperating(LocalDateTime.now())
+                building.isOperating()
         );
     }
 }
