@@ -1,6 +1,5 @@
 package store.sonyk9919.api.domain.building.service;
 
-import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,7 +29,7 @@ public class BuildingOperateService {
         Building building = slot.getBuilding();
         BuildingYield yield = building.getCurrentYield();
 
-        building.operate(LocalDateTime.now(), yield.getDurationSecond());
+        building.operate(yield.getDurationSecond());
         resourceService.subtractFuel(slot.getIsland(), yield.getRequiredFuel());
     }
 

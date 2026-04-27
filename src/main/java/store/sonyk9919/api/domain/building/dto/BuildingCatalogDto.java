@@ -1,4 +1,3 @@
-// src/main/java/store/sonyk9919/api/domain/building/dto/BuildingCatalogResponseDto.java
 package store.sonyk9919.api.domain.building.dto;
 
 import lombok.AccessLevel;

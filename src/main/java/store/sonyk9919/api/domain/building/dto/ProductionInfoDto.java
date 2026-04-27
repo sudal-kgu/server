@@ -18,7 +18,7 @@ public class ProductionInfoDto {
     public static ProductionInfoDto of(Building building, BuildingYield yield) {
         return new ProductionInfoDto(
                 yield.getPph(),
-                building.isOperating(LocalDateTime.now()),
+                building.isOperating(),
                 building.getLastCollectedAt(),
                 building.getFuelExpiredAt()
         );
