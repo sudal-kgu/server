@@ -6,8 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
-import store.sonyk9919.api.domain.island.service.ResourceBuildingService;
+import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
@@ -20,7 +21,7 @@ public class BuildingOperateService {
 
     private final SlotRepository slotRepository;
     private final MemberIslandRegistryService memberIslandService;
-    private final ResourceBuildingService resourceService;
+    private final ResourceService resourceService;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -30,7 +31,7 @@ public class BuildingOperateService {
         BuildingYield yield = building.getCurrentYield();
 
         building.operate(yield.getDurationSecond());
-        resourceService.subtractFuel(slot.getIsland(), yield.getRequiredFuel());
+        resourceService.subtract(slot.getIsland(), ResourceType.FUEL, yield.getRequiredFuel());
     }
 
     private Slot getSlot(Long memberId, Integer slotNumber) {

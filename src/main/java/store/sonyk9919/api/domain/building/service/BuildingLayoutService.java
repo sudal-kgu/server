@@ -10,8 +10,9 @@ import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.building.repository.BuildingMetadataRepository;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
-import store.sonyk9919.api.domain.island.service.ResourceBuildingService;
+import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
@@ -25,7 +26,7 @@ public class BuildingLayoutService {
     private final SlotRepository slotRepository;
     private final BuildingMetadataRepository metadataRepository;
     private final MemberIslandRegistryService memberIslandService;
-    private final ResourceBuildingService resourceService;
+    private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
@@ -39,11 +40,12 @@ public class BuildingLayoutService {
 
         BuildingYield yield = metadata.getYieldForLevel(1);
 
-        resourceService.subtractResource(
-                island,
-                yield.getCostShells(),
-                yield.getCostGems()
-        );
+        if (yield.getCostShells() > 0) {
+            resourceService.subtract(island, ResourceType.SHELL, yield.getCostShells());
+        }
+        if (yield.getCostGems() > 0) {
+            resourceService.subtract(island, ResourceType.GEM, yield.getCostGems());
+        }
 
         slot.build(Building.of(island, metadata));
         islandBoostCache.evictBoostCache(island);
@@ -60,11 +62,12 @@ public class BuildingLayoutService {
 
         BuildingYield yield = building.getCurrentYield();
 
-        resourceService.addResource(
-                island,
-                yield.getRefundShell(),
-                yield.getRefundGem()
-        );
+        if (yield.getRefundShell() > 0) {
+            resourceService.add(island, ResourceType.SHELL, yield.getRefundShell());
+        }
+        if (yield.getRefundGem() > 0) {
+            resourceService.add(island, ResourceType.GEM, yield.getRefundGem());
+        }
 
         slot.demolish();
         islandBoostCache.evictBoostCache(island);

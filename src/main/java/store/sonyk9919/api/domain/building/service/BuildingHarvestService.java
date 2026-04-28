@@ -9,8 +9,9 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
-import store.sonyk9919.api.domain.island.service.ResourceBuildingService;
+import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
@@ -23,7 +24,7 @@ public class BuildingHarvestService {
 
     private final SlotRepository slotRepository;
     private final MemberIslandRegistryService memberIslandService;
-    private final ResourceBuildingService resourceService;
+    private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
@@ -45,13 +46,12 @@ public class BuildingHarvestService {
 
     private int computeGems(MemberIsland island, HarvestCalculator calculator) {
         double boostPercent = islandBoostCache.getTotalBoost(island);
-
         return calculator.calculate(boostPercent);
     }
 
     private void applyHarvest(Building building, MemberIsland island, int gems, HarvestCalculator calculator) {
         building.updateCollectedTime(calculator.getBaseTime());
-        resourceService.addGems(island, gems);
+        resourceService.add(island, ResourceType.GEM, gems);
     }
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
@@ -65,7 +65,7 @@ public class BuildingHarvestService {
         int totalGems = applyAndSumGems(harvestableSlots, boostPercent, LocalDateTime.now());
         if (totalGems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        resourceService.addGems(island, totalGems);
+        resourceService.add(island, ResourceType.GEM, totalGems);
         return totalGems;
     }
 
