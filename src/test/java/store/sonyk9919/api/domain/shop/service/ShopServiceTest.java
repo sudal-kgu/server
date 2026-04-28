@@ -38,9 +38,9 @@ class ShopServiceTest {
         allItems = List.of(
                 createItem(1L, "쓰레기 제거 (소)", 100, 2, 3, 250),
                 createItem(2L, "쓰레기 제거 (대)", 100, 4, 3, 250),
-                createItem(3L, "토양 정화",       100, 8, 3, 125),
-                createItem(4L, "수질 개선",       100, 10, 3, 125),
-                createItem(5L, "나무 심기",       100, 20, 3, 75)
+                createItem(3L, "토양 정화",       50, 8, 3, 125),
+                createItem(4L, "수질 개선",       50, 10, 3, 125),
+                createItem(5L, "나무 심기",       30, 20, 3, 75)
         );
         island = mock(MemberIsland.class);
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
