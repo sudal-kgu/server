@@ -2,7 +2,8 @@ package store.sonyk9919.api.domain.building.service;
 
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.building.entity.Building;
@@ -16,6 +17,7 @@ import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 public class IslandBoostCache {
 
     private final SlotRepository slotRepository;
+    private final CacheManager cacheManager;
 
     @Cacheable(cacheNames = "islandBoost", key = "#island.id")
     public double getTotalBoost(MemberIsland island) {
@@ -34,6 +36,10 @@ public class IslandBoostCache {
                 .sum();
     }
 
-    @CacheEvict(cacheNames = "islandBoost", key = "#island.id")
-    public void evictBoostCache(MemberIsland island) { }
+    public void evictBoostCache(MemberIsland island) {
+        Cache cache = cacheManager.getCache("islandBoost");
+        if (cache != null) {
+            cache.evict(island.getId());
+        }
+    }
 }
