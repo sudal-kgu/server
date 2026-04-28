@@ -66,7 +66,7 @@ class ResourceServiceTest {
         resourceService.add(savedIsland, ResourceType.SHELL, 50);
 
         MemberResource shell = memberResourceRepository
-                .findWithLockByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
+                .findByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
         assertThat(shell.getAmount()).isEqualTo(150);
     }
 
@@ -77,7 +77,7 @@ class ResourceServiceTest {
         resourceService.subtract(savedIsland, ResourceType.SHELL, 30);
 
         MemberResource shell = memberResourceRepository
-                .findWithLockByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
+                .findByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
         assertThat(shell.getAmount()).isEqualTo(70);
     }
 
@@ -111,9 +111,9 @@ class ResourceServiceTest {
         ));
 
         MemberResource shell = memberResourceRepository
-                .findWithLockByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
+                .findByIslandAndResourceType(savedIsland, ResourceType.SHELL).get();
         MemberResource fuel = memberResourceRepository
-                .findWithLockByIslandAndResourceType(savedIsland, ResourceType.FUEL).get();
+                .findByIslandAndResourceType(savedIsland, ResourceType.FUEL).get();
         assertThat(shell.getAmount()).isEqualTo(110);
         assertThat(fuel.getAmount()).isEqualTo(30);
     }
@@ -126,9 +126,9 @@ class ResourceServiceTest {
         MemberIsland island = mock(MemberIsland.class);
         MemberResource shellResource = mock(MemberResource.class);
         MemberResource fuelResource = mock(MemberResource.class);
-        given(mockRepo.findWithLockByIslandAndResourceType(island, ResourceType.SHELL))
+        given(mockRepo.findByIslandAndResourceType(island, ResourceType.SHELL))
                 .willReturn(java.util.Optional.of(shellResource));
-        given(mockRepo.findWithLockByIslandAndResourceType(island, ResourceType.FUEL))
+        given(mockRepo.findByIslandAndResourceType(island, ResourceType.FUEL))
                 .willReturn(java.util.Optional.of(fuelResource));
 
         localService.applyMultiple(island, List.of(
@@ -137,7 +137,7 @@ class ResourceServiceTest {
         ));
 
         InOrder inOrder = inOrder(mockRepo);
-        inOrder.verify(mockRepo).findWithLockByIslandAndResourceType(island, ResourceType.SHELL);
-        inOrder.verify(mockRepo).findWithLockByIslandAndResourceType(island, ResourceType.FUEL);
+        inOrder.verify(mockRepo).findByIslandAndResourceType(island, ResourceType.SHELL);
+        inOrder.verify(mockRepo).findByIslandAndResourceType(island, ResourceType.FUEL);
     }
 }
