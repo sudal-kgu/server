@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.dto.ResourceChange;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
-import store.sonyk9919.api.domain.island.entity.OperationType;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.ResourceStatus;
@@ -25,7 +24,7 @@ public class ResourceService {
     @Transactional
     public MemberResource add(MemberIsland island, ResourceType type, long amount) {
         MemberResource resource = memberResourceRepository
-                .findWithLockByIslandAndResourceType(island, type)
+                .findByIslandAndResourceType(island, type)
                 .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
         resource.addAmount(amount);
         return resource;
@@ -34,7 +33,7 @@ public class ResourceService {
     @Transactional
     public MemberResource subtract(MemberIsland island, ResourceType type, long amount) {
         MemberResource resource = memberResourceRepository
-                .findWithLockByIslandAndResourceType(island, type)
+                .findByIslandAndResourceType(island, type)
                 .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
         resource.subtractAmount(amount);
         return resource;
@@ -46,7 +45,7 @@ public class ResourceService {
                 .sorted(Comparator.comparingInt(c -> c.getType().ordinal()))
                 .map(change -> {
                     MemberResource resource = memberResourceRepository
-                            .findWithLockByIslandAndResourceType(island, change.getType())
+                            .findByIslandAndResourceType(island, change.getType())
                             .orElseThrow(() -> new CustomException(ResourceStatus.RESOURCE_NOT_FOUND));
                     switch (change.getOperation()) {
                         case ADD -> resource.addAmount(change.getDelta());
