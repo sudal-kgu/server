@@ -20,6 +20,8 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Building {
+    private final int MAX_LEVEL = 4;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "building_id")
@@ -53,7 +55,15 @@ public class Building {
         return buildingMetadata.getYieldForLevel(currentLevel);
     }
 
+    public BuildingYield getNextYield(){
+        if(currentLevel >= MAX_LEVEL) throw new CustomException(BuildingStatus.ALREADY_MAX_LEVEL);
+        return buildingMetadata.getYieldForLevel(currentLevel + 1);
+    }
+
     public boolean isOperating() {
+        if(!buildingMetadata.isProductionType()) {
+            throw new CustomException(BuildingStatus.ALREADY_OPERATING);
+        }
         LocalDateTime now = LocalDateTime.now();
         if (fuelExpiredAt == null) return false;
         return now.isBefore(fuelExpiredAt);
@@ -84,5 +94,10 @@ public class Building {
             throw new CustomException(BuildingStatus.INVALID_COLLECT_TIME);
         }
         lastCollectedAt = baseTime;
+    }
+
+    public void levelUp(){
+        if(currentLevel >= MAX_LEVEL) throw new CustomException(BuildingStatus.ALREADY_MAX_LEVEL);
+        currentLevel+=1;
     }
 }

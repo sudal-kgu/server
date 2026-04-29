@@ -11,6 +11,7 @@ import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.building.repository.BuildingMetadataRepository;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
@@ -38,38 +39,8 @@ public class BuildingLayoutService {
         BuildingMetadata metadata = metadataRepository.findById(layoutDto.getBuildingMetadataId())
                 .orElseThrow(() -> new CustomException(BuildingStatus.BUILDING_METADATA_NOT_FOUND));
 
-        BuildingYield yield = metadata.getYieldForLevel(1);
-
-        if (yield.getCostShells() > 0) {
-            resourceService.subtract(island, ResourceType.SHELL, yield.getCostShells());
-        }
-        if (yield.getCostGems() > 0) {
-            resourceService.subtract(island, ResourceType.GEM, yield.getCostGems());
-        }
-
+        subtractResource(island, metadata.getYieldForLevel(1));
         slot.build(Building.of(island, metadata));
-        islandBoostCache.evictBoostCache(island);
-    }
-
-    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
-    @Transactional
-    public void demolishOf(Long memberId, Integer slotNumber) {
-        Slot slot = getSlot(memberId, slotNumber);
-        MemberIsland island = slot.getIsland();
-
-        Building building = slot.getBuilding();
-        if (building == null) throw new CustomException(SlotStatus.SLOT_EMPTY);
-
-        BuildingYield yield = building.getCurrentYield();
-
-        if (yield.getRefundShell() > 0) {
-            resourceService.add(island, ResourceType.SHELL, yield.getRefundShell());
-        }
-        if (yield.getRefundGem() > 0) {
-            resourceService.add(island, ResourceType.GEM, yield.getRefundGem());
-        }
-
-        slot.demolish();
         islandBoostCache.evictBoostCache(island);
     }
 
@@ -77,5 +48,56 @@ public class BuildingLayoutService {
         MemberIsland island = memberIslandService.getIsland(memberId);
         return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
+    }
+
+    private void subtractResource(MemberIsland island, BuildingYield yield){
+        if (island.getLevel() < yield.getRequiredLevel()) {
+            throw new CustomException(IslandStatus.LEVEL_TOO_LOW);
+        }
+
+        if (yield.getCostShells() > 0) {
+            resourceService.subtract(island, ResourceType.SHELL, yield.getCostShells());
+        }
+        if (yield.getCostGems() > 0) {
+            resourceService.subtract(island, ResourceType.GEM, yield.getCostGems());
+        }
+    }
+
+    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
+    @Transactional
+    public void demolishOf(Long memberId, Integer slotNumber) {
+        Slot slot = getSlot(memberId, slotNumber);
+        MemberIsland island = slot.getIsland();
+        Building building = slot.getBuilding();
+
+        if (building == null) throw new CustomException(SlotStatus.SLOT_EMPTY);
+
+        addResource(island, building.getCurrentYield());
+        slot.demolish();
+        islandBoostCache.evictBoostCache(island);
+    }
+
+    private void addResource(MemberIsland island, BuildingYield yield){
+        if (yield.getRefundShell() > 0) {
+            resourceService.add(island, ResourceType.SHELL, yield.getRefundShell());
+        }
+        if (yield.getRefundGem() > 0) {
+            resourceService.add(island, ResourceType.GEM, yield.getRefundGem());
+        }
+    }
+
+    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
+    @Transactional
+    public void levelUp(Long memberId, Integer slotNumber){
+        Slot slot = getSlot(memberId, slotNumber);
+        MemberIsland island = slot.getIsland();
+        Building building = slot.getBuilding();
+
+        if (building == null) throw new CustomException(SlotStatus.SLOT_EMPTY);
+        if (building.isOperating()) throw new CustomException(BuildingStatus.ALREADY_OPERATING);
+
+        subtractResource(island, building.getNextYield());
+        building.levelUp();
+        islandBoostCache.evictBoostCache(island);
     }
 }

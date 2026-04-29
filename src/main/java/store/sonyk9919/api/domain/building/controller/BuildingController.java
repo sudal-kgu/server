@@ -73,4 +73,22 @@ public class BuildingController {
     ) {
         buildingLayoutService.demolishOf(authMember.getId(), slotNumber);
     }
+
+    @Operation(
+            summary = "건물 레벨업",
+            description = "해당 슬롯에 건설된 건물의 레벨을 올립니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "건물 업그레이드 성공"),
+            @ApiResponse(responseCode = "400", description = "재화 부족 / 슬롯에 건물 없음 / 작동 중인 생산 건물 / 이미 최대 레벨 / 섬 레벨 부족"),
+            @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
+            @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
+    })
+    @PostMapping("/{slotNumber}/upgrade")
+    public void buildingLevelUp(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Integer slotNumber
+    ) {
+        buildingLayoutService.levelUp(authMember.getId(), slotNumber);
+    }
 }

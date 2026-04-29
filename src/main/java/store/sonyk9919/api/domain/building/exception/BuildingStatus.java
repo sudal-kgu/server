@@ -17,7 +17,8 @@ public enum BuildingStatus implements BaseResponseStatus {
     BUILDING_METADATA_NOT_FOUND(HttpStatus.NOT_FOUND, "BUILDING-006", "해당 건물 메타 테이터를 찾을 수 없습니다."),
     BUILDING_NOT_FOUND(HttpStatus.NOT_FOUND, "BUILDING-007", "건물을 찾을 수 없습니다."),
 
-    NOTHING_TO_HARVEST(HttpStatus.BAD_REQUEST, "BUILDING-008", "수확할 보석이 없습니다.");
+    NOTHING_TO_HARVEST(HttpStatus.BAD_REQUEST, "BUILDING-008", "수확할 보석이 없습니다."),
+    ALREADY_MAX_LEVEL(HttpStatus.BAD_REQUEST, "BUILDING-009", "이미 건물의 최대 레벨입니다.");
 
     private final HttpStatus httpStatus;
     private final String code;
