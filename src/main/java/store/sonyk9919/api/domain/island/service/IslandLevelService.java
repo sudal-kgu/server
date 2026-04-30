@@ -31,8 +31,7 @@ public class IslandLevelService {
     }
 
     @Transactional
-    public void addItemExp(Long memberAccountId, int expAmount) {
-        MemberIsland island = getIsland(memberAccountId);
+    public void addItemExp(MemberIsland island, int expAmount) {
         island.addItemExp(expAmount);
         checkAndProcessLevelUp(island);
     }
