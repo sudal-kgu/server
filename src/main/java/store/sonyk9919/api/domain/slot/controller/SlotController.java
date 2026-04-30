@@ -1,8 +1,6 @@
 package store.sonyk9919.api.domain.slot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
@@ -19,7 +17,6 @@ import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.service.SlotActivateService;
 import store.sonyk9919.api.domain.slot.service.SlotQueryService;
-import store.sonyk9919.api.global.common.dto.BaseResponse;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,8 +33,7 @@ public class SlotController {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "슬롯 목록 조회 성공"),
             @ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
-            @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음 (ISLAND-003)",
-                    content = @Content(schema = @Schema(implementation = BaseResponse.class)))
+            @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음 (ISLAND-003)")
     })
     @GetMapping
     public List<SlotResponseDto> searchAllSlots(@AuthMember AuthMemberDto authMember) {
