@@ -73,7 +73,7 @@ public class ShopService {
 
         MemberResource updatedShell = resourceService.subtract(island, ResourceType.SHELL, item.getPrice());
         usage.incrementUseCount();
-        islandLevelService.addItemExp(memberId, item.getExpReward());
+        islandLevelService.addItemExp(island, item.getExpReward());
 
         return ShopPurchaseResponse.of(item, usage, updatedShell.getAmount());
     }
