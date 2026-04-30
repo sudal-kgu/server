@@ -1,5 +1,8 @@
 package store.sonyk9919.api.global.common.lock;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -26,25 +29,42 @@ public class DistributedLockAspect {
 
     @Around("@annotation(distributedLock)")
     public Object around(ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
-        String lockKey = "lock:" + resolveKey(distributedLock.key(), joinPoint);
-        RLock lock = redissonClient.getLock(lockKey);
-
-        boolean acquired = lock.tryLock(
-                distributedLock.waitTime(),
-                distributedLock.leaseTime(),
-                distributedLock.timeUnit()
-        );
-        if (!acquired) {
-            throw new CustomException(LockStatus.LOCK_ACQUISITION_FAILED);
-        }
+        List<String> lockKeys = resolveAllKeys(distributedLock, joinPoint);
+        List<RLock> acquiredLocks = new ArrayList<>();
 
         try {
+            for (String lockKey : lockKeys) {
+                RLock lock = redissonClient.getLock(lockKey);
+                boolean acquired = lock.tryLock(
+                        distributedLock.waitTime(),
+                        distributedLock.leaseTime(),
+                        distributedLock.timeUnit()
+                );
+                if (!acquired) {
+                    throw new CustomException(LockStatus.LOCK_ACQUISITION_FAILED);
+                }
+                acquiredLocks.add(lock);
+            }
             return joinPoint.proceed();
         } finally {
-            if (lock.isHeldByCurrentThread()) {
-                lock.unlock();
+            for (RLock lock : acquiredLocks) {
+                if (lock.isHeldByCurrentThread()) {
+                    lock.unlock();
+                }
             }
         }
+    }
+
+    private List<String> resolveAllKeys(DistributedLock distributedLock, ProceedingJoinPoint joinPoint) {
+        List<String> keys = new ArrayList<>();
+        if (!distributedLock.key().isEmpty()) {
+            keys.add("lock:" + resolveKey(distributedLock.key(), joinPoint));
+        }
+        for (String keyExpr : distributedLock.keys()) {
+            keys.add("lock:" + resolveKey(keyExpr, joinPoint));
+        }
+        Collections.sort(keys);
+        return keys;
     }
 
     private String resolveKey(String keyExpression, ProceedingJoinPoint joinPoint) {

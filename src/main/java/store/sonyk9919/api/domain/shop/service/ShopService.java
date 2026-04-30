@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.global.common.lock.DistributedLock;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
@@ -52,6 +53,7 @@ public class ShopService {
                 .toList();
     }
 
+    @DistributedLock(keys = {"'island:' + #memberId + ':exp'", "'island:' + #memberId + ':shell'"})
     @Transactional
     public ShopPurchaseResponse purchaseItem(Long memberId, Long itemId) {
         MemberIsland island = memberIslandRegistryService.getIsland(memberId);
