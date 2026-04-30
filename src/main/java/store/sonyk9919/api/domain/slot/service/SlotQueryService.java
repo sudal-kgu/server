@@ -1,5 +1,6 @@
 package store.sonyk9919.api.domain.slot.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,8 @@ import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
 import store.sonyk9919.api.domain.building.dto.ProductionInfoDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
-import store.sonyk9919.api.domain.building.entity.BuildingYield;
+import store.sonyk9919.api.domain.building.service.HarvestCalculator;
+import store.sonyk9919.api.domain.building.service.IslandBoostCache;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
@@ -26,6 +28,7 @@ public class SlotQueryService {
 
     private final SlotRepository slotRepository;
     private final MemberIslandRegistryService memberIslandService;
+    private final IslandBoostCache islandBoostCache;
 
     public List<SlotResponseDto> getAllSlot(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
@@ -36,30 +39,44 @@ public class SlotQueryService {
                 .collect(Collectors.toList());
     }
 
-    public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
-        MemberIsland island = memberIslandService.getIsland(memberId);
-
-        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .map(slot -> SlotDetailResponseDto.of(slot, mapToBuildingDetail(slot.getBuilding())))
-                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
-    }
-
     private BuildingInfoDto mapToBuildingInfo(Building building){
         if (building == null) return null;
 
         return BuildingInfoDto.of(building, building.getBuildingMetadata());
     }
 
-    private BuildingDetailDto mapToBuildingDetail(Building building) {
+    public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
+        MemberIsland island = memberIslandService.getIsland(memberId);
+
+        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
+                .map(slot -> SlotDetailResponseDto.of(slot, mapToBuildingDetail(island, slot.getBuilding())))
+                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
+    }
+
+    private BuildingDetailDto mapToBuildingDetail(MemberIsland island, Building building) {
         if (building == null) return null;
 
         BuildingMetadata metadata = building.getBuildingMetadata();
-        BuildingYield yield = metadata.getYieldForLevel(building.getCurrentLevel());
+        return BuildingDetailDto.of(
+                building, metadata,
+                createInfo(island, building, metadata));
+    }
 
-        ProductionInfoDto productionInfoDto = metadata.isProductionType()
-                ? ProductionInfoDto.of(building, yield)
-                : null;
+    private ProductionInfoDto createInfo(MemberIsland island, Building building, BuildingMetadata metadata) {
+        if (!metadata.isProductionType()) return null;
 
-        return BuildingDetailDto.of(building, metadata, productionInfoDto);
+        return ProductionInfoDto.of(
+                building,
+                metadata.getYieldForLevel(building.getCurrentLevel()),
+                computeGems(island, building)
+        );
+    }
+
+    private int computeGems(MemberIsland island, Building building) {
+        double boostPercent = islandBoostCache.getTotalBoost(island);
+        if (!building.canHarvest()) return 0;
+
+        HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());
+        return calculator.calculate(boostPercent);
     }
 }
