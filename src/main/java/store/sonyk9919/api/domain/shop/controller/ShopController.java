@@ -8,12 +8,15 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.shop.dto.ShopItemResponse;
+import store.sonyk9919.api.domain.shop.dto.ShopPurchaseResponse;
 import store.sonyk9919.api.domain.shop.service.ShopService;
 
 @RestController
@@ -35,5 +38,22 @@ public class ShopController {
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
         return shopService.getItems(authMember.getId());
+    }
+
+    @Operation(summary = "아이템 구매", description = "조개를 소모해 아이템을 구매합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "구매 성공"),
+            @ApiResponse(responseCode = "400", description = "최대 구매 횟수 초과"),
+            @ApiResponse(responseCode = "401", description = "인증 실패"),
+            @ApiResponse(responseCode = "403", description = "해금 레벨 미달"),
+            @ApiResponse(responseCode = "404", description = "아이템을 찾을 수 없음")
+    })
+    @PostMapping("/items/{itemId}/purchases")
+    @ResponseStatus(HttpStatus.OK)
+    public ShopPurchaseResponse purchaseItem(
+            @Parameter(hidden = true) @AuthMember AuthMemberDto authMember,
+            @PathVariable Long itemId
+    ) {
+        return shopService.purchaseItem(authMember.getId(), itemId);
     }
 }
