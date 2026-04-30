@@ -47,6 +47,20 @@ class ShopServiceTest {
         given(itemCache.getAll()).willReturn(allItems);
     }
 
+    private Item createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
+            throws Exception {
+        Constructor<Item> ctor = Item.class.getDeclaredConstructor();
+        ctor.setAccessible(true);
+        Item item = ctor.newInstance();
+        ReflectionTestUtils.setField(item, "id", id);
+        ReflectionTestUtils.setField(item, "name", name);
+        ReflectionTestUtils.setField(item, "price", price);
+        ReflectionTestUtils.setField(item, "maxCount", maxCount);
+        ReflectionTestUtils.setField(item, "unlockLevel", unlockLevel);
+        ReflectionTestUtils.setField(item, "expReward", expReward);
+        return item;
+    }
+
     @Test
     void getItems_아이템_5개를_반환한다() {
         given(island.getLevel()).willReturn(3);
@@ -140,19 +154,5 @@ class ShopServiceTest {
         given(usage.getItem()).willReturn(item);
         given(usage.getUseCount()).willReturn(useCount);
         return usage;
-    }
-
-    private Item createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
-            throws Exception {
-        Constructor<Item> ctor = Item.class.getDeclaredConstructor();
-        ctor.setAccessible(true);
-        Item item = ctor.newInstance();
-        ReflectionTestUtils.setField(item, "id", id);
-        ReflectionTestUtils.setField(item, "name", name);
-        ReflectionTestUtils.setField(item, "price", price);
-        ReflectionTestUtils.setField(item, "maxCount", maxCount);
-        ReflectionTestUtils.setField(item, "unlockLevel", unlockLevel);
-        ReflectionTestUtils.setField(item, "expReward", expReward);
-        return item;
     }
 }
