@@ -164,7 +164,7 @@ class ShopServiceTest {
         // given
         given(island.getLevel()).willReturn(3);
         given(itemCache.getAll()).willReturn(allItems);
-        IslandItemUsage usage = mockUsage(targetItem, 2L); // maxCount=2 도달
+        IslandItemUsage usage = mockUsage(targetItem, 2L);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of(usage));
 
         // when
