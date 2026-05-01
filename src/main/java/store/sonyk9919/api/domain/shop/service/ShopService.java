@@ -57,24 +57,33 @@ public class ShopService {
     @Transactional
     public ShopPurchaseResponse purchaseItem(Long memberId, Long itemId) {
         MemberIsland island = memberIslandRegistryService.getIsland(memberId);
+        Item item = getValidatedItem(itemId, island.getLevel());
+        IslandItemUsage usage = getOrCreateUsage(island, item);
+        return applyPurchase(island, item, usage);
+    }
+
+    private Item getValidatedItem(Long itemId, int islandLevel) {
         Item item = itemRepository.findById(itemId)
                 .orElseThrow(() -> new CustomException(ShopStatus.ITEM_NOT_FOUND));
-
-        if (island.getLevel() < item.getUnlockLevel()) {
+        if (islandLevel < item.getUnlockLevel()) {
             throw new CustomException(ShopStatus.ITEM_LOCKED);
         }
+        return item;
+    }
 
+    private IslandItemUsage getOrCreateUsage(MemberIsland island, Item item) {
         IslandItemUsage usage = islandItemUsageRepository.findByIslandAndItem(island, item)
                 .orElseGet(() -> islandItemUsageRepository.save(IslandItemUsage.create(item, island)));
-
         if (usage.getUseCount() >= item.getMaxCount()) {
             throw new CustomException(ShopStatus.ITEM_PURCHASE_LIMIT_EXCEEDED);
         }
+        return usage;
+    }
 
+    private ShopPurchaseResponse applyPurchase(MemberIsland island, Item item, IslandItemUsage usage) {
         MemberResource updatedShell = resourceService.subtract(island, ResourceType.SHELL, item.getPrice());
         usage.incrementUseCount();
         islandLevelService.addItemExp(island, item.getExpReward());
-
         return ShopPurchaseResponse.of(item, usage, updatedShell.getAmount());
     }
 }
