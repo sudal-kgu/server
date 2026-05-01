@@ -30,6 +30,7 @@ public class IslandLevelService {
         checkAndProcessLevelUp(island);
     }
 
+    @DistributedLock(key = "'island:' + #island.memberAccount.id + ':exp'")
     @Transactional
     public void addItemExp(MemberIsland island, int expAmount) {
         island.addItemExp(expAmount);
