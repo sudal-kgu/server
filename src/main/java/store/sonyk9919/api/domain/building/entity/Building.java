@@ -98,6 +98,6 @@ public class Building {
 
     public void levelUp(){
         if(currentLevel >= MAX_LEVEL) throw new CustomException(BuildingStatus.ALREADY_MAX_LEVEL);
-        currentLevel+=1;
+        currentLevel++;
     }
 }
