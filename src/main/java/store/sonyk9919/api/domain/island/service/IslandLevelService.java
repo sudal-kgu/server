@@ -7,9 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.event.IslandLevelUpEvent;
-import store.sonyk9919.api.domain.island.exception.IslandStatus;
-import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
-import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Service
@@ -17,14 +14,12 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 @Transactional(readOnly = true)
 public class IslandLevelService {
 
-    private final MemberIslandRepository memberIslandRepository;
     private final LevelSpecCache levelSpecCache;
     private final ApplicationEventPublisher eventPublisher;
 
-    @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
+    @DistributedLock(key = "'island:' + #island.memberAccount.id + ':exp'")
     @Transactional
-    public void addRecyclingExp(Long memberAccountId) {
-        MemberIsland island = getIsland(memberAccountId);
+    public void addRecyclingExp(MemberIsland island) {
         LevelSpec currentSpec = getLevelSpec(island.getLevel());
         island.addRecyclingExp(currentSpec);
         checkAndProcessLevelUp(island);
@@ -51,11 +46,6 @@ public class IslandLevelService {
                 previousLevel,
                 island.getLevel()
         ));
-    }
-
-    private MemberIsland getIsland(Long memberAccountId) {
-        return memberIslandRepository.findByMemberAccountId(memberAccountId)
-                .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
     }
 
     private LevelSpec getLevelSpec(int level) {
