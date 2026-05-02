@@ -4,9 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.service.IslandLevelService;
+import store.sonyk9919.api.domain.island.service.LevelSpecCache;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
+import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
+import store.sonyk9919.api.domain.quiz.dto.RecyclingRewardResponse;
 import store.sonyk9919.api.domain.quiz.entity.Quiz;
 import store.sonyk9919.api.domain.quiz.entity.QuizSession;
 import store.sonyk9919.api.domain.quiz.entity.QuizSessionProblem;
@@ -28,6 +33,10 @@ public class QuizPlayService {
     private final QuizSessionProblemRegistryService quizSessionProblemRegistryService;
     private final TrashSearchService trashSearchService;
     private final MemberIslandRegistryService memberIslandRegistryService;
+    private final IslandLevelService islandLevelService;
+    private final ResourceService resourceService;
+    private final LevelSpecCache levelSpecCache;
+    private final RecyclingRewardCalculator rewardCalculator;
 
     @DistributedLock(key = "'quiz:' + #memberAccountId")
     @Transactional
@@ -106,12 +115,29 @@ public class QuizPlayService {
         return quizSessionProblemRegistryService.getProblem(memberAccountId, sessionId, problemId);
     }
 
+    @DistributedLock(keys = {"'island:' + #memberAccountId + ':exp'",
+                                "'island:' + #memberAccountId + ':shell'",
+                                "'island:' + #memberAccountId + ':fuel'"})
     @Transactional
-    public void completeQuizSession(Long memberAccountId, Long sessionId) {
+    public RecyclingRewardResponse completeQuizSession(Long memberAccountId, Long sessionId) {
         QuizSession session = quizSessionRegistryService.getSession(memberAccountId, sessionId);
         if (session.isExpired()) {
-            return;
+            throw new CustomException(QuizStatus.EXPIRED_QUIZ_SESSION);
         }
+        MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
         session.expireSession();
+        return grantRewards(island);
+    }
+
+    private RecyclingRewardResponse grantRewards(MemberIsland island) {
+        final int fuelReward = 100;
+        int earnedExp = levelSpecCache.get(island.getLevel()).getExpPerRecycling();
+        int earnedShell = rewardCalculator.calculateShell(island);
+
+        resourceService.add(island, ResourceType.SHELL, earnedShell);
+        resourceService.add(island, ResourceType.FUEL, fuelReward);
+        islandLevelService.addRecyclingExp(island);
+
+        return RecyclingRewardResponse.of(earnedShell, fuelReward, earnedExp);
     }
 }

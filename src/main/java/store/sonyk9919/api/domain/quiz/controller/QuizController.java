@@ -13,6 +13,7 @@ import store.sonyk9919.api.domain.quiz.dto.QuizChoiceRequestDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizCreateRequestDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizProblemResponseDto;
 import store.sonyk9919.api.domain.quiz.dto.QuizSessionResponseDto;
+import store.sonyk9919.api.domain.quiz.dto.RecyclingRewardResponse;
 import store.sonyk9919.api.domain.quiz.service.QuizPlayService;
 
 import java.util.List;
@@ -81,14 +82,14 @@ public class QuizController {
         return quizPlayService.confirmQuizChoice(authMember.getId(), sessionId, problemId, request.getChoice());
     }
 
-    @Operation(summary = "퀴즈 세션 완료", description = "현재 진행 중인 퀴즈 세션을 강제로 만료(완료) 처리합니다.")
-    @ApiResponse(responseCode = "200", description = "세션 만료(완료) 성공")
+    @Operation(summary = "퀴즈 세션 완료", description = "현재 진행 중인 퀴즈 세션을 완료 처리하고 분리배출 보상(조개, 연료, 경험치)을 지급합니다.")
+    @ApiResponse(responseCode = "200", description = "세션 완료 및 보상 지급 성공")
     @PostMapping("/sessions/{sessionId}/complete")
     @ResponseStatus(HttpStatus.OK)
-    public void completeQuizSession(
+    public RecyclingRewardResponse completeQuizSession(
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember,
             @Parameter(description = "퀴즈 세션 ID", example = "1") @PathVariable Long sessionId
     ) {
-        quizPlayService.completeQuizSession(authMember.getId(), sessionId);
+        return quizPlayService.completeQuizSession(authMember.getId(), sessionId);
     }
 }
