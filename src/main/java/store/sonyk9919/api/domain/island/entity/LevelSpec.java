@@ -26,4 +26,7 @@ public class LevelSpec {
 
     @Column(nullable = false)
     private int expPerRecycling;
+
+    @Column(nullable = false)
+    private int fuelPerRecycling;
 }

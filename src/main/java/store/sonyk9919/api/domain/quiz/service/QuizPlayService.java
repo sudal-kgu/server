@@ -130,14 +130,14 @@ public class QuizPlayService {
     }
 
     private RecyclingRewardResponse grantRewards(MemberIsland island) {
-        final int fuelReward = 100;
-        int earnedExp = levelSpecCache.get(island.getLevel()).getExpPerRecycling();
         int earnedShell = rewardCalculator.calculateShell(island);
+        int earnedFuel = levelSpecCache.get(island.getLevel()).getFuelPerRecycling();
+        int earnedExp = levelSpecCache.get(island.getLevel()).getExpPerRecycling();
 
         resourceService.add(island, ResourceType.SHELL, earnedShell);
-        resourceService.add(island, ResourceType.FUEL, fuelReward);
+        resourceService.add(island, ResourceType.FUEL, earnedFuel);
         islandLevelService.addRecyclingExp(island);
 
-        return RecyclingRewardResponse.of(earnedShell, fuelReward, earnedExp);
+        return RecyclingRewardResponse.of(earnedShell, earnedFuel, earnedExp);
     }
 }
