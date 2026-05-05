@@ -13,12 +13,14 @@ public class SlotDetailResponseDto {
     private Integer slotNumber;
     private boolean activated;
     private BuildingDetailDto building;
+    private SlotUnlockResource resource;
 
-    public static SlotDetailResponseDto of(Slot slot, BuildingDetailDto buildingDto) {
+    public static SlotDetailResponseDto of(Slot slot, BuildingDetailDto buildingDto, SlotUnlockResource resource) {
         return new SlotDetailResponseDto(
                 slot.getSlotNumber(),
                 slot.isActivated(),
-                buildingDto
+                buildingDto,
+                resource
         );
     }
 }

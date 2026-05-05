@@ -14,9 +14,13 @@ import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.service.HarvestCalculator;
 import store.sonyk9919.api.domain.building.service.IslandBoostCache;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotUnlockResource;
+import store.sonyk9919.api.domain.slot.entity.Slot;
+import store.sonyk9919.api.domain.slot.entity.SlotUnlockPolicy;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
@@ -48,9 +52,17 @@ public class SlotQueryService {
     public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
-        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .map(slot -> SlotDetailResponseDto.of(slot, mapToBuildingDetail(island, slot.getBuilding())))
+        Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
+
+        SlotUnlockResource slotUnlockResource = !slot.isActivated() ?
+                calculateUnlockCost(island) : null;
+
+        return SlotDetailResponseDto.of(
+                slot,
+                mapToBuildingDetail(island, slot.getBuilding()),
+                slotUnlockResource
+        );
     }
 
     private BuildingDetailDto mapToBuildingDetail(MemberIsland island, Building building) {
@@ -78,5 +90,12 @@ public class SlotQueryService {
 
         HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());
         return calculator.calculate(boostPercent);
+    }
+
+    private SlotUnlockResource calculateUnlockCost(MemberIsland island) {
+        return SlotUnlockResource.of(
+                ResourceType.SHELL,
+                SlotUnlockPolicy.costFor(slotRepository.countByIslandAndActivatedTrue(island))
+        );
     }
 }
