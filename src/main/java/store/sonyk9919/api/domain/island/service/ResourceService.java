@@ -58,6 +58,8 @@ public class ResourceService {
 
     public ResourceBalanceResponse getBalance(Long memberAccountId) {
         List<MemberResource> resources = memberResourceRepository.findAllByIslandMemberAccountId(memberAccountId);
+        if (resources.size() != ResourceType.values().length)
+            throw new CustomException(ResourceStatus.RESOURCE_NOT_FOUND);
         return ResourceBalanceResponse.from(resources);
     }
 }
