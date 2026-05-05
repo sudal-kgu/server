@@ -19,7 +19,6 @@ import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingCategory;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
-import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.building.repository.BuildingMetadataRepository;
 import store.sonyk9919.api.domain.building.repository.BuildingRepository;
 import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
@@ -29,13 +28,11 @@ import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
-import store.sonyk9919.api.global.common.exception.CustomException;
 
 @ExtendWith(MockitoExtension.class)
 class BuildingLayoutServiceTest {
 
-    @InjectMocks
-    private BuildingLayoutService buildingLayoutService;
+    @InjectMocks private BuildingLayoutService buildingLayoutService;
 
     @Mock private MemberIslandRegistryService memberIslandService;
     @Mock private SlotRepository slotRepository;
@@ -116,22 +113,5 @@ class BuildingLayoutServiceTest {
         verify(islandBoostCache).evictBoostCache(island);
         verify(resourceService).add(island, ResourceType.SHELL, 50);
         verify(resourceService).add(island, ResourceType.GEM, 10);
-    }
-
-    @Test
-    @DisplayName("건물이 가동 중일 때 레벨업 시 예외")
-    void levelUp_Fail_When_Operating() {
-        // given
-        Building building = mock(Building.class);
-
-        given(slot.getIsland()).willReturn(island);
-        given(slot.hasBuilding()).willReturn(true);
-        given(slot.getBuilding()).willReturn(building);
-        given(building.isOperating()).willReturn(true);
-
-        // when & then
-        assertThatThrownBy(() -> buildingLayoutService.levelUp(1L, 1))
-                .isInstanceOf(CustomException.class)
-                .hasMessageContaining(BuildingStatus.ALREADY_OPERATING.getMessage());
     }
 }

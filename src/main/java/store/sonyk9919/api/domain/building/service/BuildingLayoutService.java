@@ -109,22 +109,4 @@ public class BuildingLayoutService {
             resourceService.add(island, ResourceType.GEM, yield.getRefundGem());
         }
     }
-
-    @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
-    @Transactional
-    public BuildingResponseDto levelUp(Long memberId, Integer slotNumber){
-        Slot slot = getSlot(memberId, slotNumber);
-        MemberIsland island = slot.getIsland();
-
-        if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
-        Building building = slot.getBuilding();
-
-        if (building.isOperating()) throw new CustomException(BuildingStatus.ALREADY_OPERATING);
-
-        subtractResource(island, building.getNextYield());
-        building.levelUp();
-        islandBoostCache.evictBoostCache(island);
-
-        return createResponse(memberId, slot, building);
-    }
 }

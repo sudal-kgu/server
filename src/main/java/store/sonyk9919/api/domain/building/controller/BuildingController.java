@@ -2,13 +2,19 @@ package store.sonyk9919.api.domain.building.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
+import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
+import store.sonyk9919.api.domain.building.service.BuildingUpgradeService;
 
 @RestController
 @RequiredArgsConstructor
@@ -16,6 +22,7 @@ import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
 public class BuildingController {
 
     private final BuildingMetadataQueryService queryService;
+    private final BuildingUpgradeService upgradeService;
 
     @Operation(
             summary = "건물 카탈로그 조회",
@@ -25,5 +32,23 @@ public class BuildingController {
     @GetMapping("/catalog")
     public List<BuildingCatalogDto> selectBuildMetadata() {
         return queryService.getBuildingCatalog();
+    }
+
+    @Operation(
+            summary = "건물 레벨업",
+            description = "해당 슬롯에 건설된 건물의 레벨을 올립니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "건물 업그레이드 성공"),
+            @ApiResponse(responseCode = "400", description = "재화 부족 / 슬롯에 건물 없음 / 작동 중인 생산 건물 / 이미 최대 레벨 / 섬 레벨 부족"),
+            @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
+            @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
+    })
+    @PostMapping("/{slotNumber}/upgrade")
+    public void buildingLevelUp(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Integer slotNumber
+    ) {
+        upgradeService.levelUp(authMember.getId(), slotNumber);
     }
 }
