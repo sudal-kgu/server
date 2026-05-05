@@ -34,6 +34,7 @@ public class BuildingHarvestService {
         Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
 
+        if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
         Building building = slot.getBuilding();
 
         HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());

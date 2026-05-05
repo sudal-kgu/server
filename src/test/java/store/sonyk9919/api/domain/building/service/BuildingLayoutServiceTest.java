@@ -87,6 +87,7 @@ class BuildingLayoutServiceTest {
         BuildingYield yield = mock(BuildingYield.class);
 
         given(slot.getIsland()).willReturn(island);
+        given(slot.hasBuilding()).willReturn(true);
         given(slot.getBuilding()).willReturn(building);
         given(building.getCurrentYield()).willReturn(yield);
         given(yield.getRefundShell()).willReturn(50);
@@ -108,6 +109,7 @@ class BuildingLayoutServiceTest {
         // given
         Building building = mock(Building.class);
 
+        given(slot.hasBuilding()).willReturn(true);
         given(slot.getBuilding()).willReturn(building);
         given(building.isOperating()).willReturn(true);
 

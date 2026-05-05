@@ -17,7 +17,6 @@ import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
-import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
@@ -36,7 +35,7 @@ public class SlotQueryService {
 
         return slotRepository.findAllByIsland(island)
                 .stream()
-                .map(slot -> SlotResponseDto.of(slot, mapToBuildingInfo(getBuilding(slot))))
+                .map(slot -> SlotResponseDto.of(slot, mapToBuildingInfo(slot.getBuilding())))
                 .collect(Collectors.toList());
     }
 
@@ -46,16 +45,11 @@ public class SlotQueryService {
         return BuildingInfoDto.of(building, building.getBuildingMetadata());
     }
 
-    private Building getBuilding(Slot slot) {
-        if(!slot.hasBuilding()) return null;
-        return slot.getBuilding();
-    }
-
     public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
         return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .map(slot -> SlotDetailResponseDto.of(slot, mapToBuildingDetail(island, getBuilding(slot))))
+                .map(slot -> SlotDetailResponseDto.of(slot, mapToBuildingDetail(island, slot.getBuilding())))
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
     }
 

@@ -10,6 +10,7 @@ import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingEffect;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 
 @Component
@@ -23,7 +24,7 @@ public class IslandBoostCache {
     public double getTotalBoost(MemberIsland island) {
         return slotRepository.findAllByIsland(island).stream()
                 .filter(Objects::nonNull)
-                .filter(s -> s.getBuilding() != null)
+                .filter(Slot::hasBuilding)
                 .map(s -> {
                     Building building = s.getBuilding();
                     BuildingMetadata metadata = building.getBuildingMetadata();
