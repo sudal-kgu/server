@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
+import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
@@ -27,6 +28,8 @@ public class BuildingOperateService {
     @Transactional
     public void operate(Long memberId, Integer slotNumber) {
         Slot slot = getSlot(memberId, slotNumber);
+
+        if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
         Building building = slot.getBuilding();
         BuildingYield yield = building.getCurrentYield();
 
