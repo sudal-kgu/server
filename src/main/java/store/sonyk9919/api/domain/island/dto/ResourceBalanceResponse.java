@@ -22,9 +22,9 @@ public class ResourceBalanceResponse {
                 .collect(Collectors.toMap(MemberResource::getResourceType, MemberResource::getAmount));
 
         return new ResourceBalanceResponse(
-                amounts.getOrDefault(ResourceType.SHELL, 0L),
-                amounts.getOrDefault(ResourceType.GEM, 0L),
-                amounts.getOrDefault(ResourceType.FUEL, 0L)
+                amounts.get(ResourceType.SHELL),
+                amounts.get(ResourceType.GEM),
+                amounts.get(ResourceType.FUEL)
         );
     }
 }
