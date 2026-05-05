@@ -20,6 +20,7 @@ public class MemberIslandRegistryService {
     private final MemberIslandRepository memberIslandRepository;
     private final MemberAccountService memberAccountService;
     private final SlotSetupService slotSetupService;
+    private final ResourceSetupService resourceSetupService;
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname) {
@@ -37,6 +38,7 @@ public class MemberIslandRegistryService {
         MemberIsland island = MemberIsland.create(nickname, account);
         memberIslandRepository.save(island);
         slotSetupService.setupSlots(island);
+        resourceSetupService.setupResources(island);
         return island;
     }
 
