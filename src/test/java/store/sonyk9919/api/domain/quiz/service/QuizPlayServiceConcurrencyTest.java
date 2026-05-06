@@ -19,7 +19,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import store.sonyk9919.api.domain.auth.service.KakaoProvider;
-import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.shop.service.ShopService;
@@ -97,10 +96,9 @@ class QuizPlayServiceConcurrencyTest {
 
         itemId = jdbcTemplate.queryForObject("SELECT item_id FROM item LIMIT 1", Long.class);
 
-        MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
-        islandLevelService.addRecyclingExp(island);
+        islandLevelService.addRecyclingExp(memberAccountId);
 
-        sessionId = quizSessionRegistryService.create(island).getId();
+        sessionId = quizSessionRegistryService.create(memberIslandRegistryService.getIsland(memberAccountId)).getId();
     }
 
     @AfterEach
