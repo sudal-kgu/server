@@ -49,9 +49,6 @@ class IslandLevelServiceConcurrencyTest {
     private IslandLevelService islandLevelService;
 
     @Autowired
-    private MemberIslandRegistryService memberIslandRegistryService;
-
-    @Autowired
     private RedissonClient redissonClient;
 
     @Autowired
@@ -94,9 +91,7 @@ class IslandLevelServiceConcurrencyTest {
         Thread thread = new Thread(() -> {
             try {
                 transactionTemplate.execute(status -> {
-                    islandLevelService.addRecyclingExp(
-                            memberIslandRegistryService.getIsland(memberAccountId)
-                    );
+                    islandLevelService.addRecyclingExp(memberAccountId);
                     return null;
                 });
             } catch (Throwable e) {

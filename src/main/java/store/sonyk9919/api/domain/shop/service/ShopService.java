@@ -59,7 +59,7 @@ public class ShopService {
         MemberIsland island = memberIslandRegistryService.getIsland(memberId);
         Item item = getValidatedItem(itemId, island.getLevel());
         IslandItemUsage usage = getOrCreateUsage(island, item);
-        return applyPurchase(island, item, usage);
+        return applyPurchase(memberId, island, item, usage);
     }
 
     private Item getValidatedItem(Long itemId, int islandLevel) {
@@ -80,10 +80,10 @@ public class ShopService {
         return usage;
     }
 
-    private ShopPurchaseResponse applyPurchase(MemberIsland island, Item item, IslandItemUsage usage) {
+    private ShopPurchaseResponse applyPurchase(Long memberId, MemberIsland island, Item item, IslandItemUsage usage) {
         MemberResource updatedShell = resourceService.subtract(island, ResourceType.SHELL, item.getPrice());
         usage.incrementUseCount();
-        islandLevelService.addItemExp(island, item.getExpReward());
+        islandLevelService.addItemExp(memberId, item.getExpReward());
         return ShopPurchaseResponse.of(item, usage, updatedShell.getAmount());
     }
 }

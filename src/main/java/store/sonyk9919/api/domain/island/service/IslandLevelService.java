@@ -7,6 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.event.IslandLevelUpEvent;
+import store.sonyk9919.api.domain.island.exception.IslandStatus;
+import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
+import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Service
@@ -16,18 +19,23 @@ public class IslandLevelService {
 
     private final LevelSpecCache levelSpecCache;
     private final ApplicationEventPublisher eventPublisher;
+    private final MemberIslandRepository memberIslandRepository;
 
-    @DistributedLock(key = "'island:' + #island.memberAccount.id + ':exp'")
+    @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
     @Transactional
-    public void addRecyclingExp(MemberIsland island) {
+    public void addRecyclingExp(Long memberAccountId) {
+        MemberIsland island = memberIslandRepository.findByMemberAccountId(memberAccountId)
+                .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
         LevelSpec currentSpec = getLevelSpec(island.getLevel());
         island.addRecyclingExp(currentSpec);
         checkAndProcessLevelUp(island);
     }
 
-    @DistributedLock(key = "'island:' + #island.memberAccount.id + ':exp'")
+    @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
     @Transactional
-    public void addItemExp(MemberIsland island, int expAmount) {
+    public void addItemExp(Long memberAccountId, int expAmount) {
+        MemberIsland island = memberIslandRepository.findByMemberAccountId(memberAccountId)
+                .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
         island.addItemExp(expAmount);
         checkAndProcessLevelUp(island);
     }
