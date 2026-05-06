@@ -21,6 +21,9 @@ import store.sonyk9919.api.domain.auth.service.KakaoProvider;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.LockStatus;
 
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -79,6 +82,43 @@ class IslandLevelServiceConcurrencyTest {
     void tearDown() {
         jdbcTemplate.update("DELETE FROM member_island WHERE member_account_id = ?", memberAccountId);
         jdbcTemplate.update("DELETE FROM member_account WHERE member_account_id = ?", memberAccountId);
+    }
+
+    @Test
+    @DisplayName("동시에 3번 addRecyclingExp를 호출해도 exp가 정확히 300 쌓인다")
+    void addRecyclingExp_동시_3회_호출_시_exp가_정확히_300_쌓인다() throws InterruptedException {
+        // given
+        int threadCount = 3;
+        int expectedExp = 300;
+
+        ExecutorService executor = Executors.newFixedThreadPool(threadCount);
+        CountDownLatch startLatch = new CountDownLatch(1);
+        CountDownLatch doneLatch = new CountDownLatch(threadCount);
+
+        for (int i = 0; i < threadCount; i++) {
+            executor.submit(() -> {
+                try {
+                    startLatch.await();
+                    islandLevelService.addRecyclingExp(memberAccountId);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } finally {
+                    doneLatch.countDown();
+                }
+            });
+        }
+
+        // when
+        startLatch.countDown();
+        doneLatch.await();
+        executor.shutdown();
+
+        // then
+        Integer cumulativeExp = jdbcTemplate.queryForObject(
+                "SELECT cumulative_exp FROM member_island WHERE member_account_id = ?",
+                Integer.class, memberAccountId
+        );
+        assertThat(cumulativeExp).isEqualTo(expectedExp);
     }
 
     @Test
