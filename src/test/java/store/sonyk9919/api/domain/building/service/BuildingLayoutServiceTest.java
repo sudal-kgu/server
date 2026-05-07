@@ -16,10 +16,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import store.sonyk9919.api.domain.building.dto.BuildingLayoutDto;
 import store.sonyk9919.api.domain.building.entity.Building;
+import store.sonyk9919.api.domain.building.entity.BuildingCategory;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.building.repository.BuildingMetadataRepository;
+import store.sonyk9919.api.domain.building.repository.BuildingRepository;
+import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
@@ -38,15 +41,18 @@ class BuildingLayoutServiceTest {
     @Mock private SlotRepository slotRepository;
     @Mock private ResourceService resourceService;
     @Mock private IslandBoostCache islandBoostCache;
-    @Mock private BuildingMetadataRepository buildingMetadataRepository;
+    @Mock private BuildingMetadataRepository metadataRepository;
+    @Mock private BuildingRepository buildingRepository;
 
     private MemberIsland island;
     private Slot slot;
+    private ResourceBalanceResponse mockBalance;
 
     @BeforeEach
     void setUp() {
         island = mock(MemberIsland.class);
         slot = mock(Slot.class);
+        mockBalance = mock(ResourceBalanceResponse.class);
 
         given(memberIslandService.getIsland(1L)).willReturn(island);
         given(slotRepository.findByIslandAndSlotNumber(island, 1)).willReturn(Optional.of(slot));
@@ -59,15 +65,22 @@ class BuildingLayoutServiceTest {
         BuildingMetadata metadata = mock(BuildingMetadata.class);
         BuildingYield yield = mock(BuildingYield.class);
         BuildingLayoutDto layoutDto = mock(BuildingLayoutDto.class);
+        BuildingCategory category = mock(BuildingCategory.class);
 
         given(slot.getIsland()).willReturn(island);
         given(island.getLevel()).willReturn(2);
         given(layoutDto.getBuildingMetadataId()).willReturn(10L);
-        given(buildingMetadataRepository.findById(10L)).willReturn(Optional.of(metadata));
+
+        given(metadataRepository.findById(10L)).willReturn(Optional.of(metadata));
+        given(metadata.getCategory()).willReturn(category);
+        given(category.name()).willReturn("PRODUCTION");
+
         given(metadata.getYieldForLevel(1)).willReturn(yield);
         given(yield.getRequiredLevel()).willReturn(1);
         given(yield.getCostShells()).willReturn(100);
         given(yield.getCostGems()).willReturn(20);
+
+        given(resourceService.getBalance(1L)).willReturn(mockBalance);
 
         // when
         buildingLayoutService.buildOf(1L, 1, layoutDto);
@@ -76,6 +89,7 @@ class BuildingLayoutServiceTest {
         verify(resourceService).subtract(island, ResourceType.SHELL, 100);
         verify(resourceService).subtract(island, ResourceType.GEM, 20);
         verify(slot).build(any(Building.class));
+        verify(buildingRepository).save(any(Building.class));
         verify(islandBoostCache).evictBoostCache(island);
     }
 
@@ -92,6 +106,7 @@ class BuildingLayoutServiceTest {
         given(building.getCurrentYield()).willReturn(yield);
         given(yield.getRefundShell()).willReturn(50);
         given(yield.getRefundGem()).willReturn(10);
+        given(resourceService.getBalance(1L)).willReturn(mockBalance);
 
         // when
         buildingLayoutService.demolishOf(1L, 1);
@@ -109,6 +124,7 @@ class BuildingLayoutServiceTest {
         // given
         Building building = mock(Building.class);
 
+        given(slot.getIsland()).willReturn(island);
         given(slot.hasBuilding()).willReturn(true);
         given(slot.getBuilding()).willReturn(building);
         given(building.isOperating()).willReturn(true);
