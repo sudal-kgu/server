@@ -3,7 +3,6 @@ package store.sonyk9919.api.domain.slot.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +13,7 @@ import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.slot.dto.SlotActivateResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
-import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
 import store.sonyk9919.api.domain.slot.service.SlotActivateService;
 import store.sonyk9919.api.domain.slot.service.SlotQueryService;
 
@@ -36,7 +35,7 @@ public class SlotController {
             @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음 (ISLAND-003)")
     })
     @GetMapping
-    public List<SlotResponseDto> searchAllSlots(@AuthMember AuthMemberDto authMember) {
+    public SlotListResponseDto searchAllSlots(@AuthMember AuthMemberDto authMember) {
         return slotQueryService.getAllSlot(authMember.getId());
     }
 
