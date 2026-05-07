@@ -1,10 +1,10 @@
 package store.sonyk9919.api.domain.building.service;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +26,7 @@ import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
+import store.sonyk9919.api.domain.slot.dto.SlotMoveDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 
@@ -113,5 +114,34 @@ class BuildingLayoutServiceTest {
         verify(islandBoostCache).evictBoostCache(island);
         verify(resourceService).add(island, ResourceType.SHELL, 50);
         verify(resourceService).add(island, ResourceType.GEM, 10);
+    }
+
+    @Test
+    @DisplayName("두 슬롯의 건물을 swap 한다.")
+    void moveOf_Success() {
+        // given
+        Long memberId = 1L;
+        SlotMoveDto slotMoveDto = SlotMoveDto.of(1, 2);
+
+        Building buildingA = mock(Building.class);
+        Building buildingB = mock(Building.class);
+
+        Slot fromSlot = Slot.of(island, 1);
+        fromSlot.activate();
+        fromSlot.build(buildingA);
+
+        Slot toSlot = Slot.of(island, 2);
+        toSlot.activate();
+        toSlot.build(buildingB);
+
+        given(slotRepository.findByIslandAndSlotNumber(island, 1)).willReturn(Optional.of(fromSlot));
+        given(slotRepository.findByIslandAndSlotNumber(island, 2)).willReturn(Optional.of(toSlot));
+
+        // when
+        buildingLayoutService.moveOf(memberId, slotMoveDto);
+
+        // then
+        assertThat(fromSlot.getBuilding()).isEqualTo(buildingB);
+        assertThat(toSlot.getBuilding()).isEqualTo(buildingA);
     }
 }

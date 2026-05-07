@@ -8,6 +8,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class SlotMoveDto {
 
-    private Integer fromSlotNumber;
-    private Integer toSlotNumber;
+    private final Integer fromSlotNumber;
+    private final Integer toSlotNumber;
+
+    public static SlotMoveDto of(Integer fromSlotNumber, Integer toSlotNumber){
+        return new SlotMoveDto(fromSlotNumber, toSlotNumber);
+    }
 }
