@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingEffect;
-import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
+import store.sonyk9919.api.domain.building.entity.EffectType;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
@@ -22,25 +22,50 @@ public class IslandBoostCache {
 
     @Cacheable(cacheNames = "islandBoost", key = "#island.id")
     public double getTotalBoost(MemberIsland island) {
+        return calculateTotalEffect(island, EffectType.ISLAND_BOOST);
+    }
+
+    @Cacheable(cacheNames = "islandQuizRewardBoost", key = "#island.id")
+    public double getQuizRewardBoost(MemberIsland island) {
+        return calculateTotalEffect(island, EffectType.QUIZ_REWARD_BOOST);
+    }
+
+    @Cacheable(cacheNames = "islandQuizRewardAdd", key = "#island.id")
+    public double getQuizRewardAdd(MemberIsland island) {
+        return calculateTotalEffect(island, EffectType.QUIZ_REWARD_ADD);
+    }
+
+    @Cacheable(cacheNames = "islandDisposalRewardAdd", key = "#island.id")
+    public double getDisposalRewardAdd(MemberIsland island) {
+        return calculateTotalEffect(island, EffectType.DISPOSAL_REWARD_ADD);
+    }
+
+    private double calculateTotalEffect(MemberIsland island, EffectType targetType) {
         return slotRepository.findAllByIsland(island).stream()
                 .filter(Objects::nonNull)
                 .filter(Slot::hasBuilding)
                 .map(s -> {
                     Building building = s.getBuilding();
-                    BuildingMetadata metadata = building.getBuildingMetadata();
-                    int currentLevel = building.getCurrentLevel();
-                    return metadata.getYieldForLevel(currentLevel).getEffect();
+                    return building.getBuildingMetadata().getYieldForLevel(building.getCurrentLevel()).getEffect();
                 })
                 .filter(Objects::nonNull)
-                .filter(BuildingEffect::isIslandBoost)
+                .filter(effect -> effect.getType() == targetType)
                 .mapToDouble(BuildingEffect::getEffectValue)
                 .sum();
     }
 
     public void evictBoostCache(MemberIsland island) {
-        Cache cache = cacheManager.getCache("islandBoost");
+        Long islandId = island.getId();
+        evictCacheIfPresent("islandBoost", islandId);
+        evictCacheIfPresent("islandQuizRewardBoost", islandId);
+        evictCacheIfPresent("islandQuizRewardAdd", islandId);
+        evictCacheIfPresent("islandDisposalRewardAdd", islandId);
+    }
+
+    private void evictCacheIfPresent(String cacheName, Long key) {
+        Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {
-            cache.evict(island.getId());
+            cache.evict(key);
         }
     }
 }
