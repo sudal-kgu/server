@@ -68,7 +68,7 @@ public class SlotController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 요청"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 슬롯 번호 (SLOT-004), 섬을 찾을 수 없음 (ISLAND-003)")
     })
-    @PostMapping("/activate/{slotNumber}")
+    @PostMapping("/{slotNumber}/activate")
     public SlotActivateResponseDto activateSlot(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
