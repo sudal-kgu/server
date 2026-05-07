@@ -31,9 +31,10 @@ public class BuildingUpgradeService {
     public void levelUp(Long memberId, Integer slotNumber){
         Slot slot = getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
+
+        if (!slot.hasBuilding()) throw new CustomException(SlotStatus.SLOT_EMPTY);
         Building building = slot.getBuilding();
 
-        if (building == null) throw new CustomException(SlotStatus.SLOT_EMPTY);
         if (building.isOperating()) throw new CustomException(BuildingStatus.ALREADY_OPERATING);
 
         subtractResource(island, building.getNextYield());
