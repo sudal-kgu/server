@@ -77,4 +77,18 @@ public class Slot {
 
         building = null;
     }
+
+    public void swapBuildingWith(Slot toSlot) {
+        if (!activated || !toSlot.activated) {
+            throw new CustomException(SlotStatus.SLOT_NOT_ACTIVATED);
+        }
+
+        Building fromBuilding = building;
+        this.updateBuilding(toSlot.getBuilding());
+        toSlot.updateBuilding(fromBuilding);
+    }
+
+    private void updateBuilding(Building toBuilding) {
+        building = toBuilding;
+    }
 }
