@@ -14,6 +14,7 @@ import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.island.repository.ItemRepository;
+import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
 import store.sonyk9919.api.domain.island.service.ItemCache;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
@@ -83,7 +84,7 @@ public class ShopService {
     private ShopPurchaseResponse applyPurchase(Long memberId, MemberIsland island, Item item, IslandItemUsage usage) {
         MemberResource updatedShell = resourceService.subtract(island, ResourceType.SHELL, item.getPrice());
         usage.incrementUseCount();
-        islandLevelService.addItemExp(memberId, item.getExpReward());
-        return ShopPurchaseResponse.of(item, usage, updatedShell.getAmount());
+        LevelUpResult levelUpResult = islandLevelService.addItemExp(memberId, item.getExpReward());
+        return ShopPurchaseResponse.of(item, usage, updatedShell.getAmount(), levelUpResult);
     }
 }
