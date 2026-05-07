@@ -3,17 +3,21 @@ package store.sonyk9919.api.domain.building.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
 import store.sonyk9919.api.domain.building.dto.BuildingLayoutDto;
+import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.building.repository.BuildingMetadataRepository;
+import store.sonyk9919.api.domain.building.repository.BuildingRepository;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
+import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
@@ -26,13 +30,14 @@ public class BuildingLayoutService {
 
     private final SlotRepository slotRepository;
     private final BuildingMetadataRepository metadataRepository;
+    private final BuildingRepository buildingRepository;
     private final MemberIslandRegistryService memberIslandService;
     private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
-    public void buildOf(Long memberId, Integer slotNumber, BuildingLayoutDto layoutDto) {
+    public BuildingResponseDto buildOf(Long memberId, Integer slotNumber, BuildingLayoutDto layoutDto) {
         Slot slot = getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
@@ -40,8 +45,13 @@ public class BuildingLayoutService {
                 .orElseThrow(() -> new CustomException(BuildingStatus.BUILDING_METADATA_NOT_FOUND));
 
         subtractResource(island, metadata.getYieldForLevel(1));
-        slot.build(Building.of(island, metadata));
+
+        Building building = Building.of(island, metadata);
+        slot.build(building);
+        buildingRepository.save(building);
+
         islandBoostCache.evictBoostCache(island);
+        return createResponse(memberId, slot, building);
     }
 
     private Slot getSlot(Long memberId, Integer slotNumber) {
@@ -63,9 +73,18 @@ public class BuildingLayoutService {
         }
     }
 
+    private BuildingResponseDto createResponse(Long memberId, Slot slot, Building building) {
+        BuildingInfoDto buildingInfo = BuildingInfoDto.of(building, building.getBuildingMetadata());
+
+        return BuildingResponseDto.of(
+                SlotResponseDto.of(slot, buildingInfo),
+                resourceService.getBalance(memberId)
+        );
+    }
+
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
-    public void demolishOf(Long memberId, Integer slotNumber) {
+    public BuildingResponseDto demolishOf(Long memberId, Integer slotNumber) {
         Slot slot = getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
@@ -75,6 +94,11 @@ public class BuildingLayoutService {
         addResource(island, building.getCurrentYield());
         slot.demolish();
         islandBoostCache.evictBoostCache(island);
+
+        return BuildingResponseDto.of(
+                SlotResponseDto.of(slot, null),
+                resourceService.getBalance(memberId)
+        );
     }
 
     private void addResource(MemberIsland island, BuildingYield yield){
@@ -88,7 +112,7 @@ public class BuildingLayoutService {
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
-    public void levelUp(Long memberId, Integer slotNumber){
+    public BuildingResponseDto levelUp(Long memberId, Integer slotNumber){
         Slot slot = getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
@@ -100,5 +124,7 @@ public class BuildingLayoutService {
         subtractResource(island, building.getNextYield());
         building.levelUp();
         islandBoostCache.evictBoostCache(island);
+
+        return createResponse(memberId, slot, building);
     }
 }
