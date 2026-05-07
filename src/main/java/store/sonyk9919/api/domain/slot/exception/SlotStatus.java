@@ -14,7 +14,9 @@ public enum SlotStatus implements BaseResponseStatus{
     SLOT_NOT_FOUND(HttpStatus.BAD_REQUEST, "SLOT-004", "존재하지 않는 슬롯입니다."),
 
     EXCEED_MAX_SLOT_FOR_LEVEL(HttpStatus.BAD_REQUEST, "SLOT-005", "현재 레벨에서 최대 활성화 개수를 초과했습니다."),
-    SLOT_EMPTY(HttpStatus.BAD_REQUEST, "SLOT-006", "빈 슬롯입니다. (건물이 설치 되지 않았습니다.)");
+    SLOT_EMPTY(HttpStatus.BAD_REQUEST, "SLOT-006", "빈 슬롯입니다. (건물이 설치 되지 않았습니다.)"),
+    INVALID_MOVE(HttpStatus.BAD_REQUEST, "SLOT-007", "같은 슬롯으로 건물 이동은 불가능합니다.");
+
 
     private final HttpStatus httpStatus;
     private final String code;
