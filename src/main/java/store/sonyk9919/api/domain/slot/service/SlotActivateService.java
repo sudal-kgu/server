@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
-import store.sonyk9919.api.domain.island.entity.MemberResource;
-import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.dto.SlotActivateResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.entity.SlotUnlockPolicy;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
@@ -37,12 +37,13 @@ public class SlotActivateService {
         int activeCount = slotRepository.countByIslandAndActivatedTrue(island);
         validateSlotUnlockLevel(island.getLevel(), activeCount);
 
-        MemberResource updatedShell = resourceService.subtract(
-                island, ResourceType.SHELL, SlotUnlockPolicy.costFor(activeCount)
-        );
+        resourceService.subtract(island, ResourceType.SHELL, SlotUnlockPolicy.costFor(activeCount));
         slot.activate();
 
-        return new SlotActivateResponseDto(slot.getSlotNumber(), updatedShell.getAmount());
+        return SlotActivateResponseDto.of(
+                SlotResponseDto.of(slot, null),
+                resourceService.getBalance(memberId)
+        );
     }
 
     private void validateSlotUnlockLevel(int currentLevel, int activeCount) {
