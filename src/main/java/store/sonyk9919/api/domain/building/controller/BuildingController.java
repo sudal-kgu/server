@@ -16,12 +16,13 @@ import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.dto.BuildingLayoutDto;
+import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
 import store.sonyk9919.api.domain.building.service.BuildingLayoutService;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/buildings")
+@RequestMapping("/v1/slots")
 public class BuildingController {
 
     private final BuildingMetadataQueryService queryService;
@@ -47,13 +48,13 @@ public class BuildingController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 메타데이터 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @PostMapping("/{slotNumber}")
-    public void build(
+    @PostMapping("/{slotNumber}/buildings")
+    public BuildingResponseDto build(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber,
             @RequestBody BuildingLayoutDto requestDto
     ) {
-        buildingLayoutService.buildOf(authMember.getId(), slotNumber, requestDto);
+        return buildingLayoutService.buildOf(authMember.getId(), slotNumber, requestDto);
     }
 
     @Operation(
@@ -66,12 +67,12 @@ public class BuildingController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @DeleteMapping("/{slotNumber}")
-    public void demolish(
+    @DeleteMapping("/{slotNumber}/buildings")
+    public BuildingResponseDto demolish(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
-        buildingLayoutService.demolishOf(authMember.getId(), slotNumber);
+        return buildingLayoutService.demolishOf(authMember.getId(), slotNumber);
     }
 
     @Operation(
@@ -84,11 +85,11 @@ public class BuildingController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @PostMapping("/{slotNumber}/upgrade")
-    public void buildingLevelUp(
+    @PostMapping("/{slotNumber}/buildings/upgrade")
+    public BuildingResponseDto buildingLevelUp(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
-        buildingLayoutService.levelUp(authMember.getId(), slotNumber);
+        return buildingLayoutService.levelUp(authMember.getId(), slotNumber);
     }
 }
