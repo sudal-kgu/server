@@ -13,10 +13,13 @@ import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.service.HarvestCalculator;
 import store.sonyk9919.api.domain.building.service.IslandBoostCache;
+import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
+import store.sonyk9919.api.domain.island.service.LevelSpecCache;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotUnlockResource;
 import store.sonyk9919.api.domain.slot.entity.Slot;
@@ -33,14 +36,25 @@ public class SlotQueryService {
     private final SlotRepository slotRepository;
     private final MemberIslandRegistryService memberIslandService;
     private final IslandBoostCache islandBoostCache;
+    private final LevelSpecCache levelSpecCache;
 
-    public List<SlotResponseDto> getAllSlot(Long memberId) {
+    public SlotListResponseDto getAllSlot(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
-        return slotRepository.findAllByIsland(island)
+        LevelSpec levelSpec = levelSpecCache.get(island.getLevel());
+        int maxActivatableSlots = levelSpec.getMaxSlotCount();
+
+        List<SlotResponseDto> slots = slotRepository.findAllByIsland(island)
                 .stream()
                 .map(slot -> SlotResponseDto.of(slot, mapToBuildingInfo(slot.getBuilding())))
                 .collect(Collectors.toList());
+
+        SlotUnlockResource resource = SlotUnlockResource.of(
+                ResourceType.SHELL,
+                SlotUnlockPolicy.costFor(slotRepository.countByIslandAndActivatedTrue(island))
+        );
+
+        return SlotListResponseDto.of(slots, maxActivatableSlots, resource);
     }
 
     private BuildingInfoDto mapToBuildingInfo(Building building){
