@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.quiz.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
@@ -136,8 +137,8 @@ public class QuizPlayService {
 
         resourceService.add(island, ResourceType.SHELL, earnedShell);
         resourceService.add(island, ResourceType.FUEL, earnedFuel);
-        islandLevelService.addRecyclingExp(memberAccountId);
+        LevelUpResult levelUpResult = islandLevelService.addRecyclingExp(memberAccountId);
 
-        return RecyclingRewardResponse.of(earnedShell, earnedFuel, earnedExp);
+        return RecyclingRewardResponse.of(earnedShell, earnedFuel, earnedExp, levelUpResult);
     }
 }
