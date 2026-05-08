@@ -22,7 +22,7 @@ class RecyclingRewardCalculatorTest {
     @InjectMocks private RecyclingRewardCalculator recyclingRewardCalculator;
 
     @Test
-    @DisplayName("퀴즈 보상: 섬에 정화 시설(20%) 효과가 있을 때 (15 * 1.2 == 18)")
+    @DisplayName("퀴즈 보상: 섬에 추가 보상(+5)과 보너스(20%) 효과가 중첩될 때 ((10 + 5) * 1.2 == 18)")
     void effect_reward() {
         // given
         MemberIsland island = mock(MemberIsland.class);
