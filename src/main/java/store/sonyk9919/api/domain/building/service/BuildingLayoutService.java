@@ -1,6 +1,7 @@
 package store.sonyk9919.api.domain.building.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
@@ -31,8 +32,8 @@ public class BuildingLayoutService {
     private final BuildingMetadataRepository metadataRepository;
     private final BuildingRepository buildingRepository;
     private final ResourceService resourceService;
-    private final IslandBoostCache islandBoostCache;
     private final SlotQueryHelper slotQueryHelper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -49,7 +50,7 @@ public class BuildingLayoutService {
         slot.build(building);
         buildingRepository.save(building);
 
-        islandBoostCache.evictBoostCache(island);
+        eventPublisher.publishEvent(island);
         return createResponse(memberId, slot, building);
     }
 
@@ -67,7 +68,8 @@ public class BuildingLayoutService {
     }
 
     private BuildingResponseDto createResponse(Long memberId, Slot slot, Building building) {
-        BuildingInfoDto buildingInfo = BuildingInfoDto.of(building, building.getBuildingMetadata());
+        BuildingInfoDto buildingInfo = building != null ?
+                BuildingInfoDto.of(building, building.getBuildingMetadata()) : null;
 
         return BuildingResponseDto.of(
                 SlotResponseDto.of(slot, buildingInfo),
@@ -86,7 +88,8 @@ public class BuildingLayoutService {
 
         addResource(island, building.getCurrentYield());
         slot.demolish();
-        islandBoostCache.evictBoostCache(island);
+
+        eventPublisher.publishEvent(island);
 
         return BuildingResponseDto.of(
                 SlotResponseDto.of(slot, null),

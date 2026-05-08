@@ -14,6 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
+import org.springframework.context.ApplicationEventPublisher;
 import store.sonyk9919.api.domain.building.dto.BuildingLayoutDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingCategory;
@@ -30,15 +33,16 @@ import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class BuildingLayoutServiceTest {
 
     @InjectMocks private BuildingLayoutService buildingLayoutService;
 
     @Mock private ResourceService resourceService;
-    @Mock private IslandBoostCache islandBoostCache;
     @Mock private BuildingMetadataRepository metadataRepository;
     @Mock private BuildingRepository buildingRepository;
     @Mock private SlotQueryHelper slotQueryHelper;
+    @Mock private ApplicationEventPublisher eventPublisher;
 
     private MemberIsland island;
     private Slot slot;
@@ -84,7 +88,7 @@ class BuildingLayoutServiceTest {
         verify(resourceService).subtract(island, ResourceType.GEM, 20);
         verify(slot).build(any(Building.class));
         verify(buildingRepository).save(any(Building.class));
-        verify(islandBoostCache).evictBoostCache(island);
+        verify(eventPublisher).publishEvent(island);
     }
 
     @Test
@@ -108,9 +112,9 @@ class BuildingLayoutServiceTest {
 
         // then
         verify(slot).demolish();
-        verify(islandBoostCache).evictBoostCache(island);
         verify(resourceService).add(island, ResourceType.SHELL, 50);
         verify(resourceService).add(island, ResourceType.GEM, 10);
+        verify(eventPublisher).publishEvent(island);
     }
 
     @Test
