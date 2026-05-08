@@ -1,6 +1,7 @@
 package store.sonyk9919.api.domain.building.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.entity.Building;
@@ -21,8 +22,8 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 public class BuildingUpgradeService {
 
     private final ResourceService resourceService;
-    private final IslandBoostCache islandBoostCache;
     private final SlotQueryHelper slotQueryHelper;
+    private final ApplicationEventPublisher eventPublisher;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -37,7 +38,7 @@ public class BuildingUpgradeService {
 
         subtractResource(island, building.getNextYield());
         building.levelUp();
-        islandBoostCache.evictBoostCache(island);
+        eventPublisher.publishEvent(island);
     }
 
     private void subtractResource(MemberIsland island, BuildingYield yield){

@@ -6,6 +6,8 @@ import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingEffect;
 import store.sonyk9919.api.domain.building.entity.EffectType;
@@ -38,6 +40,11 @@ public class IslandBoostCache {
     @Cacheable(cacheNames = "islandDisposalRewardAdd", key = "#island.id")
     public double getDisposalRewardAdd(MemberIsland island) {
         return calculateTotalEffect(island, EffectType.DISPOSAL_REWARD_ADD);
+    }
+
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void onBuildingChanged(MemberIsland island) {
+        evictBoostCache(island);
     }
 
     private double calculateTotalEffect(MemberIsland island, EffectType targetType) {
