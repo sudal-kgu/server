@@ -1,24 +1,23 @@
 package store.sonyk9919.api.domain.building.dto;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 
 @Getter
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 public class BuildingCatalogDto {
 
-    private Long buildingMetadataId;
-    private String name;
-    private String category;
-    private String model;
+    private final Long buildingMetadataId;
+    private final String name;
+    private final String category;
+    private final String model;
 
-    private int requiredLevel;
-    private int costShells;
-    private int costGems;
-    private int pph;
+    private final int requiredLevel;
+    private final int costShells;
+    private final int costGems;
+    private final int pph;
 
     public static BuildingCatalogDto of(BuildingMetadata metadata, BuildingYield yield) {
         return new BuildingCatalogDto(
