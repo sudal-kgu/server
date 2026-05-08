@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.building.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -72,7 +73,7 @@ public class BuildingLayoutController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/move")
-    public void move(@AuthMember AuthMemberDto authMember, @RequestBody SlotMoveDto slotMoveDto) {
+    public void move(@AuthMember AuthMemberDto authMember, @Valid @RequestBody SlotMoveDto slotMoveDto) {
         layoutService.moveOf(authMember.getId(), slotMoveDto);
     }
 }
