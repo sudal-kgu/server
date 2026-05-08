@@ -120,8 +120,6 @@ public class BuildingLayoutService {
         Integer fromSlotNumber = slotMoveDto.getFromSlotNumber();
         Integer toSlotNumber = slotMoveDto.getToSlotNumber();
 
-        if (fromSlotNumber.equals(toSlotNumber)) throw new CustomException(SlotStatus.INVALID_MOVE);
-
         Slot fromSlot = getSlot(memberId, fromSlotNumber);
         Slot toSlot = getSlot(memberId, toSlotNumber);
 
