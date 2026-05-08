@@ -26,9 +26,9 @@ public class TrashConfirmService {
     private final ResourceService resourceService;
     private final TrashConfirmRewardCalculator rewardCalculator;
 
-    @DistributedLock(key = "'island:' + #memberAccountId + ':shell'")
+    @DistributedLock(key = "'island:' + #memberId + ':shell'")
     @Transactional
-    public ConfirmResponseDto confirm(Long memberAccountId, List<String> trashUuids) {
+    public ConfirmResponseDto confirm(Long memberId, List<String> trashUuids) {
         List<Trash> trashes = findAndValidTrashes(trashUuids);
 
         AnalysisResult analysisResult = AnalysisResult.create();
@@ -36,7 +36,7 @@ public class TrashConfirmService {
 
         trashes.forEach(trash -> trash.confirmResult(analysisResult));
 
-        rewardShell(memberAccountId, trashes);
+        rewardShell(memberId, trashes);
         return ConfirmResponseDto.from(analysisResult.getSerial());
     }
 
