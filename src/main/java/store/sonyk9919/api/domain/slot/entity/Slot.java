@@ -79,7 +79,7 @@ public class Slot {
     }
 
     public void swapBuildingWith(Slot toSlot) {
-        if (!activated || !toSlot.activated) {
+        if (!this.isActivated() || !toSlot.isActivated()) {
             throw new CustomException(SlotStatus.SLOT_NOT_ACTIVATED);
         }
 
