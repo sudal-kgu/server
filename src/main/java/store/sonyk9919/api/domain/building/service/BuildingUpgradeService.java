@@ -9,11 +9,10 @@ import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
-import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
-import store.sonyk9919.api.domain.slot.repository.SlotRepository;
+import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
 
@@ -21,15 +20,14 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 @RequiredArgsConstructor
 public class BuildingUpgradeService {
 
-    private final SlotRepository slotRepository;
-    private final MemberIslandRegistryService memberIslandService;
     private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
+    private final SlotQueryHelper slotQueryHelper;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
     public void levelUp(Long memberId, Integer slotNumber){
-        Slot slot = getSlot(memberId, slotNumber);
+        Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
         if (!slot.hasBuilding()) throw new CustomException(SlotStatus.SLOT_EMPTY);
@@ -40,12 +38,6 @@ public class BuildingUpgradeService {
         subtractResource(island, building.getNextYield());
         building.levelUp();
         islandBoostCache.evictBoostCache(island);
-    }
-
-    private Slot getSlot(Long memberId, Integer slotNumber) {
-        MemberIsland island = memberIslandService.getIsland(memberId);
-        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
     }
 
     private void subtractResource(MemberIsland island, BuildingYield yield){

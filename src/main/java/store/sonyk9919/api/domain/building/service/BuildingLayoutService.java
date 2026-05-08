@@ -15,13 +15,12 @@ import store.sonyk9919.api.domain.building.repository.BuildingRepository;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
-import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.dto.SlotMoveDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
-import store.sonyk9919.api.domain.slot.repository.SlotRepository;
+import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
 
@@ -29,17 +28,16 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 @RequiredArgsConstructor
 public class BuildingLayoutService {
 
-    private final SlotRepository slotRepository;
     private final BuildingMetadataRepository metadataRepository;
     private final BuildingRepository buildingRepository;
-    private final MemberIslandRegistryService memberIslandService;
     private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
+    private final SlotQueryHelper slotQueryHelper;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
     public BuildingResponseDto buildOf(Long memberId, Integer slotNumber, BuildingLayoutDto layoutDto) {
-        Slot slot = getSlot(memberId, slotNumber);
+        Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
         BuildingMetadata metadata = metadataRepository.findById(layoutDto.getBuildingMetadataId())
@@ -53,12 +51,6 @@ public class BuildingLayoutService {
 
         islandBoostCache.evictBoostCache(island);
         return createResponse(memberId, slot, building);
-    }
-
-    private Slot getSlot(Long memberId, Integer slotNumber) {
-        MemberIsland island = memberIslandService.getIsland(memberId);
-        return slotRepository.findByIslandAndSlotNumber(island, slotNumber)
-                .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
     }
 
     private void subtractResource(MemberIsland island, BuildingYield yield){
@@ -86,7 +78,7 @@ public class BuildingLayoutService {
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
     public BuildingResponseDto demolishOf(Long memberId, Integer slotNumber) {
-        Slot slot = getSlot(memberId, slotNumber);
+        Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
         if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
@@ -120,8 +112,10 @@ public class BuildingLayoutService {
         Integer fromSlotNumber = slotMoveDto.getFromSlotNumber();
         Integer toSlotNumber = slotMoveDto.getToSlotNumber();
 
-        Slot fromSlot = getSlot(memberId, fromSlotNumber);
-        Slot toSlot = getSlot(memberId, toSlotNumber);
+        if (fromSlotNumber.equals(toSlotNumber)) throw new CustomException(SlotStatus.INVALID_MOVE);
+
+        Slot fromSlot = slotQueryHelper.getSlot(memberId, fromSlotNumber);
+        Slot toSlot = slotQueryHelper.getSlot(memberId, toSlotNumber);
 
         if (!fromSlot.hasBuilding()) throw new CustomException(SlotStatus.SLOT_EMPTY);
 
