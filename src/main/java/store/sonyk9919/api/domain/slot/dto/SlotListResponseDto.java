@@ -10,9 +10,8 @@ import lombok.Getter;
 public class SlotListResponseDto {
     private List<SlotResponseDto> slots;
     private int maxActivatableSlots;
-    private SlotUnlockResource resource;
 
-    public static SlotListResponseDto of(List<SlotResponseDto> slots, int maxActivatableSlots, SlotUnlockResource resource){
-        return new SlotListResponseDto(slots, maxActivatableSlots, resource);
+    public static SlotListResponseDto of(List<SlotResponseDto> slots, int maxActivatableSlots){
+        return new SlotListResponseDto(slots, maxActivatableSlots);
     }
 }

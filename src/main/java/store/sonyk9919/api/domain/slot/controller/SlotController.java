@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.slot.dto.SlotActivateResponseDto;
-import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
 import store.sonyk9919.api.domain.slot.service.SlotActivateService;
 import store.sonyk9919.api.domain.slot.service.SlotQueryService;
@@ -50,7 +50,7 @@ public class SlotController {
             @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음 (ISLAND-003)")
     })
     @GetMapping("/{slotNumber}")
-    public SlotDetailResponseDto searchSlotDetail(
+    public SlotResponseDto searchSlotDetail(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {

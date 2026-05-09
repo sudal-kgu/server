@@ -12,7 +12,6 @@ import store.sonyk9919.api.domain.building.entity.BuildingYield;
 public class ProductionInfoDto {
 
     private int pph;
-    private boolean operating;
     private LocalDateTime lastCollectedAt;
     private LocalDateTime fuelExpiredAt;
     private int expectedGem;
@@ -20,7 +19,6 @@ public class ProductionInfoDto {
     public static ProductionInfoDto of(Building building, BuildingYield yield, int expectedGem) {
         return new ProductionInfoDto(
                 yield.getPph(),
-                building.isOperating(),
                 building.getLastCollectedAt(),
                 building.getFuelExpiredAt(),
                 expectedGem
