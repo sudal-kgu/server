@@ -37,11 +37,6 @@ public class IslandBoostCache {
         return calculateTotalEffect(island, EffectType.QUIZ_REWARD_ADD);
     }
 
-    @Cacheable(cacheNames = "islandDisposalRewardAdd", key = "#island.id")
-    public double getDisposalRewardAdd(MemberIsland island) {
-        return calculateTotalEffect(island, EffectType.DISPOSAL_REWARD_ADD);
-    }
-
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onBuildingChanged(MemberIsland island) {
         evictBoostCache(island);
@@ -56,7 +51,7 @@ public class IslandBoostCache {
                     return building.getBuildingMetadata().getYieldForLevel(building.getCurrentLevel()).getEffect();
                 })
                 .filter(Objects::nonNull)
-                .filter(effect -> effect.getType() == targetType)
+                .filter(effect -> effect.isEquals(targetType))
                 .mapToDouble(BuildingEffect::getEffectValue)
                 .sum();
     }
@@ -66,7 +61,6 @@ public class IslandBoostCache {
         evictCacheIfPresent("islandBoost", islandId);
         evictCacheIfPresent("islandQuizRewardBoost", islandId);
         evictCacheIfPresent("islandQuizRewardAdd", islandId);
-        evictCacheIfPresent("islandDisposalRewardAdd", islandId);
     }
 
     private void evictCacheIfPresent(String cacheName, Long key) {

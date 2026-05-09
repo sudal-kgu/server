@@ -6,8 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
-import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.trash.dto.ConfirmRequestDto;
 import store.sonyk9919.api.domain.trash.dto.ConfirmResponseDto;
 import store.sonyk9919.api.domain.trash.service.TrashConfirmService;
@@ -25,10 +23,7 @@ public class TrashConfirmController {
                     "반환된 serial로 페이징 조회가 가능합니다."
     )
     @PostMapping("/confirm")
-    public ConfirmResponseDto confirmTrash(
-            @AuthMember AuthMemberDto authMember,
-            @RequestBody ConfirmRequestDto request
-    ) {
-        return trashConfirmService.confirm(authMember.getId(), request.getTrashUuids());
+    public ConfirmResponseDto confirmTrash(@RequestBody ConfirmRequestDto request) {
+        return trashConfirmService.confirm(request.getTrashUuids());
     }
 }
