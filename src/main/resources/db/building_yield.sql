@@ -23,10 +23,10 @@ INSERT INTO building_yield (building_metadata_id, level, required_level, cost_sh
 (4, 4, 5, 220000, 100000, 160, 20000, 36000, 'ISLAND_BOOST', 0.10);
 
 INSERT INTO building_yield (building_metadata_id, level, required_level, cost_shells, cost_gems, pph, required_fuel, duration_second, type, effect_value) VALUES
-(5, 1, 4, 10000, 0, 0, 0, 0, 'DISPOSAL_REWARD_ADD', 200.0),
-(5, 2, 4, 15000, 0, 0, 0, 0, 'DISPOSAL_REWARD_ADD', 300.0),
-(5, 3, 4, 22000, 0, 0, 0, 0, 'DISPOSAL_REWARD_ADD', 400.0),
-(5, 4, 4, 30000, 0, 0, 0, 0, 'DISPOSAL_REWARD_ADD', 500.0);
+(5, 1, 4, 10000, 0, 0, 0, 0, 'QUIZ_REWARD_ADD', 200.0),
+(5, 2, 4, 15000, 0, 0, 0, 0, 'QUIZ_REWARD_ADD', 300.0),
+(5, 3, 4, 22000, 0, 0, 0, 0, 'QUIZ_REWARD_ADD', 400.0),
+(5, 4, 4, 30000, 0, 0, 0, 0, 'QUIZ_REWARD_ADD', 500.0);
 
 INSERT INTO building_yield (building_metadata_id, level, required_level, cost_shells, cost_gems, pph, required_fuel, duration_second, type, effect_value) VALUES
 (6, 1, 5, 20000, 0, 0, 0, 0, 'QUIZ_REWARD_ADD', 500.0),
