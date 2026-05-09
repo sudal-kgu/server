@@ -12,12 +12,14 @@ import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 public class BuildingInfoDto {
 
     private Long buildingId;
-    private String buildingName;
+    private String name;
     private String category;
     private String model;
 
     private int currentLevel;
     private LocalDateTime fuelExpiredAt;
+
+    private ProductionInfoDto productionInfo;
 
     public static BuildingInfoDto of(Building building, BuildingMetadata metadata) {
         return new BuildingInfoDto(
@@ -26,7 +28,20 @@ public class BuildingInfoDto {
                 metadata.getCategory().name(),
                 metadata.getModel(),
                 building.getCurrentLevel(),
-                building.getFuelExpiredAt()
+                building.getFuelExpiredAt(),
+                null
+        );
+    }
+
+    public static BuildingInfoDto of(Building building, BuildingMetadata metadata, ProductionInfoDto productionInfo) {
+        return new BuildingInfoDto(
+                building.getId(),
+                metadata.getName(),
+                metadata.getCategory().name(),
+                metadata.getModel(),
+                building.getCurrentLevel(),
+                building.getFuelExpiredAt(),
+                productionInfo
         );
     }
 }

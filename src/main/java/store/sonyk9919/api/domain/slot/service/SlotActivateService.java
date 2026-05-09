@@ -41,7 +41,7 @@ public class SlotActivateService {
         slot.activate();
 
         return SlotActivateResponseDto.of(
-                SlotResponseDto.of(slot, null),
+                SlotResponseDto.from(slot),
                 resourceService.getBalance(memberId)
         );
     }

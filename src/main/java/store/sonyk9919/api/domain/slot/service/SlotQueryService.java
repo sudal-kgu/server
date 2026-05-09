@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.sonyk9919.api.domain.building.dto.BuildingDetailDto;
 import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
 import store.sonyk9919.api.domain.building.dto.ProductionInfoDto;
 import store.sonyk9919.api.domain.building.entity.Building;
@@ -18,9 +17,8 @@ import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.LevelSpecCache;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
-import store.sonyk9919.api.domain.slot.dto.SlotDetailResponseDto;
-import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotUnlockResource;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.entity.SlotUnlockPolicy;
@@ -43,18 +41,18 @@ public class SlotQueryService {
 
         LevelSpec levelSpec = levelSpecCache.get(island.getLevel());
         int maxActivatableSlots = levelSpec.getMaxSlotCount();
+        SlotUnlockResource resource = calculateUnlockCost(island);
 
         List<SlotResponseDto> slots = slotRepository.findAllByIsland(island)
                 .stream()
-                .map(slot -> SlotResponseDto.of(slot, mapToBuildingInfo(slot.getBuilding())))
+                .map(slot -> SlotResponseDto.of(
+                        slot,
+                        mapToBuildingInfo(slot.getBuilding()),
+                        !slot.isActivated() ? resource : null
+                ))
                 .collect(Collectors.toList());
 
-        SlotUnlockResource resource = SlotUnlockResource.of(
-                ResourceType.SHELL,
-                SlotUnlockPolicy.costFor(slotRepository.countByIslandAndActivatedTrue(island))
-        );
-
-        return SlotListResponseDto.of(slots, maxActivatableSlots, resource);
+        return SlotListResponseDto.of(slots, maxActivatableSlots);
     }
 
     private BuildingInfoDto mapToBuildingInfo(Building building){
@@ -63,27 +61,27 @@ public class SlotQueryService {
         return BuildingInfoDto.of(building, building.getBuildingMetadata());
     }
 
-    public SlotDetailResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
+    public SlotResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
         MemberIsland island = memberIslandService.getIsland(memberId);
 
         Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
 
-        SlotUnlockResource slotUnlockResource = !slot.isActivated() ?
+        SlotUnlockResource resource = !slot.isActivated() ?
                 calculateUnlockCost(island) : null;
 
-        return SlotDetailResponseDto.of(
+        return SlotResponseDto.of(
                 slot,
                 mapToBuildingDetail(island, slot.getBuilding()),
-                slotUnlockResource
+                resource
         );
     }
 
-    private BuildingDetailDto mapToBuildingDetail(MemberIsland island, Building building) {
+    private BuildingInfoDto mapToBuildingDetail(MemberIsland island, Building building) {
         if (building == null) return null;
 
         BuildingMetadata metadata = building.getBuildingMetadata();
-        return BuildingDetailDto.of(
+        return BuildingInfoDto.of(
                 building, metadata,
                 createInfo(island, building, metadata));
     }
