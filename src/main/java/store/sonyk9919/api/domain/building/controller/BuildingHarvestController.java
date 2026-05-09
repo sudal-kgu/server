@@ -15,7 +15,7 @@ import store.sonyk9919.api.domain.building.service.BuildingOperateService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/buildings")
+@RequestMapping("/v1/buildings/operations")
 public class BuildingHarvestController {
 
     private final BuildingHarvestService harvestService;
@@ -31,7 +31,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @PostMapping("/{slotNumber}/operate")
+    @PostMapping("/{slotNumber}")
     public void injectFuel(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber

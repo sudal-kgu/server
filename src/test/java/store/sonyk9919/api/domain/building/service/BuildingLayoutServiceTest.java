@@ -37,6 +37,8 @@ import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 class BuildingLayoutServiceTest {
 
     @InjectMocks private BuildingLayoutService buildingLayoutService;
+    @InjectMocks private BuildingUpgradeService buildingUpgradeService;
+    @InjectMocks private BuildingMoveService buildingMoveService;
 
     @Mock private ResourceService resourceService;
     @Mock private BuildingMetadataRepository metadataRepository;
@@ -139,7 +141,7 @@ class BuildingLayoutServiceTest {
         given(slotQueryHelper.getSlot(memberId, 2)).willReturn(toSlot);
 
         // when
-        buildingLayoutService.moveOf(memberId, slotMoveDto);
+        buildingMoveService.moveOf(memberId, slotMoveDto);
 
         // then
         assertThat(fromSlot.getBuilding()).isEqualTo(buildingB);
