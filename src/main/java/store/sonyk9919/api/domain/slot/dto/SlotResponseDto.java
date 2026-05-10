@@ -14,6 +14,14 @@ public class SlotResponseDto {
     private boolean activated;
     private BuildingInfoDto building;
 
+    public static SlotResponseDto from(Slot slot) {
+        return new SlotResponseDto(
+                slot.getSlotNumber(),
+                slot.isActivated(),
+                null
+        );
+    }
+
     public static SlotResponseDto of(Slot slot, BuildingInfoDto buildingInfo) {
         return new SlotResponseDto(
                 slot.getSlotNumber(),

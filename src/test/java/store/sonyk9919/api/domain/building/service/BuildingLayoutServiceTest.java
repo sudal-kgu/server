@@ -28,7 +28,7 @@ import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.ResourceService;
-import store.sonyk9919.api.domain.slot.dto.SlotMoveDto;
+import store.sonyk9919.api.domain.slot.dto.SlotMoveRequestDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 
@@ -37,7 +37,6 @@ import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 class BuildingLayoutServiceTest {
 
     @InjectMocks private BuildingLayoutService buildingLayoutService;
-    @InjectMocks private BuildingUpgradeService buildingUpgradeService;
     @InjectMocks private BuildingMoveService buildingMoveService;
 
     @Mock private ResourceService resourceService;
@@ -124,27 +123,43 @@ class BuildingLayoutServiceTest {
     void moveOf_Success() {
         // given
         Long memberId = 1L;
-        SlotMoveDto slotMoveDto = SlotMoveDto.of(1, 2);
+        SlotMoveRequestDto slotMoveRequestDto = SlotMoveRequestDto.of(1, 2);
 
-        Building buildingA = mock(Building.class);
-        Building buildingB = mock(Building.class);
+        Building buildingA = stubbedBuilding("BuildingA");
+        Building buildingB = stubbedBuilding("BuildingB");
 
-        Slot fromSlot = Slot.of(island, 1);
-        fromSlot.activate();
-        fromSlot.build(buildingA);
-
-        Slot toSlot = Slot.of(island, 2);
-        toSlot.activate();
-        toSlot.build(buildingB);
+        Slot fromSlot = createSlotWithBuilding(1, buildingA);
+        Slot toSlot = createSlotWithBuilding(2, buildingB);
 
         given(slotQueryHelper.getSlot(memberId, 1)).willReturn(fromSlot);
         given(slotQueryHelper.getSlot(memberId, 2)).willReturn(toSlot);
 
         // when
-        buildingMoveService.moveOf(memberId, slotMoveDto);
+        buildingMoveService.moveOf(memberId, slotMoveRequestDto);
 
         // then
         assertThat(fromSlot.getBuilding()).isEqualTo(buildingB);
         assertThat(toSlot.getBuilding()).isEqualTo(buildingA);
+    }
+
+    private Building stubbedBuilding(String name) {
+        BuildingMetadata metadata = mock(BuildingMetadata.class);
+        BuildingYield yield = mock(BuildingYield.class);
+        Building building = mock(Building.class);
+
+        given(building.getBuildingMetadata()).willReturn(metadata);
+        given(building.getCurrentYield()).willReturn(yield);
+        given(metadata.getName()).willReturn(name);
+        given(metadata.getCategory()).willReturn(mock(BuildingCategory.class));
+        given(yield.getLevel()).willReturn(1);
+
+        return building;
+    }
+
+    private Slot createSlotWithBuilding(int slotNumber, Building building) {
+        Slot slot = Slot.of(island, slotNumber);
+        slot.activate();
+        slot.build(building);
+        return slot;
     }
 }

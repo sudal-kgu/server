@@ -18,7 +18,8 @@ import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
 import store.sonyk9919.api.domain.building.service.BuildingMoveService;
 import store.sonyk9919.api.domain.building.service.BuildingUpgradeService;
-import store.sonyk9919.api.domain.slot.dto.SlotMoveDto;
+import store.sonyk9919.api.domain.slot.dto.SlotMoveRequestDto;
+import store.sonyk9919.api.domain.slot.dto.SlotMoveResponseDto;
 
 @RestController
 @RequiredArgsConstructor
@@ -69,7 +70,7 @@ public class BuildingController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/move")
-    public void move(@AuthMember AuthMemberDto authMember, @Valid @RequestBody SlotMoveDto slotMoveDto) {
-        moveService.moveOf(authMember.getId(), slotMoveDto);
+    public SlotMoveResponseDto move(@AuthMember AuthMemberDto authMember, @Valid @RequestBody SlotMoveRequestDto slotMoveRequestDto) {
+        return moveService.moveOf(authMember.getId(), slotMoveRequestDto);
     }
 }
