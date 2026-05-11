@@ -18,6 +18,7 @@ public class BuildingInfoDto {
 
     private int currentLevel;
     private LocalDateTime fuelExpiredAt;
+    private LocalDateTime lastCollectedAt;
 
     private ProductionInfoDto productionInfo;
 
@@ -29,6 +30,7 @@ public class BuildingInfoDto {
                 metadata.getModel(),
                 building.getCurrentLevel(),
                 building.getFuelExpiredAt(),
+                building.getLastCollectedAt(),
                 null
         );
     }
@@ -41,6 +43,7 @@ public class BuildingInfoDto {
                 metadata.getModel(),
                 building.getCurrentLevel(),
                 building.getFuelExpiredAt(),
+                building.getLastCollectedAt(),
                 productionInfo
         );
     }

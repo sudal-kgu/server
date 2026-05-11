@@ -81,7 +81,6 @@ public class SlotQueryService {
         if (!metadata.isProductionType()) return null;
 
         return ProductionInfoDto.of(
-                building,
                 metadata.getYieldForLevel(building.getCurrentLevel()),
                 computeGems(island, building)
         );
