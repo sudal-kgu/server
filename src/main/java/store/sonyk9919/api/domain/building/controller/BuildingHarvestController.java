@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
+import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
 import store.sonyk9919.api.domain.building.dto.HarvestResponseDto;
 import store.sonyk9919.api.domain.building.dto.OperationPreviewDto;
 import store.sonyk9919.api.domain.building.service.BuildingHarvestService;
@@ -35,11 +36,11 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/{slotNumber}")
-    public void injectFuel(
+    public BuildingResponseDto injectFuel(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
-        operateService.operate(authMember.getId(), slotNumber);
+        return operateService.operate(authMember.getId(), slotNumber);
     }
 
     @Operation(

@@ -91,7 +91,7 @@ public class BuildingLayoutService {
         eventPublisher.publishEvent(island);
 
         return BuildingResponseDto.of(
-                SlotResponseDto.of(slot, null),
+                SlotResponseDto.from(slot),
                 resourceService.getBalance(memberId)
         );
     }

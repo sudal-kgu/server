@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
+import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
 import store.sonyk9919.api.domain.building.service.BuildingMoveService;
 import store.sonyk9919.api.domain.building.service.BuildingUpgradeService;
@@ -52,11 +53,11 @@ public class BuildingController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/{slotNumber}/upgrade")
-    public void buildingLevelUp(
+    public BuildingResponseDto buildingLevelUp(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
-        upgradeService.levelUp(authMember.getId(), slotNumber);
+        return upgradeService.levelUp(authMember.getId(), slotNumber);
     }
 
     @Operation(
