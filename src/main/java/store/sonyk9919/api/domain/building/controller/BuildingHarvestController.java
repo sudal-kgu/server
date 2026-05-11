@@ -53,7 +53,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/{slotNumber}/harvest")
-    public int harvestBuilding(
+    public HarvestResponseDto harvestBuilding(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
@@ -71,7 +71,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
     @PostMapping("/harvests")
-    public int harvestBuildings(
+    public HarvestResponseDto harvestBuildings(
             @AuthMember AuthMemberDto authMember
     ) {
         return harvestService.harvestAll(authMember.getId());

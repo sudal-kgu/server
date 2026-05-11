@@ -30,7 +30,7 @@ public class BuildingHarvestService {
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
-    public int harvest(Long memberId, Integer slotNumber) {
+    public HarvestResponseDto harvest(Long memberId, Integer slotNumber) {
         Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
         MemberIsland island = slot.getIsland();
 
@@ -42,7 +42,7 @@ public class BuildingHarvestService {
         if (gems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
         applyHarvest(building, island, gems, calculator);
-        return gems;
+        return HarvestResponseDto.from(gems);
     }
 
     private int computeGems(MemberIsland island, HarvestCalculator calculator) {
@@ -57,7 +57,7 @@ public class BuildingHarvestService {
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
-    public int harvestAll(Long memberId) {
+    public HarvestResponseDto harvestAll(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
         double boostPercent = islandBoostCache.getTotalBoost(island);
 
@@ -67,7 +67,7 @@ public class BuildingHarvestService {
         if (totalGems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
         resourceService.add(island, ResourceType.GEM, totalGems);
-        return totalGems;
+        return HarvestResponseDto.from(totalGems);
     }
 
     private List<Slot> getHarvestableSlots(MemberIsland island) {
