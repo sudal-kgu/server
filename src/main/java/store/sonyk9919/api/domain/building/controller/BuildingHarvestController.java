@@ -4,12 +4,15 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
+import store.sonyk9919.api.domain.building.dto.HarvestResponseDto;
+import store.sonyk9919.api.domain.building.dto.OperationPreviewDto;
 import store.sonyk9919.api.domain.building.service.BuildingHarvestService;
 import store.sonyk9919.api.domain.building.service.BuildingOperateService;
 
@@ -72,5 +75,37 @@ public class BuildingHarvestController {
             @AuthMember AuthMemberDto authMember
     ) {
         return harvestService.harvestAll(authMember.getId());
+    }
+
+    @Operation(
+            summary = "건물 가동 연료 소모량 미리보기",
+            description = "특정 슬롯의 건물을 가동할 때 필요한 연료량을 미리 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 없음")
+    })
+    @GetMapping("/{slotNumber}")
+    public OperationPreviewDto previewFuel(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Integer slotNumber
+    ) {
+        return operateService.preview(authMember.getId(), slotNumber);
+    }
+
+    @Operation(
+            summary = "생산 건물 수확량 미리보기",
+            description = "해당 슬롯의 생산 시설에서 현재 수확 가능한 보석량을 미리 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 없음")
+    })
+    @GetMapping("/{slotNumber}/harvest")
+    public HarvestResponseDto previewHarvest(
+            @AuthMember AuthMemberDto authMember,
+            @PathVariable Integer slotNumber
+    ) {
+        return harvestService.preview(authMember.getId(), slotNumber);
     }
 }

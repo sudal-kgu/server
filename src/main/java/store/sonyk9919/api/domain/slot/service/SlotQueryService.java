@@ -91,7 +91,7 @@ public class SlotQueryService {
         double boostPercent = islandBoostCache.getTotalBoost(island);
         if (!building.canHarvest()) return 0;
 
-        HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());
+        HarvestCalculator calculator = HarvestCalculator.from(building);
         return calculator.calculate(boostPercent);
     }
 }
