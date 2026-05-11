@@ -86,6 +86,7 @@ public class BuildingLayoutService {
 
         addResource(island, building.getCurrentYield());
         slot.demolish();
+        buildingRepository.delete(building);
 
         eventPublisher.publishEvent(island);
 

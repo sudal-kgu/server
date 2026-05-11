@@ -4,11 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
+import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.slot.dto.SlotMoveRequestDto;
 import store.sonyk9919.api.domain.slot.dto.SlotMoveResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
+import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
@@ -18,6 +20,7 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 public class BuildingMoveService {
 
     private final SlotQueryHelper slotQueryHelper;
+    private final SlotRepository slotRepository;
 
     @DistributedLock(keys = {
             "'slot:' + #memberId + ':' + #slotMoveRequestDto.fromSlotNumber",
@@ -25,15 +28,19 @@ public class BuildingMoveService {
     })
     @Transactional
     public SlotMoveResponseDto moveOf(Long memberId, SlotMoveRequestDto slotMoveRequestDto) {
-        Integer fromSlotNumber = slotMoveRequestDto.getFromSlotNumber();
-        Integer toSlotNumber = slotMoveRequestDto.getToSlotNumber();
-
-        Slot fromSlot = slotQueryHelper.getSlot(memberId, fromSlotNumber);
-        Slot toSlot = slotQueryHelper.getSlot(memberId, toSlotNumber);
+        Slot fromSlot = slotQueryHelper.getSlot(memberId, slotMoveRequestDto.getFromSlotNumber());
+        Slot toSlot = slotQueryHelper.getSlot(memberId, slotMoveRequestDto.getToSlotNumber());
 
         if (!fromSlot.hasBuilding()) throw new CustomException(SlotStatus.SLOT_EMPTY);
 
-        fromSlot.swapBuildingWith(toSlot);
+        Building fromBuilding = fromSlot.getBuilding();
+        Building toBuilding = toSlot.getBuilding();
+        fromSlot.clearBuilding();
+        toSlot.clearBuilding();
+
+        slotRepository.flush();
+        fromSlot.assignBuilding(toBuilding);
+        toSlot.assignBuilding(fromBuilding);
 
         return SlotMoveResponseDto.of(
                 createSlotResponseDto(fromSlot),
@@ -48,7 +55,6 @@ public class BuildingMoveService {
                 slot.getBuilding(),
                 slot.getBuilding().getBuildingMetadata()
         );
-
         return SlotResponseDto.of(slot, buildingInfo);
     }
 }

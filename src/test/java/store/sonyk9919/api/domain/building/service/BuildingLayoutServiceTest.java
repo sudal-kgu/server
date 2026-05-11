@@ -30,6 +30,7 @@ import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.dto.SlotMoveRequestDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
+import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
 
 @ExtendWith(MockitoExtension.class)
@@ -42,6 +43,7 @@ class BuildingLayoutServiceTest {
     @Mock private ResourceService resourceService;
     @Mock private BuildingMetadataRepository metadataRepository;
     @Mock private BuildingRepository buildingRepository;
+    @Mock private SlotRepository slotRepository;
     @Mock private SlotQueryHelper slotQueryHelper;
     @Mock private ApplicationEventPublisher eventPublisher;
 
@@ -140,6 +142,7 @@ class BuildingLayoutServiceTest {
         // then
         assertThat(fromSlot.getBuilding()).isEqualTo(buildingB);
         assertThat(toSlot.getBuilding()).isEqualTo(buildingA);
+        verify(slotRepository).flush();
     }
 
     private Building stubbedBuilding(String name) {

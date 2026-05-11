@@ -41,7 +41,7 @@ public class Slot {
     @Column(nullable = false)
     private boolean activated;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "building_id")
     private Building building;
 
@@ -78,17 +78,11 @@ public class Slot {
         building = null;
     }
 
-    public void swapBuildingWith(Slot toSlot) {
-        if (!this.isActivated() || !toSlot.isActivated()) {
-            throw new CustomException(SlotStatus.SLOT_NOT_ACTIVATED);
-        }
-
-        Building fromBuilding = building;
-        this.updateBuilding(toSlot.getBuilding());
-        toSlot.updateBuilding(fromBuilding);
+    public void clearBuilding() {
+        building = null;
     }
 
-    private void updateBuilding(Building toBuilding) {
-        building = toBuilding;
+    public void assignBuilding(Building newBuilding) {
+        building = newBuilding;
     }
 }
