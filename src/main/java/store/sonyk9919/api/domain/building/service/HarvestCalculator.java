@@ -2,17 +2,28 @@ package store.sonyk9919.api.domain.building.service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import lombok.Getter;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 
+@Getter
 public class HarvestCalculator {
 
     private final Building building;
     private final LocalDateTime baseTime;
 
+    private HarvestCalculator(Building building) {
+        this.building = building;
+        this.baseTime = resolveBaseTime(building, LocalDateTime.now());
+    }
+
     private HarvestCalculator(Building building, LocalDateTime now) {
         this.building = building;
         this.baseTime = resolveBaseTime(building, now);
+    }
+
+    public static HarvestCalculator from(Building building) {
+        return new HarvestCalculator(building);
     }
 
     public static HarvestCalculator of(Building building, LocalDateTime now) {
@@ -25,10 +36,6 @@ public class HarvestCalculator {
 
         double multiplier = 1.0 + (boostPercent / 100.0);
         return (int) (baseProduction * multiplier);
-    }
-
-    public LocalDateTime getBaseTime() {
-        return baseTime;
     }
 
     private static LocalDateTime resolveBaseTime(Building building, LocalDateTime now) {

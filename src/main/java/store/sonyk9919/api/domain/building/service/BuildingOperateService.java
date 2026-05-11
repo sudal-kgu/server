@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.building.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.building.dto.OperationPreviewDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
@@ -31,5 +32,21 @@ public class BuildingOperateService {
 
         building.operate(yield.getDurationSecond());
         resourceService.subtract(slot.getIsland(), ResourceType.FUEL, yield.getRequiredFuel());
+    }
+
+    @Transactional(readOnly = true)
+    public OperationPreviewDto preview(Long memberId, Integer slotNumber) {
+        Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
+        if (!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
+
+        Building building = slot.getBuilding();
+        if (!building.getBuildingMetadata().isProductionType()) {
+            throw new CustomException(BuildingStatus.NOT_PRODUCTION_BUILDING);
+        }
+
+        return OperationPreviewDto.from(
+                building.getCurrentYield()
+                        .getRequiredFuel()
+        );
     }
 }
