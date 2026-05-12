@@ -11,8 +11,13 @@ public class SlotActivateResponseDto {
 
     private SlotResponseDto slot;
     private ResourceBalanceResponse resource;
+    private SlotUnlockResource nextCost;
 
-    public static SlotActivateResponseDto of(SlotResponseDto slot, ResourceBalanceResponse resource){
-        return new SlotActivateResponseDto(slot, resource);
+    public static SlotActivateResponseDto of(SlotResponseDto slot, ResourceBalanceResponse resource, SlotUnlockResource nextCost){
+        return new SlotActivateResponseDto(
+                slot,
+                resource,
+                nextCost
+        );
     }
 }

@@ -41,14 +41,12 @@ public class SlotQueryService {
 
         LevelSpec levelSpec = levelSpecCache.get(island.getLevel());
         int maxActivatableSlots = levelSpec.getMaxSlotCount();
-        SlotUnlockResource resource = calculateUnlockCost(island);
 
         List<SlotResponseDto> slots = slotRepository.findAllByIsland(island)
                 .stream()
                 .map(slot -> SlotResponseDto.of(
                         slot,
-                        mapToBuildingInfo(slot.getBuilding()),
-                        !slot.isActivated() ? resource : null
+                        mapToBuildingInfo(slot.getBuilding())
                 ))
                 .collect(Collectors.toList());
 
@@ -67,14 +65,7 @@ public class SlotQueryService {
         Slot slot = slotRepository.findByIslandAndSlotNumber(island, slotNumber)
                 .orElseThrow(() -> new CustomException(SlotStatus.SLOT_NOT_FOUND));
 
-        SlotUnlockResource resource = !slot.isActivated() ?
-                calculateUnlockCost(island) : null;
-
-        return SlotResponseDto.of(
-                slot,
-                mapToBuildingDetail(island, slot.getBuilding()),
-                resource
-        );
+        return SlotResponseDto.of(slot, mapToBuildingDetail(island, slot.getBuilding()));
     }
 
     private BuildingInfoDto mapToBuildingDetail(MemberIsland island, Building building) {
@@ -102,12 +93,5 @@ public class SlotQueryService {
 
         HarvestCalculator calculator = HarvestCalculator.of(building, LocalDateTime.now());
         return calculator.calculate(boostPercent);
-    }
-
-    private SlotUnlockResource calculateUnlockCost(MemberIsland island) {
-        return SlotUnlockResource.of(
-                ResourceType.SHELL,
-                SlotUnlockPolicy.costFor(slotRepository.countByIslandAndActivatedTrue(island))
-        );
     }
 }
