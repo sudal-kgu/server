@@ -9,17 +9,26 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class LevelUpResult {
 
-    private final boolean levelUp;
-    private final boolean reachedMaxLevel;
-    private final int newLevel;
-    private final List<String> unlockedItems;
-    private final List<String> unlockedBuildings;
+    private final MemberIslandDto island;
+    private final UnlockNotice notice;
 
     public static LevelUpResult none() {
-        return new LevelUpResult(false, false, 0, List.of(), List.of());
+        return new LevelUpResult(null, null);
     }
 
-    public static LevelUpResult of(int newLevel, boolean reachedMaxLevel, List<String> unlockedItems, List<String> unlockedBuildings) {
-        return new LevelUpResult(true, reachedMaxLevel, newLevel, unlockedItems, unlockedBuildings);
+    public static LevelUpResult of(MemberIslandDto island, UnlockNotice notice) {
+        return new LevelUpResult(island, notice);
+    }
+
+    @Getter
+    @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+    public static class UnlockNotice {
+        private final boolean reachedMaxLevel;
+        private final List<String> unlockedItems;
+        private final List<String> unlockedBuildings;
+
+        public static UnlockNotice of(boolean reachedMaxLevel, List<String> unlockedItems, List<String> unlockedBuildings) {
+            return new UnlockNotice(reachedMaxLevel, unlockedItems, unlockedBuildings);
+        }
     }
 }
