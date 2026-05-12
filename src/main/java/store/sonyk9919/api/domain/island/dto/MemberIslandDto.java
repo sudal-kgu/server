@@ -13,14 +13,16 @@ public class MemberIslandDto {
     private final int cumulativeExp;
     private final int recyclingContributionExp;
     private final int itemContributionExp;
+    private final NextLevelConditionDto nextLevel;
 
-    public static MemberIslandDto from(MemberIsland island) {
+    public static MemberIslandDto from(MemberIsland island, NextLevelConditionDto nextLevel) {
         return new MemberIslandDto(
                 island.getNickname(),
                 island.getLevel(),
                 island.getCumulativeExp(),
                 island.getRecyclingContributionExp(),
-                island.getItemContributionExp()
+                island.getItemContributionExp(),
+                nextLevel
         );
     }
 }

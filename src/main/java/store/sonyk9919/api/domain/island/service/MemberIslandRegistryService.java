@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
+import store.sonyk9919.api.domain.island.dto.NextLevelConditionDto;
+import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
@@ -21,6 +23,7 @@ public class MemberIslandRegistryService {
     private final MemberAccountService memberAccountService;
     private final SlotSetupService slotSetupService;
     private final ResourceSetupService resourceSetupService;
+    private final LevelSpecCache levelSpecCache;
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname) {
@@ -30,7 +33,7 @@ public class MemberIslandRegistryService {
     @Transactional
     public MemberIslandDto createDto(Long memberAccountId, String nickname) {
         MemberIsland island = createEntity(memberAccountId, nickname);
-        return MemberIslandDto.from(island);
+        return MemberIslandDto.from(island, buildNextLevelCondition(island));
     }
 
     private MemberIsland createEntity(Long memberAccountId, String nickname) {
@@ -50,6 +53,12 @@ public class MemberIslandRegistryService {
     public MemberIslandDto getIslandDto(Long memberAccountId) {
         MemberIsland island = memberIslandRepository.findByMemberAccountId(memberAccountId)
                 .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
-        return MemberIslandDto.from(island);
+        return MemberIslandDto.from(island, buildNextLevelCondition(island));
+    }
+
+    private NextLevelConditionDto buildNextLevelCondition(MemberIsland island) {
+        if (island.isMaxLevel()) return null;
+        LevelSpec currentSpec = levelSpecCache.get(island.getLevel());
+        return NextLevelConditionDto.from(currentSpec, island);
     }
 }
