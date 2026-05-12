@@ -18,12 +18,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import store.sonyk9919.api.domain.island.dto.LevelUpResult;
+import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
-import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.island.repository.ItemRepository;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
@@ -213,8 +214,9 @@ class ShopServiceTest {
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
 
         // then
-        assertThat(result.getRemainingShell()).isEqualTo(900L);
-        assertThat(result.getExpReward()).isEqualTo(250);
+        assertThat(result.getPurchased().getRemainingShell()).isEqualTo(900L);
+        assertThat(result.getPurchased().getExpReward()).isEqualTo(250);
+        assertThat(result.getIsland()).isNull();
         then(usage).should().incrementUseCount();
     }
 
@@ -228,22 +230,36 @@ class ShopServiceTest {
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
         MemberResource updatedShell = mockShell(900L);
         given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
-        LevelUpResult levelUpResult = LevelUpResult.of(4, false, List.of(), List.of("재활용 분류기"));
+        MemberIslandDto islandDto = mockIslandDto(4);
+        LevelUpResult levelUpResult = LevelUpResult.of(
+                islandDto,
+                LevelUpResult.UnlockNotice.of(false, List.of(), List.of("재활용 분류기"))
+        );
         given(islandLevelService.addItemExp(MEMBER_ID, 250)).willReturn(levelUpResult);
 
         // when
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
 
         // then
-        assertThat(result.getLevelUpResult().isLevelUp()).isTrue();
-        assertThat(result.getLevelUpResult().getNewLevel()).isEqualTo(4);
-        assertThat(result.getLevelUpResult().getUnlockedBuildings()).containsExactly("재활용 분류기");
+        assertThat(result.getIsland()).isNotNull();
+        assertThat(result.getIsland().getLevel()).isEqualTo(4);
+        assertThat(result.getNotice().getUnlockedBuildings()).containsExactly("재활용 분류기");
     }
 
     private MemberResource mockShell(long amount) {
         MemberResource shell = mock(MemberResource.class);
         given(shell.getAmount()).willReturn(amount);
         return shell;
+    }
+
+    private MemberIslandDto mockIslandDto(int level) {
+        MemberIsland mockIsland = mock(MemberIsland.class);
+        given(mockIsland.getLevel()).willReturn(level);
+        given(mockIsland.getNickname()).willReturn("테스트섬");
+        given(mockIsland.getCumulativeExp()).willReturn(0);
+        given(mockIsland.getRecyclingContributionExp()).willReturn(0);
+        given(mockIsland.getItemContributionExp()).willReturn(0);
+        return MemberIslandDto.from(mockIsland);
     }
 
     @Test
@@ -299,7 +315,7 @@ class ShopServiceTest {
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
 
         // then
-        assertThat(result.getCurrentCount()).isEqualTo(1L);
+        assertThat(result.getPurchased().getCurrentCount()).isEqualTo(1L);
     }
 
 }
