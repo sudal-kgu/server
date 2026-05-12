@@ -209,13 +209,14 @@ class ShopServiceTest {
         MemberResource updatedShell = mockShell(900L);
         given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
         given(islandLevelService.addItemExp(MEMBER_ID, 250)).willReturn(LevelUpResult.none());
+        given(island.getCumulativeExp()).willReturn(2750);
 
         // when
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
 
         // then
         assertThat(result.getPurchased().getRemainingShell()).isEqualTo(900L);
-        assertThat(result.getPurchased().getExpReward()).isEqualTo(250);
+        assertThat(result.getPurchased().getCumulativeExp()).isEqualTo(2750);
         assertThat(result.getIsland()).isNull();
         then(usage).should().incrementUseCount();
     }
@@ -310,6 +311,7 @@ class ShopServiceTest {
         MemberResource updatedShell = mockShell(900L);
         given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
         given(islandLevelService.addItemExp(any(), anyInt())).willReturn(LevelUpResult.none());
+        given(island.getCumulativeExp()).willReturn(250);
 
         // when
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
