@@ -11,6 +11,7 @@ import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.slot.dto.SlotActivateResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotUnlockResource;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.entity.SlotUnlockPolicy;
 import store.sonyk9919.api.domain.slot.exception.SlotStatus;
@@ -42,7 +43,8 @@ public class SlotActivateService {
 
         return SlotActivateResponseDto.of(
                 SlotResponseDto.from(slot),
-                resourceService.getBalance(memberId)
+                resourceService.getBalance(memberId),
+                SlotUnlockResource.of(SlotUnlockPolicy.costFor(activeCount + 1))
         );
     }
 
@@ -52,5 +54,10 @@ public class SlotActivateService {
         if (activeCount >= currentLevelSpec.getMaxSlotCount()) {
             throw new CustomException(SlotStatus.EXCEED_MAX_SLOT_FOR_LEVEL);
         }
+    }
+
+    public SlotUnlockResource calculateUnlockCost(Long memberId) {
+        MemberIsland island = memberIslandService.getIsland(memberId);
+        return SlotUnlockResource.of(SlotUnlockPolicy.costFor(slotRepository.countByIslandAndActivatedTrue(island)));
     }
 }

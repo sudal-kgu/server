@@ -1,6 +1,9 @@
 package store.sonyk9919.api.domain.slot.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.slot.dto.SlotActivateResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.dto.SlotListResponseDto;
+import store.sonyk9919.api.domain.slot.dto.SlotUnlockResource;
 import store.sonyk9919.api.domain.slot.service.SlotActivateService;
 import store.sonyk9919.api.domain.slot.service.SlotQueryService;
 
@@ -73,5 +77,17 @@ public class SlotController {
             @PathVariable Integer slotNumber
     ) {
       return slotActivateService.activate(authMember.getId(), slotNumber);
+    }
+
+    @Operation(summary = "슬롯 활성화 비용 조회", description = "현재 사용자의 슬롯 잠금 해제 비용을 계산하여 반환합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "슬롯 잠금 해제 비용 조회 성공",
+                    content = @Content(schema = @Schema(implementation = SlotUnlockResource.class))),
+    })
+    @GetMapping("/activate")
+    public SlotUnlockResource getResourceOfActivate(
+            @Parameter(hidden = true) @AuthMember AuthMemberDto authMemberDto
+    ) {
+        return slotActivateService.calculateUnlockCost(authMemberDto.getId());
     }
 }
