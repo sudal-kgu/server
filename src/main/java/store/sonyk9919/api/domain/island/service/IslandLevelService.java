@@ -48,8 +48,8 @@ public class IslandLevelService {
     private LevelUpResult checkAndProcessLevelUp(MemberIsland island) {
         if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
 
-        LevelSpec nextSpec = getLevelSpec(island.getLevel() + 1);
-        if (!island.canLevelUp(nextSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
+        LevelSpec currentSpec = getLevelSpec(island.getLevel());
+        if (!island.canLevelUp(currentSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
 
         island.levelUp();
         return buildLevelUpResult(island);
