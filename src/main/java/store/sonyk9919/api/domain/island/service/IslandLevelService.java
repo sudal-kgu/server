@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
+import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
@@ -51,19 +52,36 @@ public class IslandLevelService {
         if (!island.canLevelUp(nextSpec)) return LevelUpResult.none();
 
         island.levelUp();
-        return buildLevelUpResult(island.getLevel(), island.isMaxLevel());
+        return buildLevelUpResult(island);
     }
 
-    private LevelUpResult buildLevelUpResult(int newLevel, boolean reachedMaxLevel) {
-        List<String> unlockedItems = itemCache.getAll().stream()
+    private LevelUpResult buildLevelUpResult(MemberIsland island) {
+        boolean reachedMaxLevel = island.isMaxLevel();
+        if (reachedMaxLevel) {
+            return LevelUpResult.of(
+                    MemberIslandDto.from(island),
+                    LevelUpResult.UnlockNotice.of(true, List.of(), List.of())
+            );
+        }
+        int newLevel = island.getLevel();
+        return LevelUpResult.of(
+                MemberIslandDto.from(island),
+                LevelUpResult.UnlockNotice.of(false, getUnlockedItems(newLevel), getUnlockedBuildings(newLevel))
+        );
+    }
+
+    private List<String> getUnlockedItems(int newLevel) {
+        return itemCache.getAll().stream()
                 .filter(i -> i.getUnlockLevel() == newLevel)
                 .map(Item::getName)
                 .toList();
-        List<String> unlockedBuildings = buildingMetadataCache.get().stream()
+    }
+
+    private List<String> getUnlockedBuildings(int newLevel) {
+        return buildingMetadataCache.get().stream()
                 .filter(b -> b.getRequiredLevel() == newLevel)
                 .map(BuildingCatalogDto::getName)
                 .toList();
-        return LevelUpResult.of(newLevel, reachedMaxLevel, unlockedItems, unlockedBuildings);
     }
 
     private LevelSpec getLevelSpec(int level) {
