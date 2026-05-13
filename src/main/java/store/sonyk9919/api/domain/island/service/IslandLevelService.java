@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
+import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
-import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
@@ -46,10 +46,10 @@ public class IslandLevelService {
     }
 
     private LevelUpResult checkAndProcessLevelUp(MemberIsland island) {
-        if (island.isMaxLevel()) return LevelUpResult.none();
+        if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
 
         LevelSpec nextSpec = getLevelSpec(island.getLevel() + 1);
-        if (!island.canLevelUp(nextSpec)) return LevelUpResult.none();
+        if (!island.canLevelUp(nextSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
 
         island.levelUp();
         return buildLevelUpResult(island);
@@ -70,17 +70,16 @@ public class IslandLevelService {
         );
     }
 
-    private List<String> getUnlockedItems(int newLevel) {
+    private List<ItemCatalogDto> getUnlockedItems(int newLevel) {
         return itemCache.getAll().stream()
                 .filter(i -> i.getUnlockLevel() == newLevel)
-                .map(Item::getName)
+                .map(ItemCatalogDto::from)
                 .toList();
     }
 
-    private List<String> getUnlockedBuildings(int newLevel) {
+    private List<BuildingCatalogDto> getUnlockedBuildings(int newLevel) {
         return buildingMetadataCache.get().stream()
                 .filter(b -> b.getRequiredLevel() == newLevel)
-                .map(BuildingCatalogDto::getName)
                 .toList();
     }
 
