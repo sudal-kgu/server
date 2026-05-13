@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
+import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
@@ -46,50 +47,53 @@ class IslandLevelServiceTest {
     }
 
     @Test
-    void addRecyclingExp_이미_최대_레벨이면_island와_notice가_null이다() {
+    void addRecyclingExp_이미_최대_레벨이면_notice가_null이다() {
         // given
         given(island.getLevel()).willReturn(7);
         given(levelSpecCache.get(7)).willReturn(currentSpec);
         given(island.isMaxLevel()).willReturn(true);
+        stubIslandDtoFields();
 
         // when
         LevelUpResult result = islandLevelService.addRecyclingExp(MEMBER_ID);
 
         // then
-        assertThat(result.getIsland()).isNull();
+        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getNotice()).isNull();
     }
 
     @Test
-    void addRecyclingExp_경험치_부족_시_island와_notice가_null이다() {
+    void addRecyclingExp_경험치_부족_시_notice가_null이다() {
         // given
         given(island.getLevel()).willReturn(1);
         given(levelSpecCache.get(1)).willReturn(currentSpec);
         given(island.isMaxLevel()).willReturn(false);
         given(levelSpecCache.get(2)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(false);
+        stubIslandDtoFields();
 
         // when
         LevelUpResult result = islandLevelService.addRecyclingExp(MEMBER_ID);
 
         // then
-        assertThat(result.getIsland()).isNull();
+        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getNotice()).isNull();
     }
 
     @Test
-    void addItemExp_경험치_부족_시_island와_notice가_null이다() {
+    void addItemExp_경험치_부족_시_notice가_null이다() {
         // given
         given(island.getLevel()).willReturn(2);
         given(island.isMaxLevel()).willReturn(false);
         given(levelSpecCache.get(3)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(false);
+        stubIslandDtoFields();
 
         // when
         LevelUpResult result = islandLevelService.addItemExp(MEMBER_ID, 100);
 
         // then
-        assertThat(result.getIsland()).isNull();
+        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getNotice()).isNull();
     }
 
@@ -101,10 +105,7 @@ class IslandLevelServiceTest {
         given(island.isMaxLevel()).willReturn(false, false);
         given(levelSpecCache.get(2)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(true);
-        given(island.getNickname()).willReturn("테스트섬");
-        given(island.getCumulativeExp()).willReturn(1500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-        given(island.getItemContributionExp()).willReturn(0);
+        stubIslandDtoFields();
 
         Item unlockedItem = createItem("해금아이템", 2);
         Item otherItem = createItem("다른아이템", 3);
@@ -118,12 +119,20 @@ class IslandLevelServiceTest {
         LevelUpResult result = islandLevelService.addRecyclingExp(MEMBER_ID);
 
         // then
-        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getIsland().getLevel()).isEqualTo(2);
-        assertThat(result.getNotice().getUnlockedItems()).containsExactly("해금아이템");
-        assertThat(result.getNotice().getUnlockedBuildings()).containsExactly("해금건물");
+        assertThat(result.getNotice().getUnlockedItems())
+                .extracting(ItemCatalogDto::getName).containsExactly("해금아이템");
+        assertThat(result.getNotice().getUnlockedBuildings())
+                .extracting(BuildingCatalogDto::getName).containsExactly("해금건물");
     }
 
+
+    private void stubIslandDtoFields() {
+        given(island.getNickname()).willReturn("테스트섬");
+        given(island.getCumulativeExp()).willReturn(0);
+        given(island.getRecyclingContributionExp()).willReturn(0);
+        given(island.getItemContributionExp()).willReturn(0);
+    }
 
     private Item createItem(String name, int unlockLevel) throws Exception {
         Constructor<Item> ctor = Item.class.getDeclaredConstructor();
@@ -150,10 +159,7 @@ class IslandLevelServiceTest {
         given(island.isMaxLevel()).willReturn(false, false);
         given(levelSpecCache.get(2)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(true);
-        given(island.getNickname()).willReturn("테스트섬");
-        given(island.getCumulativeExp()).willReturn(1500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-        given(island.getItemContributionExp()).willReturn(0);
+        stubIslandDtoFields();
         given(itemCache.getAll()).willReturn(List.of(createItem("아이템", 3)));
         given(buildingMetadataCache.get()).willReturn(List.of(createBuilding("건물", 3)));
 
@@ -167,39 +173,32 @@ class IslandLevelServiceTest {
     }
 
     @Test
-    void addRecyclingExp_최종_레벨_도달_시_reachedMaxLevel이_true다() throws Exception {
+    void addRecyclingExp_최종_레벨_도달_시_reachedMaxLevel이_true다() {
         // given
         given(island.getLevel()).willReturn(6, 6, 7, 7);
         given(levelSpecCache.get(6)).willReturn(currentSpec);
         given(island.isMaxLevel()).willReturn(false, true);
         given(levelSpecCache.get(7)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(true);
-        given(island.getNickname()).willReturn("테스트섬");
-        given(island.getCumulativeExp()).willReturn(11250);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-        given(island.getItemContributionExp()).willReturn(0);
+        stubIslandDtoFields();
 
         // when
         LevelUpResult result = islandLevelService.addRecyclingExp(MEMBER_ID);
 
         // then
-        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getIsland().getLevel()).isEqualTo(7);
         assertThat(result.getNotice().isReachedMaxLevel()).isTrue();
     }
 
     @Test
-    void addRecyclingExp_최종_레벨_미달_시_reachedMaxLevel이_false다() throws Exception {
+    void addRecyclingExp_최종_레벨_미달_시_reachedMaxLevel이_false다() {
         // given
         given(island.getLevel()).willReturn(1, 1, 2, 2);
         given(levelSpecCache.get(1)).willReturn(currentSpec);
         given(island.isMaxLevel()).willReturn(false, false);
         given(levelSpecCache.get(2)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(true);
-        given(island.getNickname()).willReturn("테스트섬");
-        given(island.getCumulativeExp()).willReturn(1500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-        given(island.getItemContributionExp()).willReturn(0);
+        stubIslandDtoFields();
         given(itemCache.getAll()).willReturn(List.of());
         given(buildingMetadataCache.get()).willReturn(List.of());
 
@@ -217,10 +216,7 @@ class IslandLevelServiceTest {
         given(island.isMaxLevel()).willReturn(false, false);
         given(levelSpecCache.get(3)).willReturn(nextSpec);
         given(island.canLevelUp(nextSpec)).willReturn(true);
-        given(island.getNickname()).willReturn("테스트섬");
-        given(island.getCumulativeExp()).willReturn(3000);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-        given(island.getItemContributionExp()).willReturn(0);
+        stubIslandDtoFields();
         given(itemCache.getAll()).willReturn(List.of(createItem("레벨3아이템", 3)));
         given(buildingMetadataCache.get()).willReturn(List.of(createBuilding("레벨3건물", 3)));
 
@@ -228,9 +224,10 @@ class IslandLevelServiceTest {
         LevelUpResult result = islandLevelService.addItemExp(MEMBER_ID, 250);
 
         // then
-        assertThat(result.getIsland()).isNotNull();
         assertThat(result.getIsland().getLevel()).isEqualTo(3);
-        assertThat(result.getNotice().getUnlockedItems()).containsExactly("레벨3아이템");
-        assertThat(result.getNotice().getUnlockedBuildings()).containsExactly("레벨3건물");
+        assertThat(result.getNotice().getUnlockedItems())
+                .extracting(ItemCatalogDto::getName).containsExactly("레벨3아이템");
+        assertThat(result.getNotice().getUnlockedBuildings())
+                .extracting(BuildingCatalogDto::getName).containsExactly("레벨3건물");
     }
 }
