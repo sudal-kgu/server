@@ -24,12 +24,7 @@ public class AuthLoginFacade {
     public List<TokenResponseDto> login(OAuthProviderType type, String code) {
         OAuthProvider provider = oAuthProviderFactory.getProvider(type);
         OAuthUserInfoDto userInfo = provider.getUserInfo(code);
-        try {
-            MemberAccount memberAccount = memberAccountService.getMemberAccount(userInfo, type);
-            return authTokenIssuer.issue(AuthMemberDto.from(memberAccount));
-        } catch (CustomException e) {
-            MemberAccount memberAccount = memberAccountService.createMemberAccount(userInfo, type);
-            return authTokenIssuer.issue(AuthMemberDto.from(memberAccount));
-        }
+        MemberAccount memberAccount = memberAccountService.findOrCreateMemberAccount(userInfo, type);
+        return authTokenIssuer.issue(AuthMemberDto.from(memberAccount));
     }
 }

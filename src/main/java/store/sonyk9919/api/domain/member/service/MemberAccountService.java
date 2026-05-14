@@ -1,6 +1,7 @@
 package store.sonyk9919.api.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
@@ -24,14 +25,22 @@ public class MemberAccountService {
     }
 
     @Transactional
-    public MemberAccount createMemberAccount(OAuthUserInfoDto userInfo, OAuthProviderType type) {
+    public MemberAccount findOrCreateMemberAccount(OAuthUserInfoDto userInfo, OAuthProviderType type) {
+        return memberAccountRepository.findByProviderIdAndType(userInfo.getId(), type)
+                .orElseGet(() -> {
+                    try {
+                        return createMemberAccount(userInfo, type);
+                    } catch (DataIntegrityViolationException e) {
+                        return memberAccountRepository
+                                .findByProviderIdAndType(userInfo.getId(), type)
+                                .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
+                    }
+                });
+    }
+
+    private MemberAccount createMemberAccount(OAuthUserInfoDto userInfo, OAuthProviderType type) {
         MemberAccount memberAccount = MemberAccount.from(userInfo, type, AccountRole.USER);
         memberAccountRepository.save(memberAccount);
         return memberAccount;
-    }
-
-    public MemberAccount getMemberAccount(OAuthUserInfoDto userInfo, OAuthProviderType type) {
-        return memberAccountRepository.findByProviderIdAndType(userInfo.getId(), type)
-                .orElseThrow(() -> new CustomException(MemberStatus.MEMBER_ACCOUNT_BAD_REQUEST));
     }
 }

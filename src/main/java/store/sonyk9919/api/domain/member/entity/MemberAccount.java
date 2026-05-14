@@ -15,6 +15,11 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 @Getter
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames =  { "provider_id", "provider_type" })
+        }
+)
 public class MemberAccount {
 
     @Id
