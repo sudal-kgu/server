@@ -45,10 +45,6 @@ class MemberIslandRegistryServiceTest {
         given(island.isMaxLevel()).willReturn(false);
         given(island.getLevel()).willReturn(2);
         given(levelSpecCache.get(2)).willReturn(currentSpec);
-        given(currentSpec.getRequiredExp()).willReturn(1500);
-        given(currentSpec.getRecyclingContributionExpLimit()).willReturn(1000);
-        given(island.getCumulativeExp()).willReturn(500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
 
         // when
         MemberIslandDto dto = memberIslandRegistryService.getIslandDto(MEMBER_ID);
@@ -67,41 +63,5 @@ class MemberIslandRegistryServiceTest {
 
         // then
         assertThat(dto.getNextLevel()).isNull();
-    }
-
-    @Test
-    void getIslandDto_레벨3_진입직후_itemRequired가_true다() {
-        // given
-        given(island.isMaxLevel()).willReturn(false);
-        given(island.getLevel()).willReturn(3);
-        given(levelSpecCache.get(3)).willReturn(currentSpec);
-        given(currentSpec.getRequiredExp()).willReturn(3000);
-        given(currentSpec.getRecyclingContributionExpLimit()).willReturn(1000);
-        given(island.getCumulativeExp()).willReturn(1500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-
-        // when
-        MemberIslandDto dto = memberIslandRegistryService.getIslandDto(MEMBER_ID);
-
-        // then
-        assertThat(dto.getNextLevel().isItemRequired()).isTrue();
-    }
-
-    @Test
-    void getIslandDto_레벨2_진입직후_itemRequired가_false다() {
-        // given
-        given(island.isMaxLevel()).willReturn(false);
-        given(island.getLevel()).willReturn(2);
-        given(levelSpecCache.get(2)).willReturn(currentSpec);
-        given(currentSpec.getRequiredExp()).willReturn(1500);
-        given(currentSpec.getRecyclingContributionExpLimit()).willReturn(1000);
-        given(island.getCumulativeExp()).willReturn(500);
-        given(island.getRecyclingContributionExp()).willReturn(0);
-
-        // when
-        MemberIslandDto dto = memberIslandRegistryService.getIslandDto(MEMBER_ID);
-
-        // then
-        assertThat(dto.getNextLevel().isItemRequired()).isFalse();
     }
 }

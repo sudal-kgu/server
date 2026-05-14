@@ -59,6 +59,6 @@ public class MemberIslandRegistryService {
     private NextLevelConditionDto buildNextLevelCondition(MemberIsland island) {
         if (island.isMaxLevel()) return null;
         LevelSpec currentSpec = levelSpecCache.get(island.getLevel());
-        return NextLevelConditionDto.from(currentSpec, island);
+        return NextLevelConditionDto.from(currentSpec);
     }
 }
