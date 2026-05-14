@@ -16,6 +16,8 @@ import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
+import store.sonyk9919.api.domain.building.dto.HarvestResponseDto;
+import store.sonyk9919.api.domain.building.service.BuildingHarvestService;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataQueryService;
 import store.sonyk9919.api.domain.building.service.BuildingMoveService;
 import store.sonyk9919.api.domain.building.service.BuildingUpgradeService;
@@ -30,6 +32,7 @@ public class BuildingController {
     private final BuildingMetadataQueryService queryService;
     private final BuildingUpgradeService upgradeService;
     private final BuildingMoveService moveService;
+    private final BuildingHarvestService harvestService;
 
 
     @Operation(
@@ -73,5 +76,22 @@ public class BuildingController {
     @PostMapping("/move")
     public SlotMoveResponseDto move(@AuthMember AuthMemberDto authMember, @Valid @RequestBody SlotMoveRequestDto slotMoveRequestDto) {
         return moveService.moveOf(authMember.getId(), slotMoveRequestDto);
+    }
+
+    @Operation(
+            summary = "섬 전체 건물 일괄 수확",
+            description = "유저의 섬에 있는 모든 생산 가능 건물의 보석을 한 번에 수확합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "일괄 수확 성공"),
+            @ApiResponse(responseCode = "400", description = "수확량 0"),
+            @ApiResponse(responseCode = "404", description = "섬 정보 없음 / 재화 데이터 없음"),
+            @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
+    })
+    @PostMapping("/operations/harvests")
+    public HarvestResponseDto harvestBuildings(
+            @AuthMember AuthMemberDto authMember
+    ) {
+        return harvestService.harvestAll(authMember.getId());
     }
 }

@@ -19,7 +19,7 @@ import store.sonyk9919.api.domain.building.service.BuildingOperateService;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/buildings/operations")
+@RequestMapping("/v1/slots/{slotNumber}/buildings/operations")
 public class BuildingHarvestController {
 
     private final BuildingHarvestService harvestService;
@@ -35,7 +35,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @PostMapping("/{slotNumber}")
+    @PostMapping
     public BuildingResponseDto injectFuel(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
@@ -53,29 +53,12 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 재화 데이터 없음"),
             @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
     })
-    @PostMapping("/{slotNumber}/harvest")
+    @PostMapping("/harvest")
     public HarvestResponseDto harvestBuilding(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
         return harvestService.harvest(authMember.getId(), slotNumber);
-    }
-
-    @Operation(
-            summary = "섬 전체 건물 일괄 수확",
-            description = "유저의 섬에 있는 모든 생산 가능 건물의 보석을 한 번에 수확합니다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "일괄 수확 성공"),
-            @ApiResponse(responseCode = "400", description = "수확량 0"),
-            @ApiResponse(responseCode = "404", description = "섬 정보 없음 / 재화 데이터 없음"),
-            @ApiResponse(responseCode = "409", description = "동시성 충돌 (락 획득 실패)")
-    })
-    @PostMapping("/harvests")
-    public HarvestResponseDto harvestBuildings(
-            @AuthMember AuthMemberDto authMember
-    ) {
-        return harvestService.harvestAll(authMember.getId());
     }
 
     @Operation(
@@ -86,7 +69,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 없음")
     })
-    @GetMapping("/{slotNumber}")
+    @GetMapping
     public OperationPreviewDto previewFuel(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
@@ -102,7 +85,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 없음")
     })
-    @GetMapping("/{slotNumber}/harvest")
+    @GetMapping("/harvest")
     public HarvestResponseDto previewHarvest(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
