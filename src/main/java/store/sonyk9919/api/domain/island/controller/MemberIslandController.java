@@ -10,9 +10,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
+import store.sonyk9919.api.domain.island.dto.IslandEffectResponseDto;
 import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandCreateRequestDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
+import store.sonyk9919.api.domain.island.service.IslandEffectQueryService;
 import store.sonyk9919.api.domain.island.service.ItemUsageService;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 
@@ -24,6 +26,7 @@ import java.util.List;
 public class MemberIslandController {
 
     private final MemberIslandRegistryService memberIslandRegistryService;
+    private final IslandEffectQueryService effectQueryService;
     private final ItemUsageService itemUsageService;
 
     @Operation(summary = "섬 생성", description = "인증된 회원의 새로운 섬을 생성합니다.")
@@ -67,5 +70,16 @@ public class MemberIslandController {
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
         return itemUsageService.getItemUsages(authMember.getId());
+    }
+
+    @Operation(
+            summary = "섬 건물 효과 조회",
+            description = "섬에 적용 중인 모든 건물 효과를 조회합니다."
+    )
+    @GetMapping("/effects")
+    public IslandEffectResponseDto getIslandEffects(
+            @AuthMember AuthMemberDto authMember
+    ) {
+        return effectQueryService.getEffects(authMember.getId());
     }
 }
