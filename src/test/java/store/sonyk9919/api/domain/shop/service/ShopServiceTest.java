@@ -259,7 +259,7 @@ class ShopServiceTest {
         given(mockIsland.getCumulativeExp()).willReturn(0);
         given(mockIsland.getRecyclingContributionExp()).willReturn(0);
         given(mockIsland.getItemContributionExp()).willReturn(0);
-        return MemberIslandDto.from(mockIsland);
+        return MemberIslandDto.from(mockIsland, null);
     }
 
     @Test
