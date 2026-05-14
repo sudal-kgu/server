@@ -9,6 +9,7 @@ import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
 import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
+import store.sonyk9919.api.domain.island.dto.NextLevelConditionDto;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
@@ -46,10 +47,10 @@ public class IslandLevelService {
     }
 
     private LevelUpResult checkAndProcessLevelUp(MemberIsland island) {
-        if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
+        if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, null));
 
         LevelSpec currentSpec = getLevelSpec(island.getLevel());
-        if (!island.canLevelUp(currentSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island));
+        if (!island.canLevelUp(currentSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, buildNextLevelCondition(island)));
 
         island.levelUp();
         return buildLevelUpResult(island);
@@ -59,15 +60,21 @@ public class IslandLevelService {
         boolean reachedMaxLevel = island.isMaxLevel();
         if (reachedMaxLevel) {
             return LevelUpResult.of(
-                    MemberIslandDto.from(island),
+                    MemberIslandDto.from(island, null),
                     LevelUpResult.UnlockNotice.of(true, List.of(), List.of())
             );
         }
         int newLevel = island.getLevel();
         return LevelUpResult.of(
-                MemberIslandDto.from(island),
+                MemberIslandDto.from(island, buildNextLevelCondition(island)),
                 LevelUpResult.UnlockNotice.of(false, getUnlockedItems(newLevel), getUnlockedBuildings(newLevel))
         );
+    }
+
+    private NextLevelConditionDto buildNextLevelCondition(MemberIsland island) {
+        if (island.isMaxLevel()) return null;
+        LevelSpec currentSpec = getLevelSpec(island.getLevel());
+        return NextLevelConditionDto.from(currentSpec);
     }
 
     private List<ItemCatalogDto> getUnlockedItems(int newLevel) {
