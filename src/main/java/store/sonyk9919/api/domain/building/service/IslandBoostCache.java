@@ -66,7 +66,7 @@ public class IslandBoostCache {
     private void evictCacheIfPresent(String cacheName, Long key) {
         Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {
-            cache.evict(key);
+            cache.evictIfPresent(key);
         }
     }
 }
