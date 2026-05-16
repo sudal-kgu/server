@@ -7,6 +7,7 @@ import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.dto.NextLevelConditionDto;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.Region;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.domain.member.entity.MemberAccount;
@@ -26,19 +27,19 @@ public class MemberIslandRegistryService {
     private final LevelSpecCache levelSpecCache;
 
     @Transactional
-    public MemberIsland create(Long memberAccountId, String nickname) {
-        return createEntity(memberAccountId, nickname);
+    public MemberIsland create(Long memberAccountId, String nickname, Region region) {
+        return createEntity(memberAccountId, nickname, region);
     }
 
     @Transactional
-    public MemberIslandDto createDto(Long memberAccountId, String nickname) {
-        MemberIsland island = createEntity(memberAccountId, nickname);
+    public MemberIslandDto createDto(Long memberAccountId, String nickname, Region region) {
+        MemberIsland island = createEntity(memberAccountId, nickname, region);
         return MemberIslandDto.from(island, buildNextLevelCondition(island));
     }
 
-    private MemberIsland createEntity(Long memberAccountId, String nickname) {
+    private MemberIsland createEntity(Long memberAccountId, String nickname, Region region) {
         MemberAccount account = memberAccountService.getMemberAccount(memberAccountId);
-        MemberIsland island = MemberIsland.create(nickname, account);
+        MemberIsland island = MemberIsland.create(nickname, region, account);
         memberIslandRepository.save(island);
         slotSetupService.setupSlots(island);
         resourceSetupService.setupResources(island);

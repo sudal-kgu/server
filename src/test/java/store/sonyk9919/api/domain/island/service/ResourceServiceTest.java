@@ -18,6 +18,7 @@ import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.dto.ResourceChange;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
+import store.sonyk9919.api.domain.island.entity.Region;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
@@ -45,7 +46,7 @@ class ResourceServiceTest {
         savedAccount = memberAccountRepository.save(
                 MemberAccount.from(userInfo, OAuthProviderType.KAKAO, AccountRole.USER)
         );
-        savedIsland = memberIslandRepository.save(MemberIsland.create("테스트 섬", savedAccount));
+        savedIsland = memberIslandRepository.save(MemberIsland.create("테스트 섬", Region.SEOUL, savedAccount));
         memberResourceRepository.saveAll(List.of(
                 initResource(ResourceType.SHELL, savedIsland, shell),
                 initResource(ResourceType.GEM, savedIsland, gem),

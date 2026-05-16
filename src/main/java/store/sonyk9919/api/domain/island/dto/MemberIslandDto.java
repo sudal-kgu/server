@@ -4,11 +4,13 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.Region;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class MemberIslandDto {
     private final String nickname;
+    private final Region region;
     private final int level;
     private final int cumulativeExp;
     private final int recyclingContributionExp;
@@ -18,6 +20,7 @@ public class MemberIslandDto {
     public static MemberIslandDto from(MemberIsland island, NextLevelConditionDto nextLevel) {
         return new MemberIslandDto(
                 island.getNickname(),
+                island.getRegion(),
                 island.getLevel(),
                 island.getCumulativeExp(),
                 island.getRecyclingContributionExp(),
