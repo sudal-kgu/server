@@ -85,8 +85,8 @@ class QuizPlayServiceConcurrencyTest {
                 Long.class, "test-concurrent");
 
         jdbcTemplate.update(
-                "INSERT INTO member_island (nickname, level, cumulative_exp, recycling_contribution_exp, item_contribution_exp, member_account_id) VALUES (?, ?, ?, ?, ?, ?)",
-                "테스트섬", 1, 0, 0, 0, memberAccountId);
+                "INSERT INTO member_island (nickname, region, level, cumulative_exp, recycling_contribution_exp, item_contribution_exp, member_account_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                "테스트섬", "SEOUL", 1, 0, 0, 0, memberAccountId);
         islandId = jdbcTemplate.queryForObject(
                 "SELECT island_id FROM member_island WHERE member_account_id = ?",
                 Long.class, memberAccountId);

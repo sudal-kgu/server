@@ -2,6 +2,8 @@ package store.sonyk9919.api.domain.island.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -42,12 +44,17 @@ public class MemberIsland {
     @Column(nullable = false)
     private int itemContributionExp;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Region region;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_account_id", nullable = false, unique = true)
     private MemberAccount memberAccount;
 
-    private MemberIsland(String nickname, MemberAccount memberAccount) {
+    private MemberIsland(String nickname, Region region, MemberAccount memberAccount) {
         this.nickname = nickname;
+        this.region = region;
         this.memberAccount = memberAccount;
         level = 1;
         cumulativeExp = 0;
@@ -55,8 +62,8 @@ public class MemberIsland {
         itemContributionExp = 0;
     }
 
-    public static MemberIsland create(String nickname, MemberAccount memberAccount) {
-        MemberIsland island = new MemberIsland(nickname, memberAccount);
+    public static MemberIsland create(String nickname, Region region, MemberAccount memberAccount) {
+        MemberIsland island = new MemberIsland(nickname, region, memberAccount);
         memberAccount.registerMemberIsland(island);
         return island;
     }

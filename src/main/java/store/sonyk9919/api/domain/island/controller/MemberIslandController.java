@@ -38,7 +38,7 @@ public class MemberIslandController {
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember,
             @Validated @RequestBody MemberIslandCreateRequestDto requestDto
     ) {
-        return memberIslandRegistryService.createDto(authMember.getId(), requestDto.getNickname());
+        return memberIslandRegistryService.createDto(authMember.getId(), requestDto.getNickname(), requestDto.getRegion());
     }
 
     @Operation(summary = "섬 정보 조회", description = "회원의 섬 정보를 상세 조회합니다.")

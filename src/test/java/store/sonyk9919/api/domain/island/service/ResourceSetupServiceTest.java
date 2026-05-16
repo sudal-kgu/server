@@ -14,6 +14,7 @@ import store.sonyk9919.api.domain.auth.dto.OAuthUserInfoDto;
 import store.sonyk9919.api.domain.auth.entity.OAuthProviderType;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
+import store.sonyk9919.api.domain.island.entity.Region;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.domain.island.repository.MemberResourceRepository;
@@ -40,7 +41,7 @@ class ResourceSetupServiceTest {
         MemberAccount account = memberAccountRepository.save(
                 MemberAccount.from(userInfo, OAuthProviderType.KAKAO, AccountRole.USER)
         );
-        savedIsland = memberIslandRepository.save(MemberIsland.create("테스트 섬", account));
+        savedIsland = memberIslandRepository.save(MemberIsland.create("테스트 섬", Region.SEOUL, account));
     }
 
     @Test
