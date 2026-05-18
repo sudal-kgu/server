@@ -6,17 +6,17 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class IslandEffectResponseDto {
+public class IslandEffectDto {
 
     private double islandBoost;
     private double quizRewardBoost;
     private double quizRewardAdd;
 
-    public static IslandEffectResponseDto of(
+    public static IslandEffectDto of(
             double islandBoost,
             double quizRewardBoost,
             double quizRewardAdd
     ){
-      return new IslandEffectResponseDto(islandBoost, quizRewardBoost, quizRewardAdd);
+      return new IslandEffectDto(islandBoost, quizRewardBoost, quizRewardAdd);
     }
 }
