@@ -11,6 +11,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import store.sonyk9919.api.domain.building.service.IslandBoostCache;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
@@ -27,6 +28,7 @@ class MemberIslandRegistryServiceTest {
     @Mock private ResourceSetupService resourceSetupService;
     @Mock private LevelSpecCache levelSpecCache;
     @InjectMocks private MemberIslandRegistryService memberIslandRegistryService;
+    @Mock private IslandBoostCache islandBoostCache;
 
     private static final Long MEMBER_ID = 1L;
     private MemberIsland island;
