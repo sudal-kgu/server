@@ -18,16 +18,16 @@ public class ItemCatalogDto {
     private final int expReward;
     private final boolean purchasable;
 
-    public static ItemCatalogDto from(Item item) {
+    public static ItemCatalogDto from(Item item, long currentCount, boolean purchasable) {
         return new ItemCatalogDto(
                 item.getId(),
                 item.getName(),
                 item.getPrice(),
                 item.getMaxCount(),
-                0L,
+                currentCount,
                 item.getUnlockLevel(),
                 item.getExpReward(),
-                true
+                purchasable
         );
     }
 }

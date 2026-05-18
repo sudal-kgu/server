@@ -80,7 +80,7 @@ public class IslandLevelService {
     private List<ItemCatalogDto> getUnlockedItems(int newLevel) {
         return itemCache.getAll().stream()
                 .filter(i -> i.getUnlockLevel() == newLevel)
-                .map(ItemCatalogDto::from)
+                .map(i -> ItemCatalogDto.from(i, 0L, true))
                 .toList();
     }
 
