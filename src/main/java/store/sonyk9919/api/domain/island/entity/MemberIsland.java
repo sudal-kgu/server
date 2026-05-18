@@ -95,4 +95,8 @@ public class MemberIsland {
         recyclingContributionExp = 0;
         itemContributionExp = 0;
     }
+
+    public boolean isSameRegion(Region other) {
+        return this.region == other;
+    }
 }
