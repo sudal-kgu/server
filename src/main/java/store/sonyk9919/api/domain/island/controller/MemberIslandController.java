@@ -10,9 +10,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
+import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandCreateRequestDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
+import store.sonyk9919.api.domain.island.service.ItemUsageService;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1/islands")
@@ -20,6 +24,7 @@ import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 public class MemberIslandController {
 
     private final MemberIslandRegistryService memberIslandRegistryService;
+    private final ItemUsageService itemUsageService;
 
     @Operation(summary = "섬 생성", description = "인증된 회원의 새로운 섬을 생성합니다.")
     @ApiResponses(value = {
@@ -48,5 +53,19 @@ public class MemberIslandController {
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
         return memberIslandRegistryService.getIslandDto(authMember.getId());
+    }
+
+    @Operation(summary = "아이템 사용량 조회", description = "회원의 섬에서 아이템별 현재 사용량을 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    @GetMapping("/items/usages")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ItemCatalogDto> getItemUsages(
+            @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
+    ) {
+        return itemUsageService.getItemUsages(authMember.getId());
     }
 }
