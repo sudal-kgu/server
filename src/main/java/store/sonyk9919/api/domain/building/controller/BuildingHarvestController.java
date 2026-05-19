@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
+import store.sonyk9919.api.domain.building.dto.HarvestPreviewResponseDto;
 import store.sonyk9919.api.domain.building.dto.HarvestResponseDto;
 import store.sonyk9919.api.domain.building.dto.OperationPreviewDto;
 import store.sonyk9919.api.domain.building.service.BuildingHarvestService;
@@ -86,7 +87,7 @@ public class BuildingHarvestController {
             @ApiResponse(responseCode = "404", description = "슬롯 없음 / 건물 없음")
     })
     @GetMapping("/harvest")
-    public HarvestResponseDto previewHarvest(
+    public HarvestPreviewResponseDto previewHarvest(
             @AuthMember AuthMemberDto authMember,
             @PathVariable Integer slotNumber
     ) {
