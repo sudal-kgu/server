@@ -5,13 +5,17 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
+import store.sonyk9919.api.domain.building.dto.HarvestPreviewResponseDto;
 import store.sonyk9919.api.domain.building.dto.HarvestResponseDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
+import store.sonyk9919.api.domain.slot.dto.SlotResponseDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
@@ -37,22 +41,20 @@ public class BuildingHarvestService {
         if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
         Building building = slot.getBuilding();
 
+        double boostPercent = islandBoostCache.getTotalBoost(island);
         HarvestCalculator calculator = HarvestCalculator.from(building);
-        int gems = computeGems(island, calculator);
+        int gems = calculator.calculate(boostPercent);
         if (gems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        applyHarvest(building, island, gems, calculator);
-        return HarvestResponseDto.from(gems);
+        MemberResource islandGem = applyHarvest(building, island, gems, calculator);
+        int remainingGem = HarvestCalculator.from(building).calculate(boostPercent);
+        SlotResponseDto slotDto = SlotResponseDto.of(slot, BuildingInfoDto.of(building, building.getBuildingMetadata()));
+        return HarvestResponseDto.from(remainingGem, islandGem, slotDto);
     }
 
-    private int computeGems(MemberIsland island, HarvestCalculator calculator) {
-        double boostPercent = islandBoostCache.getTotalBoost(island);
-        return calculator.calculate(boostPercent);
-    }
-
-    private void applyHarvest(Building building, MemberIsland island, int gems, HarvestCalculator calculator) {
+    private MemberResource applyHarvest(Building building, MemberIsland island, int gems, HarvestCalculator calculator) {
         building.updateCollectedTime(calculator.getBaseTime());
-        resourceService.add(island, ResourceType.GEM, gems);
+        return resourceService.add(island, ResourceType.GEM, gems);
     }
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
@@ -66,8 +68,11 @@ public class BuildingHarvestService {
         int totalGems = applyAndSumGems(harvestableSlots, boostPercent);
         if (totalGems <= 0) throw new CustomException(BuildingStatus.NOTHING_TO_HARVEST);
 
-        resourceService.add(island, ResourceType.GEM, totalGems);
-        return HarvestResponseDto.from(totalGems);
+        MemberResource gem = resourceService.add(island, ResourceType.GEM, totalGems);
+        List<SlotResponseDto> slotDtos = harvestableSlots.stream()
+                .map(slot -> SlotResponseDto.of(slot, BuildingInfoDto.of(slot.getBuilding(), slot.getBuilding().getBuildingMetadata())))
+                .collect(Collectors.toList());
+        return HarvestResponseDto.from(gem, slotDtos);
     }
 
     private List<Slot> getHarvestableSlots(MemberIsland island) {
@@ -90,7 +95,7 @@ public class BuildingHarvestService {
     }
 
     @Transactional(readOnly = true)
-    public HarvestResponseDto preview(Long memberId, Integer slotNumber) {
+    public HarvestPreviewResponseDto preview(Long memberId, Integer slotNumber) {
         Slot slot = slotQueryHelper.getSlot(memberId, slotNumber);
 
         if (!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
@@ -100,6 +105,6 @@ public class BuildingHarvestService {
         int expectedGems = HarvestCalculator.from(building)
                 .calculate(totalBoost);
 
-        return HarvestResponseDto.from(expectedGems);
+        return HarvestPreviewResponseDto.from(expectedGems);
     }
 }
