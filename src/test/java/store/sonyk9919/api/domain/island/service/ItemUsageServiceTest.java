@@ -7,7 +7,6 @@ import static org.mockito.Mockito.mock;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,13 +19,12 @@ import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
-import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 @ExtendWith(MockitoExtension.class)
 class ItemUsageServiceTest {
 
-    @Mock private MemberIslandRepository memberIslandRepository;
+    @Mock private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
     @Mock private ItemCache itemCache;
     @InjectMocks private ItemUsageService itemUsageService;
@@ -47,7 +45,7 @@ class ItemUsageServiceTest {
                 createItem(5L, "나무 심기",       30, 20, 3, 75)
         );
         island = mock(MemberIsland.class);
-        given(memberIslandRepository.findByMemberAccountId(MEMBER_ID)).willReturn(Optional.of(island));
+        given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
     }
 
     private Item createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
@@ -163,7 +161,8 @@ class ItemUsageServiceTest {
     @Test
     void getItemUsages_섬이_없으면_예외가_발생한다() {
         // given
-        given(memberIslandRepository.findByMemberAccountId(MEMBER_ID)).willReturn(Optional.empty());
+        given(memberIslandRegistryService.getIsland(MEMBER_ID))
+                .willThrow(new CustomException(IslandStatus.NOT_FOUND_ISLAND));
 
         // when & then
         assertThatThrownBy(() -> itemUsageService.getItemUsages(MEMBER_ID))
