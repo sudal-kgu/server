@@ -19,4 +19,8 @@ public class IslandEffectDto {
     ){
       return new IslandEffectDto(islandBoost, quizRewardBoost, quizRewardAdd);
     }
+
+    public static IslandEffectDto empty(){
+        return new IslandEffectDto(0.0, 0.0, 0.0);
+    }
 }
