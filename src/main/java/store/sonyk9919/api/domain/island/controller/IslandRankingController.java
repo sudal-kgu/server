@@ -16,6 +16,7 @@ import store.sonyk9919.api.domain.auth.entity.AuthMember;
 import store.sonyk9919.api.domain.island.dto.IslandRankingResponse;
 import store.sonyk9919.api.domain.island.entity.Region;
 import store.sonyk9919.api.domain.island.service.IslandRankingService;
+import store.sonyk9919.api.global.dto.PageRequestDto;
 
 @RestController
 @RequestMapping("/v1/rankings")
@@ -24,7 +25,7 @@ public class IslandRankingController {
 
     private final IslandRankingService islandRankingService;
 
-    @Operation(summary = "랭킹 조회", description = "region 파라미터가 없으면 전체 랭킹, 있으면 해당 지역 랭킹을 조회합니다. 상위 100위와 내 순위를 반환합니다.")
+    @Operation(summary = "랭킹 조회", description = "region 파라미터가 없으면 전체 랭킹, 있으면 해당 지역 랭킹을 페이지 단위로 조회합니다. 내 순위는 항상 포함됩니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "섬을 찾을 수 없음"),
@@ -34,8 +35,9 @@ public class IslandRankingController {
     @ResponseStatus(HttpStatus.OK)
     public IslandRankingResponse getRanking(
             @RequestParam(required = false) Region region,
+            PageRequestDto pageRequest,
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
-        return islandRankingService.getRanking(region, authMember.getId());
+        return islandRankingService.getRanking(region, authMember.getId(), pageRequest.toPageable());
     }
 }
