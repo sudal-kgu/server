@@ -25,6 +25,7 @@ spring:
         - classpath:/db/building_yield.sql
         - classpath:/db/quiz.sql
         - classpath:/db/quiz_option.sql
+        - classpath:/db/ranking-example.sql
 
   jpa:
     hibernate:
