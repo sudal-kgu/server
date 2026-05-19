@@ -1,5 +1,8 @@
 package store.sonyk9919.api.global.config;
 
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -64,8 +67,23 @@ public class RedisConfig {
         RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(serializer));
+
+        RedisCacheConfiguration staticConfig = config.entryTtl(Duration.ZERO);
+        RedisCacheConfiguration dynamicConfig = config.entryTtl(Duration.ofDays(7));
+
+        Map<String, RedisCacheConfiguration> cacheConfigurations = new HashMap<>();
+
+        cacheConfigurations.put("buildingCatalog", staticConfig);
+        cacheConfigurations.put("level-spec", staticConfig);
+        cacheConfigurations.put("items", staticConfig);
+
+        cacheConfigurations.put("islandBoost", dynamicConfig);
+        cacheConfigurations.put("islandQuizRewardBoost", dynamicConfig);
+        cacheConfigurations.put("islandQuizRewardAdd", dynamicConfig);
+
         return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config)
+                .withInitialCacheConfigurations(cacheConfigurations)
                 .build();
     }
 
