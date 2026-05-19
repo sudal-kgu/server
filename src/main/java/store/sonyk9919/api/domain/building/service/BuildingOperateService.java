@@ -3,9 +3,11 @@ package store.sonyk9919.api.domain.building.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
 import store.sonyk9919.api.domain.building.dto.BuildingResponseDto;
 import store.sonyk9919.api.domain.building.dto.OperationPreviewDto;
 import store.sonyk9919.api.domain.building.entity.Building;
+import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
 import store.sonyk9919.api.domain.building.entity.BuildingYield;
 import store.sonyk9919.api.domain.building.exception.BuildingStatus;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
@@ -31,12 +33,12 @@ public class BuildingOperateService {
         if(!slot.hasBuilding()) throw new CustomException(BuildingStatus.BUILDING_NOT_FOUND);
         Building building = slot.getBuilding();
         BuildingYield yield = building.getCurrentYield();
+        BuildingMetadata buildingMetadata = building.getBuildingMetadata();
 
         building.operate(yield.getDurationSecond());
         resourceService.subtract(slot.getIsland(), ResourceType.FUEL, yield.getRequiredFuel());
-
         return BuildingResponseDto.of(
-                SlotResponseDto.from(slot),
+                SlotResponseDto.of(slot, BuildingInfoDto.of(building, buildingMetadata)),
                 resourceService.getBalance(memberId)
         );
     }
