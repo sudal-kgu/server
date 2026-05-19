@@ -24,7 +24,7 @@ public class MemberIslandDto {
                 island.getRecyclingContributionExp(),
                 island.getItemContributionExp(),
                 nextLevel,
-                null
+                IslandEffectDto.empty()
         );
     }
 
