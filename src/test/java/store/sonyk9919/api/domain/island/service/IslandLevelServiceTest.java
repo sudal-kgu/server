@@ -151,6 +151,7 @@ class IslandLevelServiceTest {
         // given
         given(island.getLevel()).willReturn(6, 6, 7);
         given(levelSpecCache.get(6)).willReturn(currentSpec);
+        given(levelSpecCache.get(7)).willReturn(nextLevelSpec);
         given(island.isMaxLevel()).willReturn(false, true);
         given(island.canLevelUp(currentSpec)).willReturn(true);
         stubIslandDtoFields();
