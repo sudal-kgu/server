@@ -38,6 +38,7 @@ public class MemberIslandDto {
     ) {
         return new MemberIslandDto(
                 island.getNickname(),
+                island.getRegion(),
                 island.getLevel(),
                 island.getCumulativeExp(),
                 island.getRecyclingContributionExp(),
