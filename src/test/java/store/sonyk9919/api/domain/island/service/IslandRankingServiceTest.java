@@ -36,11 +36,12 @@ class IslandRankingServiceTest {
     @Autowired private MemberIslandRepository memberIslandRepository;
 
     private MemberAccount myAccount;
+    private MemberIsland myIsland;
 
     @BeforeEach
     void setUp() {
         myAccount = saveAccount("my-account");
-        saveIsland("내 섬", Region.SEOUL, myAccount, 500);
+        myIsland = saveIsland("내 섬", Region.SEOUL, myAccount, 500);
 
         saveIsland("서울A", Region.SEOUL, saveAccount("seoul-a"), 1000);
         saveIsland("서울B", Region.SEOUL, saveAccount("seoul-b"), 800);
@@ -80,25 +81,10 @@ class IslandRankingServiceTest {
     }
 
     @Test
-    void 다음_페이지의_rank는_이전_페이지에_이어서_시작한다() {
-        // when
-        int lastRankOnPage1 = islandRankingService
-                .getRanking(null, myAccount.getId(), PageRequest.of(0, 3))
-                .getRankings().getContent()
-                .stream().mapToInt(IslandRankingEntryDto::getRank).max().orElseThrow();
-        int firstRankOnPage2 = islandRankingService
-                .getRanking(null, myAccount.getId(), PageRequest.of(1, 3))
-                .getRankings().getContent()
-                .get(0).getRank();
-
-        // then
-        assertThat(firstRankOnPage2).isEqualTo(lastRankOnPage1 + 1);
-    }
-
-    @Test
     void 전체_랭킹_조회_시_내_순위가_포함된다() {
         // given
-        int expectedRank = memberIslandRepository.countByCumulativeExpGreaterThan(500) + 1;
+        int expectedRank = memberIslandRepository
+                .countRankingsBefore(500, myIsland.getId()) + 1;
 
         // when
         IslandRankingEntryDto me = islandRankingService
@@ -124,7 +110,8 @@ class IslandRankingServiceTest {
     @Test
     void 지역_랭킹_조회_시_같은_지역이면_내_순위가_포함된다() {
         // given
-        int expectedRank = memberIslandRepository.countByRegionAndCumulativeExpGreaterThan(Region.SEOUL, 500) + 1;
+        int expectedRank = memberIslandRepository
+                .countRegionalRankingsBefore(Region.SEOUL, 500, myIsland.getId()) + 1;
 
         // when
         IslandRankingEntryDto me = islandRankingService

@@ -30,9 +30,9 @@ public class IslandRankingService {
     }
 
     private IslandRankingResponse getOverallRanking(Long memberAccountId, Pageable pageable) {
-        Page<MemberIsland> page = memberIslandRepository.findAllByOrderByCumulativeExpDesc(pageable);
+        Page<MemberIsland> page = memberIslandRepository.findAllByOrderByCumulativeExpDescIdAsc(pageable);
         MemberIsland island = findMyIsland(memberAccountId);
-        int ranking = memberIslandRepository.countByCumulativeExpGreaterThan(island.getCumulativeExp()) + 1;
+        int ranking = memberIslandRepository.countRankingsBefore(island.getCumulativeExp(), island.getId()) + 1;
         return IslandRankingResponse.of(toRankingPage(page), IslandRankingEntryDto.of(ranking, island));
     }
 
@@ -48,12 +48,12 @@ public class IslandRankingService {
     }
 
     private IslandRankingResponse getRegionalRanking(Region region, Long memberAccountId, Pageable pageable) {
-        Page<MemberIsland> page = memberIslandRepository.findAllByRegionOrderByCumulativeExpDesc(region, pageable);
+        Page<MemberIsland> page = memberIslandRepository.findAllByRegionOrderByCumulativeExpDescIdAsc(region, pageable);
         MemberIsland island = findMyIsland(memberAccountId);
 
         IslandRankingEntryDto me = null;
         if (island.isSameRegion(region)) {
-            int ranking = memberIslandRepository.countByRegionAndCumulativeExpGreaterThan(region, island.getCumulativeExp()) + 1;
+            int ranking = memberIslandRepository.countRegionalRankingsBefore(region, island.getCumulativeExp(), island.getId()) + 1;
             me = IslandRankingEntryDto.of(ranking, island);
         }
         return IslandRankingResponse.of(toRankingPage(page), me);
