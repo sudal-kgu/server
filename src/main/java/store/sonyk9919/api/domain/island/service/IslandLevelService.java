@@ -58,16 +58,17 @@ public class IslandLevelService {
 
     private LevelUpResult buildLevelUpResult(MemberIsland island) {
         boolean reachedMaxLevel = island.isMaxLevel();
+        int newLevel = island.getLevel();
+        LevelSpec newLevelSpec = getLevelSpec(newLevel);
         if (reachedMaxLevel) {
             return LevelUpResult.of(
                     MemberIslandDto.from(island, null),
-                    LevelUpResult.UnlockNotice.of(true, List.of(), List.of())
+                    LevelUpResult.UnlockNotice.of(true, newLevelSpec.getMaxSlotCount(), List.of(), List.of())
             );
         }
-        int newLevel = island.getLevel();
         return LevelUpResult.of(
                 MemberIslandDto.from(island, buildNextLevelCondition(island)),
-                LevelUpResult.UnlockNotice.of(false, getUnlockedItems(newLevel), getUnlockedBuildings(newLevel))
+                LevelUpResult.UnlockNotice.of(false, newLevelSpec.getMaxSlotCount(), getUnlockedItems(newLevel), getUnlockedBuildings(newLevel))
         );
     }
 
