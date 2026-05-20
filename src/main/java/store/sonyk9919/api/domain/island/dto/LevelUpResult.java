@@ -25,11 +25,12 @@ public class LevelUpResult {
     @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
     public static class UnlockNotice {
         private final boolean reachedMaxLevel;
+        private final int maxSlotCount;
         private final List<ItemCatalogDto> unlockedItems;
         private final List<BuildingCatalogDto> unlockedBuildings;
 
-        public static UnlockNotice of(boolean reachedMaxLevel, List<ItemCatalogDto> unlockedItems, List<BuildingCatalogDto> unlockedBuildings) {
-            return new UnlockNotice(reachedMaxLevel, unlockedItems, unlockedBuildings);
+        public static UnlockNotice of(boolean reachedMaxLevel, int maxSlotCount, List<ItemCatalogDto> unlockedItems, List<BuildingCatalogDto> unlockedBuildings) {
+            return new UnlockNotice(reachedMaxLevel, maxSlotCount, unlockedItems, unlockedBuildings);
         }
     }
 }

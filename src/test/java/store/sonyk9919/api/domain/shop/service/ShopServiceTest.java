@@ -233,7 +233,7 @@ class ShopServiceTest {
         given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
         LevelUpResult levelUpResult = LevelUpResult.of(
                 mockIslandDto(4),
-                LevelUpResult.UnlockNotice.of(false, List.of(), List.of())
+                LevelUpResult.UnlockNotice.of(false, 4, List.of(), List.of())
         );
         given(islandLevelService.addItemExp(MEMBER_ID, 250)).willReturn(levelUpResult);
 
