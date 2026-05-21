@@ -81,6 +81,8 @@ security:
     methods:
       - GET
       - POST
+      - DELETE
+      - PUT
       - OPTIONS
     headers:
       - "*"
