@@ -3,6 +3,7 @@ package store.sonyk9919.api.domain.quiz.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import store.sonyk9919.api.domain.island.dto.ResourceBalanceResponse;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
@@ -45,7 +46,7 @@ public class QuizPlayService {
         MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
         return quizSessionRegistryService.getActiveSession(island).map(session -> {
             List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(session);
-            return QuizSessionResponseDto.from(session, problems);
+            return QuizSessionResponseDto.from(session, problems, false);
         }).orElseGet(() -> createNewSession(island, serial));
     }
 
@@ -53,7 +54,7 @@ public class QuizPlayService {
         QuizSession session = quizSessionRegistryService.create(island);
         List<Quiz> quizzes = getQuizzes(serial);
         List<QuizSessionProblem> problems = quizSessionProblemRegistryService.createAll(session, quizzes);
-        return QuizSessionResponseDto.from(session, problems);
+        return QuizSessionResponseDto.from(session, problems, true);
     }
 
     private List<Quiz> getQuizzes(String serial) {
@@ -65,7 +66,7 @@ public class QuizPlayService {
         MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
         return quizSessionRegistryService.getActiveSession(island).map(session -> {
             List<QuizSessionProblem> problems = quizSessionProblemRegistryService.getProblems(session);
-            return QuizSessionResponseDto.from(session, problems);
+            return QuizSessionResponseDto.from(session, problems, false);
         }).orElseThrow(() -> new CustomException(QuizStatus.NOT_FOUND_QUIZ_SESSION));
     }
 
@@ -139,6 +140,7 @@ public class QuizPlayService {
         resourceService.add(island, ResourceType.FUEL, earnedFuel);
         LevelUpResult levelUpResult = islandLevelService.addRecyclingExp(memberAccountId);
 
-        return RecyclingRewardResponse.of(earnedShell, earnedFuel, earnedExp, levelUpResult);
+        ResourceBalanceResponse resource = resourceService.getBalance(memberAccountId);
+        return RecyclingRewardResponse.of(earnedShell, earnedFuel, earnedExp, resource, levelUpResult);
     }
 }
