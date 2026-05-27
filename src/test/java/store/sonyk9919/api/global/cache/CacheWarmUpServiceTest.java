@@ -17,6 +17,7 @@ import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
 import store.sonyk9919.api.domain.island.service.ItemCache;
 import store.sonyk9919.api.domain.island.service.LevelSpecCache;
+import store.sonyk9919.api.domain.shop.service.GemItemCache;
 
 @ExtendWith(MockitoExtension.class)
 class CacheWarmUpServiceTest {
@@ -25,6 +26,7 @@ class CacheWarmUpServiceTest {
     @Mock private LevelSpecCache levelSpecCache;
     @Mock private BuildingMetadataCache buildingMetadataCache;
     @Mock private ItemCache itemCache;
+    @Mock private GemItemCache gemItemCache;
 
     @InjectMocks private CacheWarmUpService cacheWarmUpService;
 
@@ -50,5 +52,6 @@ class CacheWarmUpServiceTest {
         then(levelSpecCache).should(times(1)).get(1);
         then(levelSpecCache).should(times(1)).get(2);
         then(itemCache).should(times(1)).getAll();
+        then(gemItemCache).should(times(1)).getAll();
     }
 }
