@@ -7,6 +7,7 @@ import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
 import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
 import store.sonyk9919.api.domain.island.service.ItemCache;
 import store.sonyk9919.api.domain.island.service.LevelSpecCache;
+import store.sonyk9919.api.domain.shop.service.GemItemCache;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
 
 @Slf4j
@@ -18,6 +19,7 @@ public class CacheWarmUpService {
     private final LevelSpecCache levelSpecCache;
     private final BuildingMetadataCache buildingMetadataCache;
     private final ItemCache itemCache;
+    private final GemItemCache gemItemCache;
 
     @DistributedLock(key = "'system:cache:warmup'", waitTime = 0, leaseTime = 30)
     public void warmUpStaticData() {
@@ -26,6 +28,7 @@ public class CacheWarmUpService {
         warmUpBuildingMetadata();
         warmUpLevelSpec();
         warmUpItems();
+        warmUpGemItems();
 
         log.info("[CacheWarmup] end");
     }
@@ -42,5 +45,9 @@ public class CacheWarmUpService {
 
     private void warmUpItems() {
         itemCache.getAll();
+    }
+
+    private void warmUpGemItems() {
+        gemItemCache.getAll();
     }
 }

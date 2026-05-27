@@ -66,7 +66,7 @@ public class ShopController {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "401", description = "인증 실패")
     })
-    @GetMapping("/gemItems")
+    @GetMapping("/gem-items")
     @ResponseStatus(HttpStatus.OK)
     public List<GemItemResponse> getGemItems() {
         return gemExchangeService.getGemItems();
@@ -79,7 +79,7 @@ public class ShopController {
             @ApiResponse(responseCode = "404", description = "교환 아이템을 찾을 수 없음"),
             @ApiResponse(responseCode = "409", description = "보석 부족 또는 락 획득 실패")
     })
-    @PostMapping("/gemItems/{gemItemId}/exchange")
+    @PostMapping("/gem-items/{gemItemId}/exchange")
     @ResponseStatus(HttpStatus.OK)
     public GemExchangeResponse exchange(
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember,
