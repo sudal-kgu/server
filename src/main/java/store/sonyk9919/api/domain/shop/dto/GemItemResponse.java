@@ -10,6 +10,7 @@ import store.sonyk9919.api.domain.shop.entity.GemItem;
 public class GemItemResponse {
 
     private final Long gemItemId;
+    private final String code;
     private final String name;
     private final String description;
     private final int gemCost;
@@ -18,6 +19,7 @@ public class GemItemResponse {
     public static GemItemResponse from(GemItem gemItem) {
         return new GemItemResponse(
                 gemItem.getId(),
+                gemItem.getCode(),
                 gemItem.getName(),
                 gemItem.getDescription(),
                 gemItem.getGemCost(),

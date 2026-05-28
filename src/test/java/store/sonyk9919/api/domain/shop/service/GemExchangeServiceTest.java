@@ -56,7 +56,7 @@ class GemExchangeServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        gemItem = createGemItem(GEM_ITEM_ID, "스타벅스 아메리카노 T", "스타벅스 아메리카노 Tall 사이즈 모바일 쿠폰", 40000, 3);
+        gemItem = createGemItem(GEM_ITEM_ID, "STARBUCKS_COUPON", "스타벅스 아메리카노 T", "스타벅스 아메리카노 Tall 사이즈 모바일 쿠폰", 40000, 3);
         memberAccount = mock(MemberAccount.class);
         island = mock(MemberIsland.class);
     }
@@ -66,12 +66,13 @@ class GemExchangeServiceTest {
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
     }
 
-    private GemItem createGemItem(Long id, String name, String description, int gemCost, int monthlyLimit)
+    private GemItem createGemItem(Long id, String code, String name, String description, int gemCost, int monthlyLimit)
             throws Exception {
         Constructor<GemItem> ctor = GemItem.class.getDeclaredConstructor();
         ctor.setAccessible(true);
         GemItem item = ctor.newInstance();
         ReflectionTestUtils.setField(item, "id", id);
+        ReflectionTestUtils.setField(item, "code", code);
         ReflectionTestUtils.setField(item, "name", name);
         ReflectionTestUtils.setField(item, "description", description);
         ReflectionTestUtils.setField(item, "gemCost", gemCost);
@@ -95,9 +96,9 @@ class GemExchangeServiceTest {
     void getGemItems_아이템_3개를_반환한다() throws Exception {
         // given
         List<GemItem> items = List.of(
-                createGemItem(1L, "자연상점 할인 쿠폰",    "설명1", 20000, 5),
-                createGemItem(2L, "스타벅스 아메리카노 T", "설명2", 40000, 3),
-                createGemItem(3L, "편의점 5,000원 금액권", "설명3", 50000, 5)
+                createGemItem(1L, "NATURALSTORE_DISCOUNT", "자연상점 할인 쿠폰",    "설명1", 20000, 5),
+                createGemItem(2L, "STARBUCKS_COUPON",      "스타벅스 아메리카노 T", "설명2", 40000, 3),
+                createGemItem(3L, "CONVENIENCE_COUPON",    "편의점 5,000원 금액권", "설명3", 50000, 5)
         );
         given(gemItemCache.getAll()).willReturn(items);
 
