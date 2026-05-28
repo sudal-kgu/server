@@ -36,13 +36,13 @@ class ItemUsageServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        targetItem = createItem(1L, "쓰레기 제거 (소)", 100, 2, 3, 250);
+        targetItem = createItem(1L, "쓰레기 제거 (소)", 25, 10, 2, 50);
         allItems = List.of(
                 targetItem,
-                createItem(2L, "쓰레기 제거 (대)", 100, 4, 3, 250),
-                createItem(3L, "토양 정화",       50,  8, 3, 125),
-                createItem(4L, "수질 개선",       50, 10, 3, 125),
-                createItem(5L, "나무 심기",       30, 20, 3, 75)
+                createItem(2L, "쓰레기 제거 (대)", 40,  3, 3, 70),
+                createItem(3L, "토양 정화",        50,  4, 2, 125),
+                createItem(4L, "수질 개선",        50, 10, 4, 125),
+                createItem(5L, "나무 심기",        30, 10, 5, 75)
         );
         island = mock(MemberIsland.class);
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
@@ -115,7 +115,7 @@ class ItemUsageServiceTest {
     @Test
     void getItemUsages_레벨_미달_시_purchasable이_false다() {
         // given
-        given(island.getLevel()).willReturn(2);
+        given(island.getLevel()).willReturn(1);
         given(itemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
@@ -129,7 +129,7 @@ class ItemUsageServiceTest {
     @Test
     void getItemUsages_레벨_충족_시_purchasable이_true다() {
         // given
-        given(island.getLevel()).willReturn(3);
+        given(island.getLevel()).willReturn(5);
         given(itemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
@@ -146,7 +146,7 @@ class ItemUsageServiceTest {
         given(island.getLevel()).willReturn(3);
         given(itemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island))
-                .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 2L)));
+                .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 10L)));
 
         // when
         List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
