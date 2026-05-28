@@ -27,10 +27,12 @@ class MemberIslandRegistryServiceTest {
     @Mock private SlotSetupService slotSetupService;
     @Mock private ResourceSetupService resourceSetupService;
     @Mock private LevelSpecCache levelSpecCache;
-    @InjectMocks private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private IslandBoostCache islandBoostCache;
+    @Mock private IslandModelUriResolver islandModelUriResolver;
+    @InjectMocks private MemberIslandRegistryService memberIslandRegistryService;
 
     private static final Long MEMBER_ID = 1L;
+    private static final String MODEL_URI = "https://image.sonyk9919.store:20024/island_2.glb";
     private MemberIsland island;
     private LevelSpec currentSpec;
 
@@ -39,6 +41,7 @@ class MemberIslandRegistryServiceTest {
         island = mock(MemberIsland.class);
         currentSpec = mock(LevelSpec.class);
         given(memberIslandRepository.findByMemberAccountId(MEMBER_ID)).willReturn(Optional.of(island));
+        given(islandModelUriResolver.resolve(island)).willReturn(MODEL_URI);
     }
 
     @Test
@@ -59,11 +62,26 @@ class MemberIslandRegistryServiceTest {
     void getIslandDto_최고레벨일_때_nextLevel이_null이다() {
         // given
         given(island.isMaxLevel()).willReturn(true);
+        given(island.getLevel()).willReturn(7);
 
         // when
         MemberIslandDto dto = memberIslandRegistryService.getIslandDto(MEMBER_ID);
 
         // then
         assertThat(dto.getNextLevel()).isNull();
+    }
+
+    @Test
+    void getIslandDto_modelUri가_포함된다() {
+        // given
+        given(island.isMaxLevel()).willReturn(false);
+        given(island.getLevel()).willReturn(2);
+        given(levelSpecCache.get(2)).willReturn(currentSpec);
+
+        // when
+        MemberIslandDto dto = memberIslandRegistryService.getIslandDto(MEMBER_ID);
+
+        // then
+        assertThat(dto.getModelUri()).isEqualTo(MODEL_URI);
     }
 }

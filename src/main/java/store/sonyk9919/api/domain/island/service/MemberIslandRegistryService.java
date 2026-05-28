@@ -28,6 +28,7 @@ public class MemberIslandRegistryService {
     private final ResourceSetupService resourceSetupService;
     private final LevelSpecCache levelSpecCache;
     private final IslandBoostCache islandBoostCache;
+    private final IslandModelUriResolver islandModelUriResolver;
 
     @Transactional
     public MemberIsland create(Long memberAccountId, String nickname, Region region) {
@@ -37,7 +38,7 @@ public class MemberIslandRegistryService {
     @Transactional
     public MemberIslandDto createDto(Long memberAccountId, String nickname, Region region) {
         MemberIsland island = createEntity(memberAccountId, nickname, region);
-        return MemberIslandDto.from(island, buildNextLevelCondition(island));
+        return MemberIslandDto.from(island, islandModelUriResolver.resolve(island), buildNextLevelCondition(island));
     }
 
     private MemberIsland createEntity(Long memberAccountId, String nickname, Region region) {
@@ -57,7 +58,7 @@ public class MemberIslandRegistryService {
     public MemberIslandDto getIslandDto(Long memberAccountId) {
         MemberIsland island = memberIslandRepository.findByMemberAccountId(memberAccountId)
                 .orElseThrow(() -> new CustomException(IslandStatus.NOT_FOUND_ISLAND));
-        return MemberIslandDto.from(island, buildNextLevelCondition(island), createIslandEffect(island));
+        return MemberIslandDto.from(island, islandModelUriResolver.resolve(island), buildNextLevelCondition(island), createIslandEffect(island));
     }
 
     private NextLevelConditionDto buildNextLevelCondition(MemberIsland island) {
