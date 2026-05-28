@@ -15,10 +15,11 @@ public class MemberIslandDto {
     private final int cumulativeExp;
     private final int recyclingContributionExp;
     private final int itemContributionExp;
+    private final String modelUri;
     private final NextLevelConditionDto nextLevel;
     private final IslandEffectDto effects;
 
-    public static MemberIslandDto from(MemberIsland island, NextLevelConditionDto nextLevel) {
+    public static MemberIslandDto from(MemberIsland island, String modelUri, NextLevelConditionDto nextLevel) {
         return new MemberIslandDto(
                 island.getNickname(),
                 island.getRegion(),
@@ -26,6 +27,7 @@ public class MemberIslandDto {
                 island.getCumulativeExp(),
                 island.getRecyclingContributionExp(),
                 island.getItemContributionExp(),
+                modelUri,
                 nextLevel,
                 IslandEffectDto.empty()
         );
@@ -33,6 +35,7 @@ public class MemberIslandDto {
 
     public static MemberIslandDto from(
             MemberIsland island,
+            String modelUri,
             NextLevelConditionDto nextLevel,
             IslandEffectDto effects
     ) {
@@ -43,6 +46,7 @@ public class MemberIslandDto {
                 island.getCumulativeExp(),
                 island.getRecyclingContributionExp(),
                 island.getItemContributionExp(),
+                modelUri,
                 nextLevel,
                 effects
         );

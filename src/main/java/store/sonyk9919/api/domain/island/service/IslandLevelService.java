@@ -26,6 +26,7 @@ public class IslandLevelService {
     private final ItemCache itemCache;
     private final BuildingMetadataCache buildingMetadataCache;
     private final MemberIslandRepository memberIslandRepository;
+    private final IslandModelUriResolver islandModelUriResolver;
 
     @DistributedLock(key = "'island:' + #memberAccountId + ':exp'")
     @Transactional
@@ -47,10 +48,10 @@ public class IslandLevelService {
     }
 
     private LevelUpResult checkAndProcessLevelUp(MemberIsland island) {
-        if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, null));
+        if (island.isMaxLevel()) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, islandModelUriResolver.resolve(island), null));
 
         LevelSpec currentSpec = getLevelSpec(island.getLevel());
-        if (!island.canLevelUp(currentSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, buildNextLevelCondition(island)));
+        if (!island.canLevelUp(currentSpec)) return LevelUpResult.noLevelUp(MemberIslandDto.from(island, islandModelUriResolver.resolve(island), buildNextLevelCondition(island)));
 
         island.levelUp();
         return buildLevelUpResult(island);
@@ -62,12 +63,12 @@ public class IslandLevelService {
         LevelSpec newLevelSpec = getLevelSpec(newLevel);
         if (reachedMaxLevel) {
             return LevelUpResult.of(
-                    MemberIslandDto.from(island, null),
+                    MemberIslandDto.from(island, islandModelUriResolver.resolve(island), null),
                     LevelUpResult.UnlockNotice.of(true, newLevelSpec.getMaxSlotCount(), List.of(), List.of())
             );
         }
         return LevelUpResult.of(
-                MemberIslandDto.from(island, buildNextLevelCondition(island)),
+                MemberIslandDto.from(island, islandModelUriResolver.resolve(island), buildNextLevelCondition(island)),
                 LevelUpResult.UnlockNotice.of(false, newLevelSpec.getMaxSlotCount(), getUnlockedItems(newLevel), getUnlockedBuildings(newLevel))
         );
     }

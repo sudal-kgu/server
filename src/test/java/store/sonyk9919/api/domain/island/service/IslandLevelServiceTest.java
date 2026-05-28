@@ -30,9 +30,11 @@ class IslandLevelServiceTest {
     @Mock private ItemCache itemCache;
     @Mock private BuildingMetadataCache buildingMetadataCache;
     @Mock private MemberIslandRepository memberIslandRepository;
+    @Mock private IslandModelUriResolver islandModelUriResolver;
     @InjectMocks private IslandLevelService islandLevelService;
 
     private static final Long MEMBER_ID = 1L;
+    private static final String MODEL_URI = "https://image.sonyk9919.store:20024/island_1.glb";
 
     private MemberIsland island;
     private LevelSpec currentSpec;
@@ -44,6 +46,7 @@ class IslandLevelServiceTest {
         currentSpec = mock(LevelSpec.class);
         nextLevelSpec = mock(LevelSpec.class);
         given(memberIslandRepository.findByMemberAccountId(MEMBER_ID)).willReturn(Optional.of(island));
+        given(islandModelUriResolver.resolve(island)).willReturn(MODEL_URI);
     }
 
     @Test
