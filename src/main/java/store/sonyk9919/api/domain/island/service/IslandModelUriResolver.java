@@ -11,7 +11,7 @@ import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 @RequiredArgsConstructor
 public class IslandModelUriResolver {
 
-    private static final String SOIL_PURIFICATION_ITEM_NAME = "토양 정화";
+    private static final String SOIL_PURIFICATION_CODE = "SOIL_PURIFICATION";
 
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ItemCache itemCache;
@@ -26,7 +26,7 @@ public class IslandModelUriResolver {
 
     private long getSoilPurificationCount(MemberIsland island) {
         return itemCache.getAll().stream()
-                .filter(item -> SOIL_PURIFICATION_ITEM_NAME.equals(item.getName()))
+                .filter(item -> SOIL_PURIFICATION_CODE.equals(item.getCode()))
                 .findFirst()
                 .flatMap(item -> islandItemUsageRepository.findByIslandAndItem(island, item))
                 .map(IslandItemUsage::getUseCount)

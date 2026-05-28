@@ -35,7 +35,7 @@ class IslandModelUriResolverTest {
         soilPurificationItem = mock(Item.class);
         ReflectionTestUtils.setField(islandModelUriResolver, "modelBaseUrl", MODEL_BASE_URL);
         given(itemCache.getAll()).willReturn(List.of(soilPurificationItem));
-        given(soilPurificationItem.getName()).willReturn("토양 정화");
+        given(soilPurificationItem.getCode()).willReturn("SOIL_PURIFICATION");
     }
 
     @Test
