@@ -46,3 +46,7 @@ rabbitmq:
   exchange: analysis.exchange
   request-routing-key: analysis.request
   result-routing-key: analysis.result
+
+island:
+  model:
+    base-url: https://image.sonyk9919.store:20024
