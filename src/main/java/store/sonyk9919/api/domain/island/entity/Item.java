@@ -21,6 +21,9 @@ public class Item {
     @Column(name = "item_id")
     private Long id;
 
+    @Column(nullable = false, unique = true)
+    private String code;
+
     @Column(nullable = false)
     private String name;
 
