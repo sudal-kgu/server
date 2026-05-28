@@ -55,13 +55,13 @@ class ShopServiceTest {
 
     @BeforeEach
     void setUp() throws Exception {
-        targetItem = createItem(ITEM_ID, "쓰레기 제거 (소)", 100, 2, 3, 250);
+        targetItem = createItem(ITEM_ID, "쓰레기 제거 (소)", 25, 10, 2, 50);
         allItems = List.of(
                 targetItem,
-                createItem(2L, "쓰레기 제거 (대)", 100, 4, 3, 250),
-                createItem(3L, "토양 정화",       50,  8, 3, 125),
-                createItem(4L, "수질 개선",       50, 10, 3, 125),
-                createItem(5L, "나무 심기",       30, 20, 3, 75)
+                createItem(2L, "쓰레기 제거 (대)", 40,  3, 3, 70),
+                createItem(3L, "토양 정화",        50,  4, 2, 125),
+                createItem(4L, "수질 개선",        50, 10, 4, 125),
+                createItem(5L, "나무 심기",        30, 10, 5, 75)
         );
         island = mock(MemberIsland.class);
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
@@ -137,7 +137,7 @@ class ShopServiceTest {
     @Test
     void getItems_레벨_조건_미달_시_purchasable이_false다() {
         // given
-        given(island.getLevel()).willReturn(2);
+        given(island.getLevel()).willReturn(1);
         given(itemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
@@ -151,7 +151,7 @@ class ShopServiceTest {
     @Test
     void getItems_레벨_충족_시_purchasable이_true다() {
         // given
-        given(island.getLevel()).willReturn(3);
+        given(island.getLevel()).willReturn(5);
         given(itemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
@@ -167,7 +167,7 @@ class ShopServiceTest {
         // given
         given(island.getLevel()).willReturn(3);
         given(itemCache.getAll()).willReturn(allItems);
-        IslandItemUsage usage = mockUsage(targetItem, 2L);
+        IslandItemUsage usage = mockUsage(targetItem, 10L);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of(usage));
 
         // when
@@ -207,9 +207,9 @@ class ShopServiceTest {
         given(usage.getUseCount()).willReturn(0L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
         MemberResource updatedShell = mockShell(900L);
-        given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
+        given(resourceService.subtract(island, ResourceType.SHELL, 25)).willReturn(updatedShell);
         LevelUpResult noLevelUp = LevelUpResult.noLevelUp(mockIslandDto(3));
-        given(islandLevelService.addItemExp(MEMBER_ID, 250)).willReturn(noLevelUp);
+        given(islandLevelService.addItemExp(MEMBER_ID, 50)).willReturn(noLevelUp);
 
         // when
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
@@ -230,12 +230,12 @@ class ShopServiceTest {
         given(usage.getUseCount()).willReturn(0L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
         MemberResource updatedShell = mockShell(900L);
-        given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
+        given(resourceService.subtract(island, ResourceType.SHELL, 25)).willReturn(updatedShell);
         LevelUpResult levelUpResult = LevelUpResult.of(
                 mockIslandDto(4),
                 LevelUpResult.UnlockNotice.of(false, 4, List.of(), List.of())
         );
-        given(islandLevelService.addItemExp(MEMBER_ID, 250)).willReturn(levelUpResult);
+        given(islandLevelService.addItemExp(MEMBER_ID, 50)).willReturn(levelUpResult);
 
         // when
         ShopPurchaseResponse result = shopService.purchaseItem(MEMBER_ID, ITEM_ID);
@@ -276,7 +276,7 @@ class ShopServiceTest {
     @Test
     void purchaseItem_레벨_미달_시_예외가_발생한다() {
         // given
-        given(island.getLevel()).willReturn(2);
+        given(island.getLevel()).willReturn(1);
         given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
 
         // when & then
@@ -291,7 +291,7 @@ class ShopServiceTest {
         given(island.getLevel()).willReturn(3);
         given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
         IslandItemUsage usage = mock(IslandItemUsage.class);
-        given(usage.getUseCount()).willReturn(2L);
+        given(usage.getUseCount()).willReturn(10L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
 
         // when & then
@@ -308,7 +308,7 @@ class ShopServiceTest {
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.empty());
         given(islandItemUsageRepository.save(any())).willAnswer(inv -> inv.getArgument(0));
         MemberResource updatedShell = mockShell(900L);
-        given(resourceService.subtract(island, ResourceType.SHELL, 100)).willReturn(updatedShell);
+        given(resourceService.subtract(island, ResourceType.SHELL, 25)).willReturn(updatedShell);
         LevelUpResult noLevelUp = LevelUpResult.noLevelUp(mockIslandDto(3));
         given(islandLevelService.addItemExp(any(), anyInt())).willReturn(noLevelUp);
 
