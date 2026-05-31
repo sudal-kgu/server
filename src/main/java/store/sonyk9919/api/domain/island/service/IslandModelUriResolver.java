@@ -17,12 +17,12 @@ public class IslandModelUriResolver {
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ShopItemCache shopItemCache;
 
-    @Value("${island.model.base-url}")
-    private String modelBaseUrl;
+    @Value("${image.base-url}")
+    private String imageBaseUrl;
 
     public String resolve(MemberIsland island) {
         int modelIndex = Math.min(island.getLevel(), 2) + (int) getSoilPurificationCount(island);
-        return modelBaseUrl + "/island_" + modelIndex + ".glb";
+        return imageBaseUrl + "/island_" + modelIndex + ".glb";
     }
 
     private long getSoilPurificationCount(MemberIsland island) {

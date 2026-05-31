@@ -15,15 +15,17 @@ public class GemItemResponse {
     private final String description;
     private final int gemCost;
     private final int monthlyLimit;
+    private final String iconUri;
 
-    public static GemItemResponse from(GemItem gemItem) {
+    public static GemItemResponse from(GemItem gemItem, String iconUri) {
         return new GemItemResponse(
                 gemItem.getId(),
                 gemItem.getCode(),
                 gemItem.getName(),
                 gemItem.getDescription(),
                 gemItem.getGemCost(),
-                gemItem.getMonthlyLimit()
+                gemItem.getMonthlyLimit(),
+                iconUri
         );
     }
 }

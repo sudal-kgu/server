@@ -34,7 +34,7 @@ class IslandModelUriResolverTest {
     void setUp() {
         island = mock(MemberIsland.class);
         soilPurificationItem = mock(ShopItem.class);
-        ReflectionTestUtils.setField(islandModelUriResolver, "modelBaseUrl", MODEL_BASE_URL);
+        ReflectionTestUtils.setField(islandModelUriResolver, "imageBaseUrl", MODEL_BASE_URL);
         given(shopItemCache.getAll()).willReturn(List.of(soilPurificationItem));
         given(soilPurificationItem.getCode()).willReturn("SOIL_PURIFICATION");
     }
