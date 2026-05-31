@@ -21,26 +21,26 @@ import org.springframework.test.util.ReflectionTestUtils;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
-import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.entity.MemberResource;
 import store.sonyk9919.api.domain.island.entity.ResourceType;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
-import store.sonyk9919.api.domain.island.repository.ItemRepository;
 import store.sonyk9919.api.domain.island.service.IslandLevelService;
-import store.sonyk9919.api.domain.island.service.ItemCache;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.shop.dto.ShopItemResponse;
 import store.sonyk9919.api.domain.shop.dto.ShopPurchaseResponse;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
 import store.sonyk9919.api.domain.shop.exception.ShopStatus;
+import store.sonyk9919.api.domain.shop.repository.ShopItemRepository;
 import store.sonyk9919.api.global.common.exception.CustomException;
+
 
 @ExtendWith(MockitoExtension.class)
 class ShopServiceTest {
 
-    @Mock private ItemCache itemCache;
-    @Mock private ItemRepository itemRepository;
+    @Mock private ShopItemCache shopItemCache;
+    @Mock private ShopItemRepository shopItemRepository;
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
     @Mock private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private ResourceService resourceService;
@@ -49,8 +49,8 @@ class ShopServiceTest {
 
     private static final Long MEMBER_ID = 1L;
     private static final Long ITEM_ID = 1L;
-    private List<Item> allItems;
-    private Item targetItem;
+    private List<ShopItem> allItems;
+    private ShopItem targetItem;
     private MemberIsland island;
 
     @BeforeEach
@@ -67,11 +67,11 @@ class ShopServiceTest {
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
     }
 
-    private Item createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
+    private ShopItem createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
             throws Exception {
-        Constructor<Item> ctor = Item.class.getDeclaredConstructor();
+        Constructor<ShopItem> ctor = ShopItem.class.getDeclaredConstructor();
         ctor.setAccessible(true);
-        Item item = ctor.newInstance();
+        ShopItem item = ctor.newInstance();
         ReflectionTestUtils.setField(item, "id", id);
         ReflectionTestUtils.setField(item, "name", name);
         ReflectionTestUtils.setField(item, "price", price);
@@ -85,7 +85,7 @@ class ShopServiceTest {
     void getItems_아이템_5개를_반환한다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
         // when
@@ -99,7 +99,7 @@ class ShopServiceTest {
     void getItems_IslandItemUsage_미존재_시_currentCount가_0이다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
         // when
@@ -113,7 +113,7 @@ class ShopServiceTest {
     void getItems_IslandItemUsage_존재_시_currentCount가_반영된다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         IslandItemUsage usage = mockUsage(targetItem, 1L);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of(usage));
 
@@ -127,7 +127,7 @@ class ShopServiceTest {
         assertThat(response.getCurrentCount()).isEqualTo(1L);
     }
 
-    private IslandItemUsage mockUsage(Item item, long useCount) {
+    private IslandItemUsage mockUsage(ShopItem item, long useCount) {
         IslandItemUsage usage = mock(IslandItemUsage.class);
         given(usage.getItem()).willReturn(item);
         given(usage.getUseCount()).willReturn(useCount);
@@ -138,7 +138,7 @@ class ShopServiceTest {
     void getItems_레벨_조건_미달_시_purchasable이_false다() {
         // given
         given(island.getLevel()).willReturn(1);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
         // when
@@ -152,7 +152,7 @@ class ShopServiceTest {
     void getItems_레벨_충족_시_purchasable이_true다() {
         // given
         given(island.getLevel()).willReturn(5);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of());
 
         // when
@@ -166,7 +166,7 @@ class ShopServiceTest {
     void getItems_maxCount_도달_시_purchasable이_false다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         IslandItemUsage usage = mockUsage(targetItem, 10L);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of(usage));
 
@@ -184,7 +184,7 @@ class ShopServiceTest {
     void getItems_maxCount_미달_시_purchasable이_true다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         IslandItemUsage usage = mockUsage(targetItem, 1L);
         given(islandItemUsageRepository.findAllByIsland(island)).willReturn(List.of(usage));
 
@@ -202,7 +202,7 @@ class ShopServiceTest {
     void purchaseItem_정상_구매_시_조개가_차감되고_useCount가_증가한다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
         IslandItemUsage usage = mock(IslandItemUsage.class);
         given(usage.getUseCount()).willReturn(0L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
@@ -225,7 +225,7 @@ class ShopServiceTest {
     void purchaseItem_레벨업_발생_시_응답에_levelUpResult가_포함된다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
         IslandItemUsage usage = mock(IslandItemUsage.class);
         given(usage.getUseCount()).willReturn(0L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
@@ -265,7 +265,7 @@ class ShopServiceTest {
     @Test
     void purchaseItem_존재하지_않는_아이템_구매_시_예외가_발생한다() {
         // given
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.empty());
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.empty());
 
         // when & then
         assertThatThrownBy(() -> shopService.purchaseItem(MEMBER_ID, ITEM_ID))
@@ -277,7 +277,7 @@ class ShopServiceTest {
     void purchaseItem_레벨_미달_시_예외가_발생한다() {
         // given
         given(island.getLevel()).willReturn(1);
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
 
         // when & then
         assertThatThrownBy(() -> shopService.purchaseItem(MEMBER_ID, ITEM_ID))
@@ -289,7 +289,7 @@ class ShopServiceTest {
     void purchaseItem_maxCount_초과_시_예외가_발생한다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
         IslandItemUsage usage = mock(IslandItemUsage.class);
         given(usage.getUseCount()).willReturn(10L);
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.of(usage));
@@ -304,7 +304,7 @@ class ShopServiceTest {
     void purchaseItem_IslandItemUsage_미존재_시_새로_생성하여_구매한다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
+        given(shopItemRepository.findById(ITEM_ID)).willReturn(Optional.of(targetItem));
         given(islandItemUsageRepository.findByIslandAndItem(island, targetItem)).willReturn(Optional.empty());
         given(islandItemUsageRepository.save(any())).willAnswer(inv -> inv.getArgument(0));
         MemberResource updatedShell = mockShell(900L);

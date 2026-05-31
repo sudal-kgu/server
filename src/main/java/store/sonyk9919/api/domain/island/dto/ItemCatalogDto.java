@@ -3,7 +3,7 @@ package store.sonyk9919.api.domain.island.dto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import store.sonyk9919.api.domain.island.entity.Item;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -18,7 +18,7 @@ public class ItemCatalogDto {
     private final int expReward;
     private final boolean purchasable;
 
-    public static ItemCatalogDto from(Item item, long currentCount, boolean purchasable) {
+    public static ItemCatalogDto from(ShopItem item, long currentCount, boolean purchasable) {
         return new ItemCatalogDto(
                 item.getId(),
                 item.getName(),

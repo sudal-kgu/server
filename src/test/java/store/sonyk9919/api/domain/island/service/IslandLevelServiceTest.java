@@ -18,16 +18,17 @@ import store.sonyk9919.api.domain.building.dto.BuildingCatalogDto;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
 import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
-import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
+import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 
 @ExtendWith(MockitoExtension.class)
 class IslandLevelServiceTest {
 
     @Mock private LevelSpecCache levelSpecCache;
-    @Mock private ItemCache itemCache;
+    @Mock private ShopItemCache shopItemCache;
     @Mock private BuildingMetadataCache buildingMetadataCache;
     @Mock private MemberIslandRepository memberIslandRepository;
     @Mock private IslandModelUriResolver islandModelUriResolver;
@@ -109,9 +110,9 @@ class IslandLevelServiceTest {
         given(island.canLevelUp(currentSpec)).willReturn(true);
         stubIslandDtoFields();
 
-        Item unlockedItem = createItem("해금아이템", 2);
-        Item otherItem = createItem("다른아이템", 3);
-        given(itemCache.getAll()).willReturn(List.of(unlockedItem, otherItem));
+        ShopItem unlockedItem = createItem("해금아이템", 2);
+        ShopItem otherItem = createItem("다른아이템", 3);
+        given(shopItemCache.getAll()).willReturn(List.of(unlockedItem, otherItem));
 
         BuildingCatalogDto unlockedBuilding = createBuilding("해금건물", 2);
         BuildingCatalogDto otherBuilding = createBuilding("다른건물", 3);
@@ -137,7 +138,7 @@ class IslandLevelServiceTest {
         given(island.isMaxLevel()).willReturn(false, false);
         given(island.canLevelUp(currentSpec)).willReturn(true);
         stubIslandDtoFields();
-        given(itemCache.getAll()).willReturn(List.of(createItem("아이템", 3)));
+        given(shopItemCache.getAll()).willReturn(List.of(createItem("아이템", 3)));
         given(buildingMetadataCache.get()).willReturn(List.of(createBuilding("건물", 3)));
 
         // when
@@ -176,7 +177,7 @@ class IslandLevelServiceTest {
         given(island.isMaxLevel()).willReturn(false, false);
         given(island.canLevelUp(currentSpec)).willReturn(true);
         stubIslandDtoFields();
-        given(itemCache.getAll()).willReturn(List.of());
+        given(shopItemCache.getAll()).willReturn(List.of());
         given(buildingMetadataCache.get()).willReturn(List.of());
 
         // when
@@ -195,7 +196,7 @@ class IslandLevelServiceTest {
         given(levelSpecCache.get(3)).willReturn(nextLevelSpec);
         given(island.canLevelUp(currentSpec)).willReturn(true);
         stubIslandDtoFields();
-        given(itemCache.getAll()).willReturn(List.of(createItem("레벨3아이템", 3)));
+        given(shopItemCache.getAll()).willReturn(List.of(createItem("레벨3아이템", 3)));
         given(buildingMetadataCache.get()).willReturn(List.of(createBuilding("레벨3건물", 3)));
 
         // when
@@ -216,10 +217,10 @@ class IslandLevelServiceTest {
         given(island.getItemContributionExp()).willReturn(0);
     }
 
-    private Item createItem(String name, int unlockLevel) throws Exception {
-        Constructor<Item> ctor = Item.class.getDeclaredConstructor();
+    private ShopItem createItem(String name, int unlockLevel) throws Exception {
+        Constructor<ShopItem> ctor = ShopItem.class.getDeclaredConstructor();
         ctor.setAccessible(true);
-        Item item = ctor.newInstance();
+        ShopItem item = ctor.newInstance();
         ReflectionTestUtils.setField(item, "name", name);
         ReflectionTestUtils.setField(item, "unlockLevel", unlockLevel);
         return item;

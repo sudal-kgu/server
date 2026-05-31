@@ -15,10 +15,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
-import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
+import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,12 +27,12 @@ class ItemUsageServiceTest {
 
     @Mock private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
-    @Mock private ItemCache itemCache;
+    @Mock private ShopItemCache shopItemCache;
     @InjectMocks private ItemUsageService itemUsageService;
 
     private static final Long MEMBER_ID = 1L;
-    private List<Item> allItems;
-    private Item targetItem;
+    private List<ShopItem> allItems;
+    private ShopItem targetItem;
     private MemberIsland island;
 
     @BeforeEach
@@ -48,11 +49,11 @@ class ItemUsageServiceTest {
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
     }
 
-    private Item createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
+    private ShopItem createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
             throws Exception {
-        Constructor<Item> ctor = Item.class.getDeclaredConstructor();
+        Constructor<ShopItem> ctor = ShopItem.class.getDeclaredConstructor();
         ctor.setAccessible(true);
-        Item item = ctor.newInstance();
+        ShopItem item = ctor.newInstance();
         ReflectionTestUtils.setField(item, "id", id);
         ReflectionTestUtils.setField(item, "name", name);
         ReflectionTestUtils.setField(item, "price", price);
@@ -66,7 +67,7 @@ class ItemUsageServiceTest {
     void getItemUsages_아이템_5개를_반환한다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
@@ -80,7 +81,7 @@ class ItemUsageServiceTest {
     void getItemUsages_사용_이력_없으면_currentCount가_0이다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
@@ -94,7 +95,7 @@ class ItemUsageServiceTest {
     void getItemUsages_사용_이력_있으면_currentCount가_반영된다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island))
                 .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 1L)));
 
@@ -116,7 +117,7 @@ class ItemUsageServiceTest {
     void getItemUsages_레벨_미달_시_purchasable이_false다() {
         // given
         given(island.getLevel()).willReturn(1);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
@@ -130,7 +131,7 @@ class ItemUsageServiceTest {
     void getItemUsages_레벨_충족_시_purchasable이_true다() {
         // given
         given(island.getLevel()).willReturn(5);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
@@ -144,7 +145,7 @@ class ItemUsageServiceTest {
     void getItemUsages_maxCount_도달_시_purchasable이_false다() {
         // given
         given(island.getLevel()).willReturn(3);
-        given(itemCache.getAll()).willReturn(allItems);
+        given(shopItemCache.getAll()).willReturn(allItems);
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island))
                 .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 10L)));
 

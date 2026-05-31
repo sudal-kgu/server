@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import store.sonyk9919.api.domain.building.service.BuildingMetadataCache;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.repository.LevelSpecRepository;
-import store.sonyk9919.api.domain.island.service.ItemCache;
+import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.domain.island.service.LevelSpecCache;
 import store.sonyk9919.api.domain.shop.service.GemItemCache;
 
@@ -25,7 +25,7 @@ class CacheWarmUpServiceTest {
     @Mock private LevelSpecRepository levelSpecRepository;
     @Mock private LevelSpecCache levelSpecCache;
     @Mock private BuildingMetadataCache buildingMetadataCache;
-    @Mock private ItemCache itemCache;
+    @Mock private ShopItemCache shopItemCache;
     @Mock private GemItemCache gemItemCache;
 
     @InjectMocks private CacheWarmUpService cacheWarmUpService;
@@ -51,7 +51,7 @@ class CacheWarmUpServiceTest {
         then(levelSpecRepository).should(times(1)).findAll();
         then(levelSpecCache).should(times(1)).get(1);
         then(levelSpecCache).should(times(1)).get(2);
-        then(itemCache).should(times(1)).getAll();
+        then(shopItemCache).should(times(1)).getAll();
         then(gemItemCache).should(times(1)).getAll();
     }
 }

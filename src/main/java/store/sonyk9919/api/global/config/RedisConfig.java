@@ -75,7 +75,8 @@ public class RedisConfig {
 
         cacheConfigurations.put("buildingCatalog", staticConfig);
         cacheConfigurations.put("level-spec", staticConfig);
-        cacheConfigurations.put("items", staticConfig);
+        cacheConfigurations.put("shop-items", staticConfig);
+        cacheConfigurations.put("gem-items", staticConfig);
 
         cacheConfigurations.put("islandBoost", dynamicConfig);
         cacheConfigurations.put("islandQuizRewardBoost", dynamicConfig);

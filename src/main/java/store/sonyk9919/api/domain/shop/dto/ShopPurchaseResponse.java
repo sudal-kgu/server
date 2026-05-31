@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import store.sonyk9919.api.domain.island.dto.LevelUpResult;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
-import store.sonyk9919.api.domain.island.entity.Item;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
 
 @Getter
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -16,7 +16,7 @@ public class ShopPurchaseResponse {
     private final MemberIslandDto island;
     private final LevelUpResult.UnlockNotice notice;
 
-    public static ShopPurchaseResponse of(Item item, IslandItemUsage usage, long remainingShell, LevelUpResult levelUpResult) {
+    public static ShopPurchaseResponse of(ShopItem item, IslandItemUsage usage, long remainingShell, LevelUpResult levelUpResult) {
         return new ShopPurchaseResponse(
                 new Purchased(item.getId(), item.getName(), usage.getUseCount(), remainingShell),
                 levelUpResult.getIsland(),
