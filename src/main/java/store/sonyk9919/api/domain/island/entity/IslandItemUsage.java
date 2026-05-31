@@ -13,11 +13,12 @@ import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"island_id", "item_id"}))
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"island_id", "shop_item_id"}))
 public class IslandItemUsage {
 
     @Id
@@ -26,8 +27,8 @@ public class IslandItemUsage {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    @JoinColumn(name = "shop_item_id", nullable = false)
+    private ShopItem item;
 
     @Column(nullable = false)
     private long useCount;
@@ -36,13 +37,13 @@ public class IslandItemUsage {
     @JoinColumn(name = "island_id", nullable = false)
     private MemberIsland island;
 
-    private IslandItemUsage(Item item, MemberIsland island) {
+    private IslandItemUsage(ShopItem item, MemberIsland island) {
         this.item = item;
         this.island = island;
         this.useCount = 0;
     }
 
-    public static IslandItemUsage create(Item item, MemberIsland island) {
+    public static IslandItemUsage create(ShopItem item, MemberIsland island) {
         return new IslandItemUsage(item, island);
     }
 

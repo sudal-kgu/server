@@ -6,12 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
-import store.sonyk9919.api.domain.island.entity.Item;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
+import store.sonyk9919.api.domain.shop.entity.ShopItem;
 
 public interface IslandItemUsageRepository extends JpaRepository<IslandItemUsage, Long> {
 
-    Optional<IslandItemUsage> findByIslandAndItem(MemberIsland island, Item item);
+    Optional<IslandItemUsage> findByIslandAndItem(MemberIsland island, ShopItem item);
 
     List<IslandItemUsage> findAllByIsland(MemberIsland island);
 

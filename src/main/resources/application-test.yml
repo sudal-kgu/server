@@ -19,7 +19,7 @@ spring:
         - classpath:/db/disposal_subcategory.sql
         - classpath:/db/analysis-example.sql
         - classpath:/db/trash-example.sql
-        - classpath:/db/item.sql
+        - classpath:/db/shop_item.sql
         - classpath:/db/level_spec.sql
         - classpath:/db/building_metadata.sql
         - classpath:/db/building_yield.sql

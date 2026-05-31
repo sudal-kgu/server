@@ -1,4 +1,4 @@
-package store.sonyk9919.api.domain.island.entity;
+package store.sonyk9919.api.domain.shop.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "item")
-public class Item {
+@Table(name = "shop_item")
+public class ShopItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
