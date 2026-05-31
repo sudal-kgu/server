@@ -17,8 +17,9 @@ public class ShopItemResponse {
     private final int unlockLevel;
     private final int expReward;
     private final boolean purchasable;
+    private final String iconUri;
 
-    public static ShopItemResponse of(ShopItem item, long currentCount, boolean purchasable) {
+    public static ShopItemResponse of(ShopItem item, long currentCount, boolean purchasable, String iconUri) {
         return new ShopItemResponse(
                 item.getId(),
                 item.getName(),
@@ -27,7 +28,8 @@ public class ShopItemResponse {
                 currentCount,
                 item.getUnlockLevel(),
                 item.getExpReward(),
-                purchasable
+                purchasable,
+                iconUri
         );
     }
 }

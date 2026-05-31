@@ -29,6 +29,7 @@ import store.sonyk9919.api.global.common.lock.DistributedLock;
 public class GemExchangeService {
 
     private final GemItemCache gemItemCache;
+    private final IconUriResolver iconUriResolver;
     private final GemItemRepository gemItemRepository;
     private final MemberGemExchangeRepository memberGemExchangeRepository;
     private final MemberIslandRegistryService memberIslandRegistryService;
@@ -37,7 +38,7 @@ public class GemExchangeService {
 
     public List<GemItemResponse> getGemItems() {
         return gemItemCache.getAll().stream()
-                .map(GemItemResponse::from)
+                .map(item -> GemItemResponse.from(item, iconUriResolver.resolve(item)))
                 .toList();
     }
 

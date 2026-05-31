@@ -22,6 +22,7 @@ import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
+import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +30,7 @@ class IslandLevelServiceTest {
 
     @Mock private LevelSpecCache levelSpecCache;
     @Mock private ShopItemCache shopItemCache;
+    @Mock private IconUriResolver iconUriResolver;
     @Mock private BuildingMetadataCache buildingMetadataCache;
     @Mock private MemberIslandRepository memberIslandRepository;
     @Mock private IslandModelUriResolver islandModelUriResolver;
@@ -48,6 +50,8 @@ class IslandLevelServiceTest {
         nextLevelSpec = mock(LevelSpec.class);
         given(memberIslandRepository.findByMemberAccountId(MEMBER_ID)).willReturn(Optional.of(island));
         given(islandModelUriResolver.resolve(island)).willReturn(MODEL_URI);
+        org.mockito.Mockito.lenient().when(iconUriResolver.resolve(org.mockito.ArgumentMatchers.any(ShopItem.class)))
+                .thenReturn("https://image.sonyk9919.store:20024/shop-icons/test.png");
     }
 
     @Test

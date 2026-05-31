@@ -25,6 +25,7 @@ import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.service.MemberIslandRegistryService;
 import store.sonyk9919.api.domain.island.service.ResourceService;
 import store.sonyk9919.api.domain.shop.service.GemItemCache;
+import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.member.entity.MemberAccount;
 import store.sonyk9919.api.domain.member.service.MemberAccountService;
 import store.sonyk9919.api.domain.shop.dto.GemExchangeResponse;
@@ -40,6 +41,7 @@ import store.sonyk9919.api.global.common.exception.CustomException;
 class GemExchangeServiceTest {
 
     @Mock private GemItemCache gemItemCache;
+    @Mock private IconUriResolver iconUriResolver;
     @Mock private GemItemRepository gemItemRepository;
     @Mock private MemberGemExchangeRepository memberGemExchangeRepository;
     @Mock private MemberIslandRegistryService memberIslandRegistryService;
@@ -59,6 +61,8 @@ class GemExchangeServiceTest {
         gemItem = createGemItem(GEM_ITEM_ID, "STARBUCKS_COUPON", "스타벅스 아메리카노 T", "스타벅스 아메리카노 Tall 사이즈 모바일 쿠폰", 40000, 3);
         memberAccount = mock(MemberAccount.class);
         island = mock(MemberIsland.class);
+        org.mockito.Mockito.lenient().when(iconUriResolver.resolve(any(GemItem.class)))
+                .thenReturn("https://image.sonyk9919.store:20024/gem-icons/test.png");
     }
 
     private void mockExchangeDependencies() {

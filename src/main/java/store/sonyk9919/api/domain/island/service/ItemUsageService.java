@@ -10,6 +10,7 @@ import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
+import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 
 @Service
@@ -20,6 +21,7 @@ public class ItemUsageService {
     private final MemberIslandRegistryService memberIslandRegistryService;
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ShopItemCache shopItemCache;
+    private final IconUriResolver iconUriResolver;
 
     public List<ItemCatalogDto> getItemUsages(Long memberAccountId) {
         MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
@@ -42,6 +44,6 @@ public class ItemUsageService {
         long currentCount = usageByItemId.getOrDefault(item.getId(), 0L);
         boolean purchasable = island.getLevel() >= item.getUnlockLevel()
                 && currentCount < item.getMaxCount();
-        return ItemCatalogDto.from(item, currentCount, purchasable);
+        return ItemCatalogDto.from(item, currentCount, purchasable, iconUriResolver.resolve(item));
     }
 }

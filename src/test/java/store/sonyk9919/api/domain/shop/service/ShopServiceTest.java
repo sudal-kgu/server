@@ -33,14 +33,15 @@ import store.sonyk9919.api.domain.shop.dto.ShopPurchaseResponse;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
 import store.sonyk9919.api.domain.shop.exception.ShopStatus;
 import store.sonyk9919.api.domain.shop.repository.ShopItemRepository;
+import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.global.common.exception.CustomException;
-
 
 @ExtendWith(MockitoExtension.class)
 class ShopServiceTest {
 
     @Mock private ShopItemCache shopItemCache;
     @Mock private ShopItemRepository shopItemRepository;
+    @Mock private IconUriResolver iconUriResolver;
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
     @Mock private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private ResourceService resourceService;
@@ -65,6 +66,8 @@ class ShopServiceTest {
         );
         island = mock(MemberIsland.class);
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
+        org.mockito.Mockito.lenient().when(iconUriResolver.resolve(any(ShopItem.class)))
+                .thenReturn("https://image.sonyk9919.store:20024/shop-icons/test.png");
     }
 
     private ShopItem createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)

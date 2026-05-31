@@ -31,6 +31,7 @@ public class ShopService {
 
     private final ShopItemCache shopItemCache;
     private final ShopItemRepository shopItemRepository;
+    private final IconUriResolver iconUriResolver;
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final MemberIslandRegistryService memberIslandRegistryService;
     private final ResourceService resourceService;
@@ -49,7 +50,7 @@ public class ShopService {
                     long currentCount = usageByItemId.getOrDefault(item.getId(), 0L);
                     boolean purchasable = island.getLevel() >= item.getUnlockLevel()
                             && currentCount < item.getMaxCount();
-                    return ShopItemResponse.of(item, currentCount, purchasable);
+                    return ShopItemResponse.of(item, currentCount, purchasable, iconUriResolver.resolve(item));
                 })
                 .toList();
     }
