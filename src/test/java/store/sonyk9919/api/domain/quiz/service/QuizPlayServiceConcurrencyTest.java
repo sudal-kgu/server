@@ -95,7 +95,7 @@ class QuizPlayServiceConcurrencyTest {
         jdbcTemplate.update("INSERT INTO member_resource (resource_type, amount, island_id) VALUES ('GEM', 0, ?)", islandId);
         jdbcTemplate.update("INSERT INTO member_resource (resource_type, amount, island_id) VALUES ('FUEL', 0, ?)", islandId);
 
-        itemId = jdbcTemplate.queryForObject("SELECT item_id FROM item LIMIT 1", Long.class);
+        itemId = jdbcTemplate.queryForObject("SELECT item_id FROM shop_item LIMIT 1", Long.class);
 
         islandLevelService.addRecyclingExp(memberAccountId);
 
