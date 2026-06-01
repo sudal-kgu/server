@@ -10,7 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import store.sonyk9919.api.domain.auth.dto.AuthMemberDto;
 import store.sonyk9919.api.domain.auth.entity.AuthMember;
-import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
+import store.sonyk9919.api.domain.island.dto.ItemUsageDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandCreateRequestDto;
 import store.sonyk9919.api.domain.island.dto.MemberIslandDto;
 import store.sonyk9919.api.domain.island.service.ItemUsageService;
@@ -63,7 +63,7 @@ public class MemberIslandController {
     })
     @GetMapping("/items/usages")
     @ResponseStatus(HttpStatus.OK)
-    public List<ItemCatalogDto> getItemUsages(
+    public List<ItemUsageDto> getItemUsages(
             @Parameter(hidden = true) @AuthMember AuthMemberDto authMember
     ) {
         return itemUsageService.getItemUsages(authMember.getId());
