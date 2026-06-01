@@ -14,12 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
+import store.sonyk9919.api.domain.island.dto.ItemUsageDto;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
-import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.global.common.exception.CustomException;
 
@@ -29,7 +28,7 @@ class ItemUsageServiceTest {
     @Mock private MemberIslandRegistryService memberIslandRegistryService;
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
     @Mock private ShopItemCache shopItemCache;
-    @Mock private IconUriResolver iconUriResolver;
+    @Mock private ItemModelUriResolver itemModelUriResolver;
     @InjectMocks private ItemUsageService itemUsageService;
 
     private static final Long MEMBER_ID = 1L;
@@ -49,8 +48,8 @@ class ItemUsageServiceTest {
         );
         island = mock(MemberIsland.class);
         given(memberIslandRegistryService.getIsland(MEMBER_ID)).willReturn(island);
-        org.mockito.Mockito.lenient().when(iconUriResolver.resolve(org.mockito.ArgumentMatchers.any(ShopItem.class)))
-                .thenReturn("https://image.sonyk9919.store:20024/shop-icons/test.png");
+        org.mockito.Mockito.lenient().when(itemModelUriResolver.resolve(org.mockito.ArgumentMatchers.any(ShopItem.class)))
+                .thenReturn(List.of());
     }
 
     private ShopItem createItem(Long id, String name, int price, int maxCount, int unlockLevel, int expReward)
@@ -75,7 +74,7 @@ class ItemUsageServiceTest {
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
         assertThat(result).hasSize(5);
@@ -89,7 +88,7 @@ class ItemUsageServiceTest {
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
         assertThat(result).allMatch(r -> r.getCurrentCount() == 0);
@@ -104,10 +103,10 @@ class ItemUsageServiceTest {
                 .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 1L)));
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
-        ItemCatalogDto response = result.stream()
+        ItemUsageDto response = result.stream()
                 .filter(r -> r.getItemId().equals(targetItem.getId()))
                 .findFirst().orElseThrow();
         assertThat(response.getCurrentCount()).isEqualTo(1L);
@@ -125,7 +124,7 @@ class ItemUsageServiceTest {
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
         assertThat(result).allMatch(r -> !r.isPurchasable());
@@ -139,10 +138,10 @@ class ItemUsageServiceTest {
         given(islandItemUsageRepository.findItemIdAndUseCountByIsland(island)).willReturn(List.of());
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
-        assertThat(result).allMatch(ItemCatalogDto::isPurchasable);
+        assertThat(result).allMatch(ItemUsageDto::isPurchasable);
     }
 
     @Test
@@ -154,10 +153,10 @@ class ItemUsageServiceTest {
                 .willReturn(List.<Object[]>of(usageRow(targetItem.getId(), 10L)));
 
         // when
-        List<ItemCatalogDto> result = itemUsageService.getItemUsages(MEMBER_ID);
+        List<ItemUsageDto> result = itemUsageService.getItemUsages(MEMBER_ID);
 
         // then
-        ItemCatalogDto response = result.stream()
+        ItemUsageDto response = result.stream()
                 .filter(r -> r.getItemId().equals(targetItem.getId()))
                 .findFirst().orElseThrow();
         assertThat(response.isPurchasable()).isFalse();
