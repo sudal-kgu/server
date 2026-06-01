@@ -12,11 +12,11 @@ public class IconUriResolver {
     private String imageBaseUrl;
 
     public String resolve(ShopItem item) {
-        return imageBaseUrl + "/shop-icons/" + toFilename(item.getCode()) + ".png";
+        return String.format("%s/shop-icons/%s.png", imageBaseUrl, toFilename(item.getCode()));
     }
 
     public String resolve(GemItem item) {
-        return imageBaseUrl + "/gem-icons/" + toFilename(item.getCode()) + ".png";
+        return String.format("%s/gem-icons/%s.png", imageBaseUrl, toFilename(item.getCode()));
     }
 
     private String toFilename(String code) {
