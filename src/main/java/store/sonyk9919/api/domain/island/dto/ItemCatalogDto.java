@@ -17,9 +17,8 @@ public class ItemCatalogDto {
     private final int unlockLevel;
     private final int expReward;
     private final boolean purchasable;
-    private final String iconUri;
 
-    public static ItemCatalogDto from(ShopItem item, long currentCount, boolean purchasable, String iconUri) {
+    public static ItemCatalogDto from(ShopItem item, long currentCount, boolean purchasable) {
         return new ItemCatalogDto(
                 item.getId(),
                 item.getName(),
@@ -28,8 +27,7 @@ public class ItemCatalogDto {
                 currentCount,
                 item.getUnlockLevel(),
                 item.getExpReward(),
-                purchasable,
-                iconUri
+                purchasable
         );
     }
 }

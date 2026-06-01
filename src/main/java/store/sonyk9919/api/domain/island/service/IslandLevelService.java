@@ -14,7 +14,6 @@ import store.sonyk9919.api.domain.island.entity.LevelSpec;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.exception.IslandStatus;
 import store.sonyk9919.api.domain.island.repository.MemberIslandRepository;
-import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.global.common.exception.CustomException;
 import store.sonyk9919.api.global.common.lock.DistributedLock;
@@ -26,7 +25,6 @@ public class IslandLevelService {
 
     private final LevelSpecCache levelSpecCache;
     private final ShopItemCache shopItemCache;
-    private final IconUriResolver iconUriResolver;
     private final BuildingMetadataCache buildingMetadataCache;
     private final MemberIslandRepository memberIslandRepository;
     private final IslandModelUriResolver islandModelUriResolver;
@@ -85,7 +83,7 @@ public class IslandLevelService {
     private List<ItemCatalogDto> getUnlockedItems(int newLevel) {
         return shopItemCache.getAll().stream()
                 .filter(i -> i.getUnlockLevel() == newLevel)
-                .map(i -> ItemCatalogDto.from(i, 0L, true, iconUriResolver.resolve(i)))
+                .map(i -> ItemCatalogDto.from(i, 0L, true))
                 .toList();
     }
 
