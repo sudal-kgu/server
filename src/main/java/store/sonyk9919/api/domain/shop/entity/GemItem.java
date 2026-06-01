@@ -35,4 +35,8 @@ public class GemItem {
 
     @Column(nullable = false)
     private int monthlyLimit;
+
+    public String toFilename() {
+        return code.toLowerCase().replace('_', '-');
+    }
 }

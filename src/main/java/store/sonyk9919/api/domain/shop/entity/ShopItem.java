@@ -39,4 +39,7 @@ public class ShopItem {
     @Column(nullable = false)
     private int expReward;
 
+    public String toFilename() {
+        return code.toLowerCase().replace('_', '-');
+    }
 }

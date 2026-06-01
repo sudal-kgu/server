@@ -12,14 +12,10 @@ public class IconUriResolver {
     private String imageBaseUrl;
 
     public String resolve(ShopItem item) {
-        return String.format("%s/shop-icons/%s.png", imageBaseUrl, toFilename(item.getCode()));
+        return String.format("%s/shop-icons/%s.png", imageBaseUrl, item.toFilename());
     }
 
     public String resolve(GemItem item) {
-        return String.format("%s/gem-icons/%s.png", imageBaseUrl, toFilename(item.getCode()));
-    }
-
-    private String toFilename(String code) {
-        return code.toLowerCase().replace('_', '-');
+        return String.format("%s/gem-icons/%s.png", imageBaseUrl, item.toFilename());
     }
 }
