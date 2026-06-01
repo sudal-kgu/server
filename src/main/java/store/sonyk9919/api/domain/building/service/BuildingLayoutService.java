@@ -32,6 +32,7 @@ public class BuildingLayoutService {
     private final ResourceService resourceService;
     private final SlotQueryHelper slotQueryHelper;
     private final ApplicationEventPublisher eventPublisher;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -67,7 +68,7 @@ public class BuildingLayoutService {
 
     private BuildingResponseDto createResponse(Long memberId, Slot slot, Building building) {
         BuildingInfoDto buildingInfo = building != null ?
-                BuildingInfoDto.of(building, building.getBuildingMetadata()) : null;
+                BuildingInfoDto.of(building, building.getBuildingMetadata(), buildingModelUriResolver.resolve(building.getBuildingMetadata())) : null;
 
         return BuildingResponseDto.of(
                 SlotResponseDto.of(slot, buildingInfo),

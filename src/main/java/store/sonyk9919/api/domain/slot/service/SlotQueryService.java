@@ -10,6 +10,7 @@ import store.sonyk9919.api.domain.building.dto.BuildingInfoDto;
 import store.sonyk9919.api.domain.building.dto.ProductionInfoDto;
 import store.sonyk9919.api.domain.building.entity.Building;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
+import store.sonyk9919.api.domain.building.service.BuildingModelUriResolver;
 import store.sonyk9919.api.domain.building.service.HarvestCalculator;
 import store.sonyk9919.api.domain.building.service.IslandBoostCache;
 import store.sonyk9919.api.domain.island.entity.LevelSpec;
@@ -35,6 +36,7 @@ public class SlotQueryService {
     private final MemberIslandRegistryService memberIslandService;
     private final IslandBoostCache islandBoostCache;
     private final LevelSpecCache levelSpecCache;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     public SlotListResponseDto getAllSlot(Long memberId) {
         MemberIsland island = memberIslandService.getIsland(memberId);
@@ -56,7 +58,7 @@ public class SlotQueryService {
     private BuildingInfoDto mapToBuildingInfo(Building building){
         if (building == null) return null;
 
-        return BuildingInfoDto.of(building, building.getBuildingMetadata());
+        return BuildingInfoDto.of(building, building.getBuildingMetadata(), buildingModelUriResolver.resolve(building.getBuildingMetadata()));
     }
 
     public SlotResponseDto getSlotDetail(Long memberId, Integer slotNumber) {
@@ -74,7 +76,9 @@ public class SlotQueryService {
         BuildingMetadata metadata = building.getBuildingMetadata();
         return BuildingInfoDto.of(
                 building, metadata,
-                createInfo(island, building, metadata));
+                createInfo(island, building, metadata),
+                buildingModelUriResolver.resolve(metadata));
+
     }
 
     private ProductionInfoDto createInfo(MemberIsland island, Building building, BuildingMetadata metadata) {

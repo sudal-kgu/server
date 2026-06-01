@@ -27,6 +27,7 @@ public class BuildingUpgradeService {
     private final ResourceService resourceService;
     private final SlotQueryHelper slotQueryHelper;
     private final ApplicationEventPublisher eventPublisher;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -65,6 +66,6 @@ public class BuildingUpgradeService {
     private BuildingInfoDto mapToBuildingInfo(Building building){
         if (building == null) return null;
 
-        return BuildingInfoDto.of(building, building.getBuildingMetadata());
+        return BuildingInfoDto.of(building, building.getBuildingMetadata(), buildingModelUriResolver.resolve(building.getBuildingMetadata()));
     }
 }

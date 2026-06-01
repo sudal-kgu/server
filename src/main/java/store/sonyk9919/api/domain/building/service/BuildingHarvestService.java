@@ -31,6 +31,7 @@ public class BuildingHarvestService {
     private final MemberIslandRegistryService memberIslandService;
     private final ResourceService resourceService;
     private final IslandBoostCache islandBoostCache;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     @DistributedLock(key = "'island:' + #memberId + ':harvest'")
     @Transactional
@@ -48,7 +49,7 @@ public class BuildingHarvestService {
 
         MemberResource islandGem = applyHarvest(building, island, gems, calculator);
         int remainingGem = HarvestCalculator.from(building).calculate(boostPercent);
-        SlotResponseDto slotDto = SlotResponseDto.of(slot, BuildingInfoDto.of(building, building.getBuildingMetadata()));
+        SlotResponseDto slotDto = SlotResponseDto.of(slot, BuildingInfoDto.of(building, building.getBuildingMetadata(), buildingModelUriResolver.resolve(building.getBuildingMetadata())));
         return HarvestResponseDto.from(remainingGem, islandGem, slotDto);
     }
 
@@ -70,7 +71,7 @@ public class BuildingHarvestService {
 
         MemberResource gem = resourceService.add(island, ResourceType.GEM, totalGems);
         List<SlotResponseDto> slotDtos = harvestableSlots.stream()
-                .map(slot -> SlotResponseDto.of(slot, BuildingInfoDto.of(slot.getBuilding(), slot.getBuilding().getBuildingMetadata())))
+                .map(slot -> SlotResponseDto.of(slot, BuildingInfoDto.of(slot.getBuilding(), slot.getBuilding().getBuildingMetadata(), buildingModelUriResolver.resolve(slot.getBuilding().getBuildingMetadata()))))
                 .collect(Collectors.toList());
         return HarvestResponseDto.from(gem, slotDtos);
     }

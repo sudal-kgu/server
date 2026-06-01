@@ -24,6 +24,7 @@ public class BuildingOperateService {
 
     private final ResourceService resourceService;
     private final SlotQueryHelper slotQueryHelper;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     @DistributedLock(key = "'slot:' + #memberId + ':' + #slotNumber")
     @Transactional
@@ -38,7 +39,7 @@ public class BuildingOperateService {
         building.operate(yield.getDurationSecond());
         resourceService.subtract(slot.getIsland(), ResourceType.FUEL, yield.getRequiredFuel());
         return BuildingResponseDto.of(
-                SlotResponseDto.of(slot, BuildingInfoDto.of(building, buildingMetadata)),
+                SlotResponseDto.of(slot, BuildingInfoDto.of(building, buildingMetadata, buildingModelUriResolver.resolve(buildingMetadata))),
                 resourceService.getBalance(memberId)
         );
     }
