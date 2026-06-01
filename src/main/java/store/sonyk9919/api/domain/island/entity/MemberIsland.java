@@ -96,6 +96,10 @@ public class MemberIsland {
         itemContributionExp = 0;
     }
 
+    public void forceMaxLevel() {
+        this.level = MAX_LEVEL;
+    }
+
     public boolean isSameRegion(Region other) {
         return this.region == other;
     }
