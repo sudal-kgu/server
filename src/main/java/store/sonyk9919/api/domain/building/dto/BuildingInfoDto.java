@@ -14,7 +14,7 @@ public class BuildingInfoDto {
     private Long buildingId;
     private String name;
     private String category;
-    private String model;
+    private String modelUri;
 
     private int currentLevel;
     private LocalDateTime fuelExpiredAt;
@@ -41,6 +41,32 @@ public class BuildingInfoDto {
                 metadata.getName(),
                 metadata.getCategory().name(),
                 metadata.getModel(),
+                building.getCurrentLevel(),
+                building.getFuelExpiredAt(),
+                building.getLastCollectedAt(),
+                productionInfo
+        );
+    }
+
+    public static BuildingInfoDto of(Building building, BuildingMetadata metadata, String modelUri) {
+        return new BuildingInfoDto(
+                building.getId(),
+                metadata.getName(),
+                metadata.getCategory().name(),
+                modelUri,
+                building.getCurrentLevel(),
+                building.getFuelExpiredAt(),
+                building.getLastCollectedAt(),
+                null
+        );
+    }
+
+    public static BuildingInfoDto of(Building building, BuildingMetadata metadata, ProductionInfoDto productionInfo, String modelUri) {
+        return new BuildingInfoDto(
+                building.getId(),
+                metadata.getName(),
+                metadata.getCategory().name(),
+                modelUri,
                 building.getCurrentLevel(),
                 building.getFuelExpiredAt(),
                 building.getLastCollectedAt(),

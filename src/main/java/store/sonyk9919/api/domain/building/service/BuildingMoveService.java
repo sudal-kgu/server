@@ -21,6 +21,7 @@ public class BuildingMoveService {
 
     private final SlotQueryHelper slotQueryHelper;
     private final SlotRepository slotRepository;
+    private final BuildingModelUriResolver buildingModelUriResolver;
 
     @DistributedLock(keys = {
             "'slot:' + #memberId + ':' + #slotMoveRequestDto.fromSlotNumber",
@@ -53,7 +54,8 @@ public class BuildingMoveService {
 
         BuildingInfoDto buildingInfo = BuildingInfoDto.of(
                 slot.getBuilding(),
-                slot.getBuilding().getBuildingMetadata()
+                slot.getBuilding().getBuildingMetadata(),
+                buildingModelUriResolver.resolve(slot.getBuilding().getBuildingMetadata())
         );
         return SlotResponseDto.of(slot, buildingInfo);
     }
