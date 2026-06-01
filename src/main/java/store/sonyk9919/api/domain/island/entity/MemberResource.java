@@ -57,4 +57,8 @@ public class MemberResource {
         if (this.amount - amount < 0) throw new CustomException(IslandStatus.INSUFFICIENT_AMOUNT);
         this.amount -= amount;
     }
+
+    public void overrideAmount(long amount) {
+        this.amount = amount;
+    }
 }
