@@ -22,7 +22,7 @@ public class IslandModelUriResolver {
 
     public String resolve(MemberIsland island) {
         int modelIndex = Math.min(island.getLevel(), 2) + (int) getSoilPurificationCount(island);
-        return String.format("%s/island_%d.glb", imageBaseUrl, modelIndex);
+        return String.format("%s/models/island_%d.glb", imageBaseUrl, modelIndex);
     }
 
     private long getSoilPurificationCount(MemberIsland island) {
