@@ -6,11 +6,10 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import store.sonyk9919.api.domain.island.dto.ItemCatalogDto;
+import store.sonyk9919.api.domain.island.dto.ItemUsageDto;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
-import store.sonyk9919.api.domain.shop.service.IconUriResolver;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 
 @Service
@@ -21,14 +20,14 @@ public class ItemUsageService {
     private final MemberIslandRegistryService memberIslandRegistryService;
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ShopItemCache shopItemCache;
-    private final IconUriResolver iconUriResolver;
+    private final ItemModelUriResolver itemModelUriResolver;
 
-    public List<ItemCatalogDto> getItemUsages(Long memberAccountId) {
+    public List<ItemUsageDto> getItemUsages(Long memberAccountId) {
         MemberIsland island = memberIslandRegistryService.getIsland(memberAccountId);
         List<ShopItem> items = shopItemCache.getAll();
         Map<Long, Long> usageByItemId = buildUsageMap(island);
         return items.stream()
-                .map(item -> toItemCatalogDto(item, usageByItemId, island))
+                .map(item -> toItemUsageDto(item, usageByItemId, island))
                 .collect(Collectors.toList());
     }
 
@@ -40,10 +39,10 @@ public class ItemUsageService {
                 ));
     }
 
-    private ItemCatalogDto toItemCatalogDto(ShopItem item, Map<Long, Long> usageByItemId, MemberIsland island) {
+    private ItemUsageDto toItemUsageDto(ShopItem item, Map<Long, Long> usageByItemId, MemberIsland island) {
         long currentCount = usageByItemId.getOrDefault(item.getId(), 0L);
         boolean purchasable = island.getLevel() >= item.getUnlockLevel()
                 && currentCount < item.getMaxCount();
-        return ItemCatalogDto.from(item, currentCount, purchasable, iconUriResolver.resolve(item));
+        return ItemUsageDto.from(item, currentCount, purchasable, itemModelUriResolver.resolve(item));
     }
 }
