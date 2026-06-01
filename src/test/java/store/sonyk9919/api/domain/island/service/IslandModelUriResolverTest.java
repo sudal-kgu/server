@@ -50,7 +50,7 @@ class IslandModelUriResolverTest {
         String modelUri = islandModelUriResolver.resolve(island);
 
         // then
-        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/island_1.glb");
+        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/models/island_1.glb");
     }
 
     @Test
@@ -64,7 +64,7 @@ class IslandModelUriResolverTest {
         String modelUri = islandModelUriResolver.resolve(island);
 
         // then
-        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/island_2.glb");
+        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/models/island_2.glb");
     }
 
     @Test
@@ -78,7 +78,7 @@ class IslandModelUriResolverTest {
         String modelUri = islandModelUriResolver.resolve(island);
 
         // then
-        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/island_2.glb");
+        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/models/island_2.glb");
     }
 
     @Test
@@ -94,7 +94,7 @@ class IslandModelUriResolverTest {
         String modelUri = islandModelUriResolver.resolve(island);
 
         // then
-        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/island_3.glb");
+        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/models/island_3.glb");
     }
 
     @Test
@@ -110,6 +110,6 @@ class IslandModelUriResolverTest {
         String modelUri = islandModelUriResolver.resolve(island);
 
         // then
-        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/island_6.glb");
+        assertThat(modelUri).isEqualTo(MODEL_BASE_URL + "/models/island_6.glb");
     }
 }

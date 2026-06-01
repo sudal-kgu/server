@@ -32,6 +32,7 @@ import store.sonyk9919.api.domain.slot.dto.SlotMoveRequestDto;
 import store.sonyk9919.api.domain.slot.entity.Slot;
 import store.sonyk9919.api.domain.slot.repository.SlotRepository;
 import store.sonyk9919.api.domain.slot.service.SlotQueryHelper;
+import store.sonyk9919.api.domain.building.service.BuildingModelUriResolver;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -46,6 +47,7 @@ class BuildingLayoutServiceTest {
     @Mock private SlotRepository slotRepository;
     @Mock private SlotQueryHelper slotQueryHelper;
     @Mock private ApplicationEventPublisher eventPublisher;
+    @Mock private BuildingModelUriResolver buildingModelUriResolver;
 
     private MemberIsland island;
     private Slot slot;
