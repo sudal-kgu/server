@@ -16,6 +16,7 @@ import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
+import store.sonyk9919.api.domain.shop.entity.ShopItemCode;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.global.common.UriUtils;
 
@@ -38,7 +39,7 @@ class IslandModelUriResolverTest {
         given(uriUtils.glbUri(org.mockito.ArgumentMatchers.anyString()))
                 .willAnswer(inv -> MODEL_BASE_URL + "/models/" + inv.getArgument(0) + ".glb");
         given(shopItemCache.getAll()).willReturn(List.of(soilPurificationItem));
-        given(soilPurificationItem.getCode()).willReturn("SOIL_PURIFICATION");
+        given(soilPurificationItem.getCode()).willReturn(ShopItemCode.SOIL_PURIFICATION);
     }
 
     @Test
