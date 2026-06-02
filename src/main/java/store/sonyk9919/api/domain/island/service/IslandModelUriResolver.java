@@ -1,12 +1,12 @@
 package store.sonyk9919.api.domain.island.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
+import store.sonyk9919.api.global.common.UriUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -16,13 +16,11 @@ public class IslandModelUriResolver {
 
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ShopItemCache shopItemCache;
-
-    @Value("${image.base-url}")
-    private String imageBaseUrl;
+    private final UriUtils uriUtils;
 
     public String resolve(MemberIsland island) {
         int modelIndex = Math.min(island.getLevel(), 2) + (int) getSoilPurificationCount(island);
-        return String.format("%s/models/island_%d.glb", imageBaseUrl, modelIndex);
+        return uriUtils.glbUri("island_" + modelIndex);
     }
 
     private long getSoilPurificationCount(MemberIsland island) {
