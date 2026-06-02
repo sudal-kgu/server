@@ -1,16 +1,17 @@
 package store.sonyk9919.api.domain.building.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.building.entity.BuildingMetadata;
+import store.sonyk9919.api.global.common.UriUtils;
 
 @Component
+@RequiredArgsConstructor
 public class BuildingModelUriResolver {
 
-    @Value("${image.base-url}")
-    private String imageBaseUrl;
+    private final UriUtils uriUtils;
 
     public String resolve(BuildingMetadata metadata) {
-        return String.format("%s/models/%s.glb", imageBaseUrl, metadata.getModel());
+        return uriUtils.glbUri(metadata.getModel());
     }
 }

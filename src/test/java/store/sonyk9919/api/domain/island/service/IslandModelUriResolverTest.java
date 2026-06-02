@@ -12,18 +12,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
 import store.sonyk9919.api.domain.shop.entity.ShopItem;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
+import store.sonyk9919.api.global.common.UriUtils;
 
 @ExtendWith(MockitoExtension.class)
 class IslandModelUriResolverTest {
 
     @Mock private IslandItemUsageRepository islandItemUsageRepository;
     @Mock private ShopItemCache shopItemCache;
+    @Mock private UriUtils uriUtils;
     @InjectMocks private IslandModelUriResolver islandModelUriResolver;
 
     private static final String MODEL_BASE_URL = "https://image.sonyk9919.store:20024";
@@ -34,7 +35,8 @@ class IslandModelUriResolverTest {
     void setUp() {
         island = mock(MemberIsland.class);
         soilPurificationItem = mock(ShopItem.class);
-        ReflectionTestUtils.setField(islandModelUriResolver, "imageBaseUrl", MODEL_BASE_URL);
+        given(uriUtils.glbUri(org.mockito.ArgumentMatchers.anyString()))
+                .willAnswer(inv -> MODEL_BASE_URL + "/models/" + inv.getArgument(0) + ".glb");
         given(shopItemCache.getAll()).willReturn(List.of(soilPurificationItem));
         given(soilPurificationItem.getCode()).willReturn("SOIL_PURIFICATION");
     }
