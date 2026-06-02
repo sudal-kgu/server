@@ -5,14 +5,13 @@ import org.springframework.stereotype.Component;
 import store.sonyk9919.api.domain.island.entity.IslandItemUsage;
 import store.sonyk9919.api.domain.island.entity.MemberIsland;
 import store.sonyk9919.api.domain.island.repository.IslandItemUsageRepository;
+import store.sonyk9919.api.domain.shop.entity.ShopItemCode;
 import store.sonyk9919.api.domain.shop.service.ShopItemCache;
 import store.sonyk9919.api.global.common.UriUtils;
 
 @Component
 @RequiredArgsConstructor
 public class IslandModelUriResolver {
-
-    private static final String SOIL_PURIFICATION_CODE = "SOIL_PURIFICATION";
 
     private final IslandItemUsageRepository islandItemUsageRepository;
     private final ShopItemCache shopItemCache;
@@ -25,7 +24,7 @@ public class IslandModelUriResolver {
 
     private long getSoilPurificationCount(MemberIsland island) {
         return shopItemCache.getAll().stream()
-                .filter(item -> SOIL_PURIFICATION_CODE.equals(item.getCode()))
+                .filter(item -> item.getCode() == ShopItemCode.SOIL_PURIFICATION)
                 .findFirst()
                 .flatMap(item -> islandItemUsageRepository.findByIslandAndItem(island, item))
                 .map(IslandItemUsage::getUseCount)

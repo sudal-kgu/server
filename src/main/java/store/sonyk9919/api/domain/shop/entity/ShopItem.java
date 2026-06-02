@@ -2,6 +2,8 @@ package store.sonyk9919.api.domain.shop.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -21,8 +23,9 @@ public class ShopItem {
     @Column(name = "item_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, unique = true)
-    private String code;
+    private ShopItemCode code;
 
     @Column(nullable = false)
     private String name;
@@ -40,6 +43,6 @@ public class ShopItem {
     private int expReward;
 
     public String toFilename() {
-        return code.toLowerCase().replace('_', '-');
+        return code.name().toLowerCase().replace('_', '-');
     }
 }
